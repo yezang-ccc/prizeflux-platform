@@ -2,7 +2,7 @@
 
 PrizeFlux 是一个面向学习和求职展示的智能营销与高并发活动平台。项目围绕活动配置、权重抽奖、库存扣减、异步发奖、运营分析和 AI 运营助手，从空工程独立设计并逐步实现。
 
-> 当前状态（2026-09-24）：活动/抽奖与 JWT 身份、MySQL 库存/幂等、Outbox→Kafka→独立 Worker、持久化发奖重试与人工补偿任务已具备；发奖执行器仍是明确标注的本地模拟实现。Java Agent Harness 已有最小循环、受控只读工具、Campaign 查询适配、离线演示和独立 Spring Boot HTTP 宿主。Redis 用户级抽奖入口限流已实现；本机 40 请求/10 并发对照和 MySQL/Redis/Kafka 故障恢复证据已归档；最近一次全后端回归为 41 套件、281 项通过，0 失败/错误/跳过。吞吐仅为本机小样本，不代表生产容量或 Redis 提速。真实供应商、真实模型、远程 CI 和公网部署尚未完成，不能宣称已上线。实验条件和结果见[流量与故障基线](docs/baseline/README.md)。
+> 当前状态（2026-09-25）：活动/抽奖与 JWT 身份、MySQL 库存/幂等、Outbox→Kafka→独立 Worker、持久化发奖重试与人工补偿任务已具备；发奖执行器仍是明确标注的本地模拟实现。Java Agent Harness 已有最小循环、受控只读工具、Campaign 查询适配、离线演示和独立 Spring Boot HTTP 宿主。Redis 用户级抽奖入口限流已实现；本机 40 请求/10 并发对照和 MySQL/Redis/Kafka 故障恢复证据已归档；最近一次整仓 `package` 为 42 套件、283 项通过，0 失败/错误/跳过；另以独立 Campaign/Kafka/Worker 进程验证首次模拟暂时发奖失败后持久化重试成功。已发布提交的 GitHub Actions Maven 校验、后端测试和秘密扫描全绿；新恢复演示补丁尚待远端 CI。吞吐仅为本机小样本，不代表生产容量或 Redis 提速。真实供应商、真实模型和公网部署尚未完成，不能宣称已上线。实验条件和结果见[流量与故障基线](docs/baseline/README.md)。
 
 ## 为什么做这个项目
 
@@ -51,6 +51,9 @@ Set-Location ..
 
 # Campaign → Kafka → 独立 Worker；脚本使用隔离临时容器和端口。
 .\scripts\smoke-draw-worker-cross-process.ps1
+
+# 注入一次本地模拟的暂时发奖失败；应经持久化重试后成功，且没有人工审核任务。
+.\scripts\smoke-draw-worker-cross-process.ps1 -InjectTransientFulfillmentFailure
 ```
 
 完整链路脚本要求 Docker Engine 可用且演示端口未占用；它不连接或停止已有 Compose 服务。AI→Campaign 的只读跨进程演示见 [AI 服务运行手册](docs/runbooks/ai-service.md)。
@@ -72,7 +75,7 @@ GitHub Actions 会在推送和 Pull Request 时执行 Maven 模块校验、后�
 
 D3/D4 开发用 MySQL 配置在 `deploy/compose.foundation.yml`。需要手工启动本地依赖时，复制 `deploy/.env.example` 为 Git 忽略的 `deploy/.env`，替换示例密码后执行 `docker compose --env-file deploy/.env -f deploy/compose.foundation.yml up -d`。启动 Campaign 的终端也需单独设置相同的 `PFX_DB_PASSWORD`，并启用 `local-full` Profile；Compose 的 `--env-file` 不会自动把变量传给另一个终端。独立进程抽奖、事件和发奖验证见 `scripts/smoke-draw-worker-cross-process.ps1`；该脚本使用自己的随机命名临时容器和隔离端口，不连接或停止这份 Compose 服务。
 
-抽奖业务已具备受保护的本机演示链路。当前交付工作转入发布审查和剩余聚焦任务，不代表生产部署完成。
+抽奖与发奖已具备受保护的本机演示链路；加 `-InjectTransientFulfillmentFailure` 可展示 Worker 失败后的持久化重试恢复。私有 GitHub 已发布基线快照；本地补丁已通过本机验收，远端 CI 结果待更新，不代表生产部署完成。
 
 ## 学习与贡献方式
 

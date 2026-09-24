@@ -6,6 +6,7 @@ param(
     [ValidateRange(1, 100)][int]$Concurrency = 1,
     [ValidateRange(1, 500)][int]$PrizeStock = 1,
     [switch]$EnableRedisLimiter,
+    [switch]$InjectTransientFulfillmentFailure,
     [switch]$InjectRedisOutage,
     [switch]$InjectKafkaOutage,
     [switch]$InjectCampaignMySqlOutage,
@@ -19,6 +20,9 @@ if ($Concurrency -gt $RequestCount) { throw 'Concurrency cannot exceed RequestCo
 $faultModes = @($InjectRedisOutage.IsPresent, $InjectKafkaOutage.IsPresent, $InjectCampaignMySqlOutage.IsPresent)
 if (@($faultModes | Where-Object { $_ }).Count -gt 1) {
     throw 'Inject only one dependency outage per isolated run.'
+}
+if ($InjectTransientFulfillmentFailure -and @($faultModes | Where-Object { $_ }).Count -gt 0) {
+    throw 'Run simulated fulfillment failure separately from dependency outage scenarios.'
 }
 if ($InjectRedisOutage -and -not $EnableRedisLimiter) { throw 'Redis outage injection requires -EnableRedisLimiter.' }
 if (($InjectRedisOutage -or $InjectKafkaOutage -or $InjectCampaignMySqlOutage) `
@@ -352,7 +356,11 @@ try {
     $env:PFX_WORKER_DB_URL = 'jdbc:mysql://127.0.0.1:13307/prizeflux_worker'
     $env:PFX_WORKER_DB_USER = 'prizeflux_worker'
     $env:PFX_WORKER_DB_PASSWORD = $workerPassword
-    $worker = Start-ServiceProcess $workerJarPath $logs.workerOut $logs.workerErr @('--spring.profiles.active=local-full')
+    $workerArguments = @('--spring.profiles.active=local-full')
+    if ($InjectTransientFulfillmentFailure) {
+        $workerArguments += '--prizeflux.worker.fulfillment.simulated-fail-first-attempt=true'
+    }
+    $worker = Start-ServiceProcess $workerJarPath $logs.workerOut $logs.workerErr $workerArguments
     $workerSchemaDeadline = [DateTime]::UtcNow.AddSeconds(120)
     $workerSchemaReady = $false
     while ([DateTime]::UtcNow -lt $workerSchemaDeadline) {
@@ -524,6 +532,8 @@ try {
     $sentOutboxRows = '0'
     $workerRows = '0'
     $workerSucceededRows = '0'
+    $workerAttemptCount = '0'
+    $manualReviewTasks = '0'
     while ([DateTime]::UtcNow -lt $deadline) {
         $campaignDrawRows = Invoke-DbScalar $campaignDb 'prizeflux' $campaignPassword 'prizeflux' `
             "SELECT COUNT(*) FROM draw_result WHERE campaign_id = $campaignId"
@@ -535,6 +545,10 @@ try {
             "SELECT COUNT(*) FROM fulfillment WHERE campaign_id = $campaignId"
         $workerSucceededRows = Invoke-DbScalar $workerDb 'prizeflux_worker' $workerPassword 'prizeflux_worker' `
             "SELECT COUNT(*) FROM fulfillment WHERE campaign_id = $campaignId AND status = 'SUCCEEDED'"
+        $workerAttemptCount = Invoke-DbScalar $workerDb 'prizeflux_worker' $workerPassword 'prizeflux_worker' `
+            "SELECT COALESCE(SUM(attempt_count), 0) FROM fulfillment WHERE campaign_id = $campaignId"
+        $manualReviewTasks = Invoke-DbScalar $workerDb 'prizeflux_worker' $workerPassword 'prizeflux_worker' `
+            "SELECT COUNT(*) FROM fulfillment_compensation_task task JOIN fulfillment f ON f.id = task.fulfillment_id WHERE f.campaign_id = $campaignId"
         if ($campaignDrawRows -eq [string]$RequestCount -and $sentOutboxRows -eq [string]$PrizeStock `
                 -and $workerRows -eq [string]$PrizeStock -and $workerSucceededRows -eq [string]$PrizeStock) { break }
         Start-Sleep -Milliseconds 500
@@ -543,6 +557,11 @@ try {
             -or $sentOutboxRows -ne [string]$PrizeStock -or $workerRows -ne [string]$PrizeStock `
             -or $workerSucceededRows -ne [string]$PrizeStock) {
         throw 'Timed out or failed correctness checks for draw rows, inventory, Outbox, and Worker ledger.'
+    }
+    $attemptsPerPrize = if ($InjectTransientFulfillmentFailure) { 2 } else { 1 }
+    $expectedAttempts = $PrizeStock * $attemptsPerPrize
+    if ($workerAttemptCount -ne [string]$expectedAttempts -or $manualReviewTasks -ne '0') {
+        throw 'Worker attempt/review state did not match the selected simulated fulfillment scenario.'
     }
     $duplicateCount = Invoke-DbScalar $workerDb 'prizeflux_worker' $workerPassword 'prizeflux_worker' `
         "SELECT COUNT(*) FROM (SELECT draw_id FROM fulfillment WHERE campaign_id = $campaignId GROUP BY draw_id HAVING COUNT(*) > 1) AS duplicates"
@@ -554,7 +573,9 @@ try {
     $dockerVersion = (& docker info --format '{{.ServerVersion}}' 2>$null | Out-String).Trim()
     $report = [pscustomobject]@{
         Result = 'PASS'
-        Scenario = 'Authenticated concurrent draw HTTP benchmark with isolated Campaign/Worker MySQL and Kafka'
+        Scenario = if ($InjectTransientFulfillmentFailure) {
+            'Authenticated draw plus one injected transient simulated fulfillment failure and durable retry recovery'
+        } else { 'Authenticated concurrent draw HTTP benchmark with isolated Campaign/Worker MySQL and Kafka' }
         Environment = [pscustomobject]@{
             OS = [Environment]::OSVersion.VersionString; PowerShell = $PSVersionTable.PSVersion.ToString()
             JavaHome = $JavaHome; JavaVersion = $javaVersion; ProcessorCount = [Environment]::ProcessorCount
@@ -565,6 +586,7 @@ try {
         Configuration = [pscustomobject]@{
             RedisLimiterEnabled = [bool]$EnableRedisLimiter; RequestCount = $RequestCount
             Concurrency = $Concurrency; PrizeStock = $PrizeStock; UserDailyLimit = $RequestCount
+            SimulatedFailFirstFulfillmentAttempt = [bool]$InjectTransientFulfillmentFailure
             RateLimitMaxRequests = $RequestCount + 5; RateLimitWindowSeconds = 3600
             RedisConnectTimeout = '1s'; RedisCommandTimeout = '1s'; CampaignDbConnectionTimeoutMs = 3000
             Warmup = 'Health GET, authenticated Campaign GET, and one authenticated invalid draw stopped by validation before timed batch (warms Redis/Lettuce when enabled)'
@@ -578,7 +600,8 @@ try {
         Correctness = [pscustomobject]@{
             DrawRows = [int]$campaignDrawRows; InventoryRemaining = [int]$remainingStock
             SentOutboxRows = [int]$sentOutboxRows; WorkerLedgerRows = [int]$workerRows
-            WorkerSucceededRows = [int]$workerSucceededRows; DuplicateDrawFulfillments = [int]$duplicateCount
+            WorkerSucceededRows = [int]$workerSucceededRows; WorkerAttemptCountTotal = [int]$workerAttemptCount
+            ManualReviewTasks = [int]$manualReviewTasks; DuplicateDrawFulfillments = [int]$duplicateCount
         }
         FaultInjection = $faultInjection
         Samples = @($samples | Select-Object Index, HttpStatus, Outcome, DrawId, LatencyMs, ErrorType)
@@ -603,7 +626,10 @@ try {
         SentOutboxRows = $sentOutboxRows
         WorkerLedgerRows = $workerRows
         WorkerSucceededRows = $workerSucceededRows
+        WorkerAttemptCountTotal = $workerAttemptCount
+        ManualReviewTasks = $manualReviewTasks
         DuplicateDrawFulfillments = $duplicateCount
+        InjectTransientFulfillmentFailure = [bool]$InjectTransientFulfillmentFailure
         FaultInjection = $faultInjection
         FulfillmentMode = 'SIMULATED (no external supplier delivery)'
         Broker = 'Disposable single-node Kafka 3.9.1'

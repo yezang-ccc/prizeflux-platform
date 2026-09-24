@@ -27,3 +27,11 @@ ORDER BY id;
 ## 配置与验证
 
 Worker 默认不启用执行器或重试轮询；本机跨进程冒烟显式使用 `--spring.profiles.active=local-full`，开启 `simulated` 执行器及持久轮询。部署环境必须提供经过审查、支持幂等键和超时的真实执行器，再启用 `prizeflux.worker.retry.enabled` 与 `scheduler-enabled`。跨进程本地冒烟会验证抽奖 Outbox 经 Kafka 到 Worker 后最终变为 `SUCCEEDED`。迁移 `V2__add_fulfillment_retry_and_review.sql` 为已有 Worker schema 增列并新建补偿任务表。
+
+要在完整独立进程链路中演示“暂时发奖失败 → MySQL 持久化等待 → Worker 重试 → 成功”，先按仓库根目录 README 的命令构建 JAR，然后运行：
+
+```powershell
+.\scripts\smoke-draw-worker-cross-process.ps1 -InjectTransientFulfillmentFailure
+```
+
+此参数只给该次隔离 Worker JVM 的模拟适配器注入每个中奖 draw ID 一次暂时失败；默认运行不注入故障。脚本等待 Outbox=`SENT`、Worker=`SUCCEEDED`，并断言尝试数符合场景、没有重复发奖账本和人工审核任务。它不模拟真实供应商、退款或人工审核动作，也不能证明公网运行能力。

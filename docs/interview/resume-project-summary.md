@@ -14,8 +14,9 @@ PrizeFlux 是一个 Java 17/Spring Boot 营销抽奖与 Agent Harness 学习项�
 
 ## 可复现证据
 
-- 全后端：在 `backend` 目录执行 `$env:JAVA_HOME='D:\java\jdk-17'; .\mvnw.cmd -q test`。2026-09-24 Surefire 报告汇总 41 套件、281 项，0 失败、0 错误、0 跳过。最终配置边界调整后 Worker/Kafka 相关 10 项定向回归通过。
+- 全后端：在 `backend` 目录执行 `$env:JAVA_HOME='D:\java\jdk-17'; .\mvnw.cmd -q package`。2026-09-24 Surefire 汇总 42 套件、283 项，0 失败、0 错误、0 跳过，服务 JAR 均生成。
 - 抽奖→发奖：仓库根目录执行 `scripts/smoke-draw-worker-cross-process.ps1 -JavaHome 'D:\java\jdk-17'`。使用隔离 MySQL/Kafka 和 Campaign/Worker 两个 JVM，验证 Outbox `SENT`、Worker `SUCCEEDED`、账本恰一行。
+- 失败恢复：同脚本增加 `-InjectTransientFulfillmentFailure`。2026-09-25 实际通过：单次中奖库存扣减正确，首次暂时失败后履约共尝试 2 次，Outbox `SENT`、Worker `SUCCEEDED`，人工审核任务 0、重复账本 0；仅本地模拟执行器，不连接真实供应商。
 - 本机基准与故障：参数、三轮配对中位数/范围、逐请求原始 JSON 和恢复证据见 [`docs/baseline/README.md`](../baseline/README.md)。正式小样本中 Redis 开关两组都有运行间波动，不声称其带来吞吐提升。
 - AI→Campaign：`scripts/smoke-ai-campaign-cross-process.ps1`，验证真实 Campaign JWT 与只读活动查询；模型明确是 Fake Model。
 - 本地模拟发奖不会交付真实权益；没有真实模型、公网部署或生产集群证据。简历面试中应区分小规模本机基准、并发正确性测试和生产容量结论。

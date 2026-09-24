@@ -9,7 +9,7 @@ Complete the local, independently runnable Worker path so accepted fulfillment e
 - Retry policy: at most 3 execution attempts, with deterministic exponential delays of 1 and 2 seconds between attempts. Time is injected so tests do not sleep.
 - A permanent failure goes directly to `MANUAL_REVIEW`; a transient failure after the final attempt also goes to `MANUAL_REVIEW`.
 - `MANUAL_REVIEW` has a durable compensation/review task keyed uniquely by fulfillment/draw. No automatic refund or external side effect is invented.
-- Worker execution is an explicit port. The local demo implementation is labeled simulated and idempotent by stable draw/fulfillment ID. A real supplier adapter is out of scope.
+- Worker execution is an explicit port. The local demo implementation is labeled simulated and idempotent by stable draw/fulfillment ID. An explicit local-only switch may inject one transient failure per fulfillment ID to exercise the persisted retry path end to end. A real supplier adapter is out of scope.
 - Worker remains a non-web process. Do not add an unauthenticated compensation controller; review items are inspectable through the documented local operational query until a separately designed authenticated operations API exists.
 - MySQL remains authoritative. Claim/lease state is durable and supports multiple Worker processes; provider calls occur outside database transactions. A retry always reuses the stable fulfillment ID.
 
@@ -19,6 +19,7 @@ Complete the local, independently runnable Worker path so accepted fulfillment e
 - Targeted: from `backend`, `./mvnw.cmd -pl prizeflux-worker -am -Dtest=FulfillmentRetryPolicyTest,FulfillmentIdempotencyIntegrationTest,FulfillmentKafkaIntegrationTest -Dsurefire.failIfNoSpecifiedTests=false test`
 - Milestone regression: from `backend`, `./mvnw.cmd -q test`
 - Cross-process smoke: from repository root, `./scripts/smoke-draw-worker-cross-process.ps1 -JavaHome <JDK-17-path>`
+- Retry-recovery demo: `./scripts/smoke-draw-worker-cross-process.ps1 -JavaHome <JDK-17-path> -InjectTransientFulfillmentFailure`
 
 ## Project structure
 
@@ -60,6 +61,7 @@ Never hold a database transaction open while calling the fulfillment executor.
 - Expired leases are recoverable; stale lease holders cannot overwrite a newer result.
 - Duplicate/replayed Kafka events do not create additional fulfillment/review effects.
 - Local cross-process smoke, targeted MySQL integration tests, and milestone regression pass; docs state simulation and recovery limits accurately.
+- With the local failure-injection switch, one independent Campaign→Kafka→Worker run proves a persisted first failure, retry attempt and eventual success without an extra fulfillment row or manual-review task.
 
 ## Open questions
 
