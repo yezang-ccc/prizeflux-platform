@@ -1,4 +1,3 @@
-warning: in the working copy of 'scripts/check-secrets.ps1', LF will be replaced by CRLF the next time Git touches it
 <#
     PrizeFlux 本地秘密基线检查。
 
