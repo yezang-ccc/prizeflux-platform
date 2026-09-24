@@ -1,0 +1,32 @@
+# 本地基础设施：MySQL 保存权威业务状态，Redis 仅用于流量治理；Kafka 后续单独启用。
+services:
+  mysql:
+    image: mysql:8.4
+    environment:
+      MYSQL_ROOT_PASSWORD: ${PFX_DB_ROOT_PASSWORD:?Set PFX_DB_ROOT_PASSWORD}
+      MYSQL_DATABASE: prizeflux
+      MYSQL_USER: prizeflux
+      MYSQL_PASSWORD: ${PFX_DB_PASSWORD:?Set PFX_DB_PASSWORD}
+    ports:
+      - "127.0.0.1:3306:3306"
+    volumes:
+      - prizeflux_mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -u root -p$$MYSQL_ROOT_PASSWORD --silent"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  redis:
+    image: redis:7.4-alpine
+    command: ["redis-server", "--save", "", "--appendonly", "no"]
+    ports:
+      - "127.0.0.1:6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+volumes:
+  prizeflux_mysql_data:

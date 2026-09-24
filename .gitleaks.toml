@@ -1,0 +1,11 @@
+title = "PrizeFlux secret scanning policy"
+
+# 后续接入 Gitleaks 时复用默认规则；本任务的 CI 先使用仓库内可读、可验证的 PowerShell 基线检查。
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Generated build outputs are ignored by Git and should not become scan targets."
+paths = [
+  '''(^|/)(target|node_modules|dist)/''',
+]

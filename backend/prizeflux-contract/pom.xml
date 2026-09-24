@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  共享契约模块。
+  后续存放跨模块使用的 API 请求/响应对象、事件契约和错误语义；
+  现在不引入 Spring Web 等运行时依赖，避免契约层过早绑定具体技术实现。
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <!-- 指向 PrizeFlux 根 POM，继承统一坐标、Java版本与依赖版本规则。 -->
+    <parent>
+        <groupId>com.prizeflux</groupId>
+        <artifactId>prizeflux-backend</artifactId>
+        <version>0.1.0-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+
+    <artifactId>prizeflux-contract</artifactId>
+    <packaging>jar</packaging>
+    <name>PrizeFlux Contract</name>
+
+    <dependencies>
+        <!-- 仅为纯 Java 契约提供 JUnit 测试，不引入 Spring 运行时；版本继承父 POM。 -->
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+</project>

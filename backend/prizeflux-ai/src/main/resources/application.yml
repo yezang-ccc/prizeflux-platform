@@ -1,0 +1,6 @@
+server:
+  port: ${PFX_AI_PORT:8082}
+
+prizeflux:
+  campaign:
+    base-url: ${PFX_CAMPAIGN_BASE_URL:http://localhost:8081}

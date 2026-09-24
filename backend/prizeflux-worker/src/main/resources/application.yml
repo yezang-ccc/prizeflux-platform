@@ -1,0 +1,31 @@
+# Worker 独立进程配置：只消费 Kafka、落自己的发奖账本，不启动内嵌 Web 服务器。
+spring:
+  application:
+    name: prizeflux-worker
+  main:
+    web-application-type: none
+  datasource:
+    # Worker 与 Campaign 可共用一台 MySQL 实例，但使用不同 schema 与各自 Flyway 历史。
+    url: ${PFX_WORKER_DB_URL:jdbc:mysql://127.0.0.1:3306/prizeflux_worker}
+    username: ${PFX_WORKER_DB_USER:prizeflux}
+    password: ${PFX_WORKER_DB_PASSWORD}
+    hikari:
+      connection-init-sql: SET time_zone = '+00:00'
+  flyway:
+    enabled: true
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+    consumer:
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      # earliest：首次订阅时从头消费，确保启动晚于事件产生时也不漏事件；生产可按需改 latest。
+      auto-offset-reset: earliest
+
+prizeflux:
+  worker:
+    retry:
+      enabled: false
+      scheduler-enabled: false
+      poll-ms: 500
+    fulfillment:
+      # No executor is selected by the default profile. Production must supply an idempotent provider adapter.

@@ -1,0 +1,8 @@
+prizeflux:
+  worker:
+    retry:
+      enabled: true
+      scheduler-enabled: true
+    fulfillment:
+      # Explicitly a local demo only; never use this profile to represent real delivery.
+      mode: simulated

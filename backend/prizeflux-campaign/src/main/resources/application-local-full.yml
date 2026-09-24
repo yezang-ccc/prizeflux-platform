@@ -1,0 +1,39 @@
+# 本地真实进程使用 Compose MySQL；测试仍由 Testcontainers 注入独立数据库。
+spring:
+  datasource:
+    url: ${PFX_DB_URL:jdbc:mysql://127.0.0.1:3306/prizeflux}
+    username: ${PFX_DB_USER:prizeflux}
+    password: ${PFX_DB_PASSWORD}
+    hikari:
+      connection-init-sql: SET time_zone = '+00:00'
+      connection-timeout: ${PFX_DB_CONNECTION_TIMEOUT_MS:3000}
+  flyway:
+    enabled: true
+  data:
+    redis:
+      host: ${PFX_REDIS_HOST:127.0.0.1}
+      port: ${PFX_REDIS_PORT:6379}
+      connect-timeout: ${PFX_REDIS_CONNECT_TIMEOUT:1s}
+      timeout: ${PFX_REDIS_COMMAND_TIMEOUT:1s}
+
+mybatis:
+  mapper-locations: classpath*:com/prizeflux/campaign/infrastructure/persistence/*Mapper.xml
+
+prizeflux:
+  persistence:
+    campaign:
+      enabled: true
+  traffic:
+    draw-rate-limit:
+      enabled: ${PFX_DRAW_RATE_LIMIT_ENABLED:true}
+      max-requests: ${PFX_DRAW_RATE_LIMIT_MAX_REQUESTS:30}
+      window-seconds: ${PFX_DRAW_RATE_LIMIT_WINDOW_SECONDS:60}
+      key-prefix: 'pfx:draw:rate:v1:'
+  kafka:
+    # D7-03：local-full 走 Kafka 投递发奖事件；bootstrap 可由环境变量覆盖。
+    enabled: true
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+  outbox:
+    relay:
+      # 启用 Outbox Relay 的周期领取与投递（KafkaEventPublisher 作为 DomainEventPublisher）。
+      enabled: true

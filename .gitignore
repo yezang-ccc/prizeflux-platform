@@ -1,0 +1,80 @@
+# Java / Maven 构建产物
+target/
+*.class
+*.jar
+*.war
+
+# Node / Vue 构建产物
+node_modules/
+dist/
+.vite/
+
+# IDE 和操作系统临时文件
+.idea/
+.vscode/
+*.iml
+.DS_Store
+Thumbs.db
+
+# 本地日志、覆盖率和临时文件
+logs/
+*.log
+coverage/
+.tmp/
+tmp/
+
+# 本地环境配置和秘密；示例配置可以提交
+.env
+.env.*
+!.env.example
+application-local.yml
+application-secret.yml
+*.pem
+*.key
+*.p12
+*.jks
+
+# 压测与运行期数据
+*.jfr
+heapdump*.hprof
+data/
+.study-console.pid
+
+# 本地学习驾驶舱与个人学习材料不属于公开的 PrizeFlux 产品发布包；文件保留在本机。
+study-console/
+study-console.ps1
+install-study-console-shortcut.ps1
+scripts/study-coach.ps1
+docs/learning/*review*.md
+docs/learning/*assessment*.md
+docs/learning/*scores*.md
+docs/learning/*progress*.md
+docs/learning/*calendar*.md
+docs/learning/day-*.md
+docs/learning/study-console-*-review*.md
+docs/learning/STUDY-CONSOLE.md
+docs/learning/THREE-WEEK-ROADMAP.md
+docs/learning/TRAINING-INTERVIEW-QUESTIONS.md
+docs/learning/interview-essentials-d1-d2.md
+docs/learning/java-array-copy-notes.md
+docs/learning/java-array-copy-review.md
+docs/learning/examples/
+docs/baseline/local-environment.md
+docs/interview/PLAN-*.md
+docs/interview/question-bank-sources.md
+LEARNING-CURRICULUM-CAPABILITY-MAP.md
+SPEC-developer-readiness.md
+SPEC-one-month-resume-sprint.md
+SPEC-study-console.md
+SPEC-study-time-statistics.md
+tasks/PROJECT-21DAY-CALENDAR-v1.md
+tasks/S01-*.md
+tasks/study-console-v2.md
+AGENTS.md
+PROJECT_STATUS.md
+CAPABILITY-MAP.md
+tasks/
+docs/architecture/global-review-*.md
+docs/learning/*
+!docs/learning/harness-demo.md
+!docs/learning/harness-sessions.md

@@ -1,0 +1,64 @@
+{
+  "Result": "PASS",
+  "Scenario": "Authenticated concurrent draw HTTP benchmark with isolated Campaign/Worker MySQL and Kafka",
+  "Environment": {
+    "OS": "Microsoft Windows NT 10.0.26200.0",
+    "PowerShell": "7.6.5",
+    "JavaHome": "D:\\java\\jdk-17",
+    "JavaVersion": "java version \"17.0.12\" 2024-07-16 LTS\r\nJava(TM) SE Runtime Environment (build 17.0.12+8-LTS-286)\r\nJava HotSpot(TM) 64-Bit Server VM (build 17.0.12+8-LTS-286, mixed mode, sharing)",
+    "ProcessorCount": 12,
+    "Broker": "Disposable single-node Kafka 3.9.1",
+    "FulfillmentMode": "SIMULATED"
+  },
+  "Configuration": {
+    "RedisLimiterEnabled": true,
+    "RequestCount": 1,
+    "Concurrency": 1,
+    "PrizeStock": 1,
+    "UserDailyLimit": 1,
+    "RateLimitMaxRequests": 6,
+    "RateLimitWindowSeconds": 3600,
+    "Warmup": "Health GET, authenticated Campaign GET, and one authenticated invalid draw stopped by validation before timed batch (warms Redis/Lettuce when enabled)"
+  },
+  "Metrics": {
+    "TotalElapsedMs": 209.01,
+    "RequestsPerSecond": 4.78,
+    "P50Ms": 189.16,
+    "P95Ms": 189.16,
+    "P99Ms": 189.16,
+    "HttpFailures": 0,
+    "Won": 1,
+    "SoldOut": 0,
+    "NoPrize": 0
+  },
+  "Correctness": {
+    "DrawRows": 1,
+    "InventoryRemaining": 0,
+    "SentOutboxRows": 1,
+    "WorkerLedgerRows": 1,
+    "WorkerSucceededRows": 1,
+    "DuplicateDrawFulfillments": 0
+  },
+  "FaultInjection": {
+    "Dependency": "Redis",
+    "ObservedHttpStatus": 503,
+    "FailedRequestLatencyMs": 1106.85,
+    "DrawRowsBeforeRecovery": 0,
+    "OutboxRowsBeforeRecovery": 0,
+    "InventoryRemainingBeforeRecovery": 1,
+    "Recovery": "Redis process restarted; subsequent draw is verified in the normal chain",
+    "OutageDurationMs": 2755.29
+  },
+  "Samples": [
+    {
+      "Index": 1,
+      "HttpStatus": 200,
+      "Outcome": "WON",
+      "DrawId": 1,
+      "LatencyMs": 189.165,
+      "ErrorType": ""
+    }
+  ],
+  "CredentialsOrTokensPrinted": false,
+  "Note": "Local benchmark only; not production capacity evidence and not evidence that Redis makes MySQL faster."
+}

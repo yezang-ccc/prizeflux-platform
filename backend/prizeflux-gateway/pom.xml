@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  入口模块。
+  后续承载路由、鉴权、限流和请求标识；现在只建立模块身份，
+  不提前引入 Gateway Starter，防止空工程产生无用途的自动配置。
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.prizeflux</groupId>
+        <artifactId>prizeflux-backend</artifactId>
+        <version>0.1.0-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+
+    <artifactId>prizeflux-gateway</artifactId>
+    <packaging>jar</packaging>
+    <name>PrizeFlux Gateway</name>
+</project>

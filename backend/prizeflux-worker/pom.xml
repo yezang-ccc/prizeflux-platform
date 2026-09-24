@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  异步工作模块：独立启动的 Spring Boot 进程，消费发奖事件并执行重试/补偿。
+  与 Campaign 分离是为了隔离慢任务和失败模式；它不提供 HTTP 入口，只消费消息。
+  D7-03 建立运行骨架（进程 + Kafka 消费者）；发奖账本与幂等去重在 D7-04 实现。
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.prizeflux</groupId>
+        <artifactId>prizeflux-backend</artifactId>
+        <version>0.1.0-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+
+    <artifactId>prizeflux-worker</artifactId>
+    <packaging>jar</packaging>
+    <name>PrizeFlux Worker</name>
+
+    <dependencies>
+        <!-- Worker 只依赖 Contract（复用事件/错误契约），不依赖 Campaign。 -->
+        <dependency>
+            <groupId>com.prizeflux</groupId>
+            <artifactId>prizeflux-contract</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <!-- 提供 Spring 容器、日志等基础能力（不含内嵌 Web 服务器）。 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter</artifactId>
+        </dependency>
+
+        <!-- 消费发奖事件的 Kafka 客户端；版本由 Spring Boot Parent 统一管理。 -->
+        <dependency>
+            <groupId>org.springframework.kafka</groupId>
+            <artifactId>spring-kafka</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.kafka</groupId>
+            <artifactId>spring-kafka-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- D7-04 持久化幂等：用 JdbcTemplate 读写 Worker 自己的发奖账本 schema。 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-jdbc</artifactId>
+        </dependency>
+
+        <!-- 反序列化 PrizeFulfillmentEvent（含 Instant 的 JSR310 与 record 支持）。 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-json</artifactId>
+        </dependency>
+
+        <!-- Worker 用自己的 Flyway 历史维护发奖账本表；MySQL 支持自 Flyway 10 起独立成模块。 -->
+        <dependency>
+            <groupId>org.flywaydb</groupId>
+            <artifactId>flyway-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.flywaydb</groupId>
+            <artifactId>flyway-mysql</artifactId>
+        </dependency>
+
+        <!-- MySQL 驱动只在实际运行时需要，不作为领域代码的编译依赖。 -->
+        <dependency>
+            <groupId>com.mysql</groupId>
+            <artifactId>mysql-connector-j</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+
+        <!-- 供测试使用（WorkerContextTest 由 codex 补充）；不进入部署包。 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>mysql</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <!-- 让 Worker 也能以 Spring Boot 应用方式运行和打包；版本由 Boot Parent 管理。 -->
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+</project>

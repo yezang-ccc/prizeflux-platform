@@ -1,0 +1,16 @@
+# Campaign 服务的默认运行配置。
+# YAML 使用缩进表达层级；请保持两个空格缩进，避免 Tab 导致配置解析错误。
+spring:
+  application:
+    # 日志、部署和未来的链路追踪用这个名字识别当前服务。
+    name: prizeflux-campaign
+
+server:
+  # 当前服务独立运行在 8081；未来 Gateway 会保留常见的 8080 作为统一入口。
+  port: 8081
+
+prizeflux:
+  traffic:
+    draw-rate-limit:
+      # 流量治理在 local-full 或显式部署配置中启用；轻量开发/单测不依赖 Redis。
+      enabled: false

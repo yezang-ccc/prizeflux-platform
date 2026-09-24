@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.prizeflux.campaign.infrastructure.persistence.CampaignMapper">
+
+    <resultMap id="campaignRecordResultMap"
+               type="com.prizeflux.campaign.infrastructure.persistence.CampaignPersistenceRecord">
+        <constructor>
+            <idArg column="id" javaType="_long"/>
+            <arg column="name" javaType="java.lang.String"/>
+            <arg column="starts_at" javaType="java.time.Instant"/>
+            <arg column="ends_at" javaType="java.time.Instant"/>
+            <arg column="status" javaType="java.lang.String"/>
+        </constructor>
+    </resultMap>
+
+    <insert id="insert">
+        INSERT INTO campaign (id, name, starts_at, ends_at, status)
+        VALUES (#{record.id}, #{record.name}, #{record.startsAt}, #{record.endsAt}, #{record.status})
+    </insert>
+
+    <select id="findById" resultMap="campaignRecordResultMap">
+        SELECT id, name, starts_at, ends_at, status
+        FROM campaign
+        WHERE id = #{id}
+    </select>
+
+    <update id="updateStatus">
+        UPDATE campaign
+        SET status = #{targetStatus}
+        WHERE id = #{id}
+          AND status = #{expectedStatus}
+    </update>
+</mapper>

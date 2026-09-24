@@ -1,0 +1,14 @@
+# 快速测试默认不创建数据库基础设施，避免纯领域或 MVC 测试依赖本机 MySQL。
+# D2-04 的真实 MySQL 集成测试会以更高优先级属性清空此排除列表，
+# 再由 Testcontainers 动态提供一次性连接信息。
+spring:
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
+      - org.springframework.boot.autoconfigure.flyway.FlywayAutoConfiguration
+      - org.mybatis.spring.boot.autoconfigure.MybatisAutoConfiguration
+
+prizeflux:
+  persistence:
+    campaign:
+      enabled: false
