@@ -66,7 +66,7 @@ Set-Location ..
 
 ## 自动化验证与秘密边界
 
-仓库已准备 GitHub Actions 工作流，用于未来的后端构建、测试和秘密基线检查；截至当前提交，尚无 GitHub Actions 的远程运行记录。项目只会如实声明本机验证状态，直到对应提交获得远程 CI 证据。
+GitHub Actions 会在推送和 Pull Request 时执行 Maven 模块校验、后端测试与秘密基线扫描。请以[远程 Actions 记录](https://github.com/yezang-ccc/prizeflux-platform/actions)中对应提交的结果为准；本机验证与远程 CI 分开记录。CI 通过不等同于公网部署、生产压测或真实供应商验证。
 
 本地运行时配置应复制 `deploy/.env.example` 为被 Git 忽略的 `deploy/.env`；真实密码、Token、私钥和生产配置均不得提交、写入工作流或打入镜像。
 
