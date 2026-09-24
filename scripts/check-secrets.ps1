@@ -1,3 +1,4 @@
+warning: in the working copy of 'scripts/check-secrets.ps1', LF will be replaced by CRLF the next time Git touches it
 <#
     PrizeFlux 本地秘密基线检查。
 
@@ -66,13 +67,14 @@ foreach ($relativePath in $candidateFiles) {
     }
 
     $absolutePath = Join-Path $repositoryRoot $relativePath
-    if (-not (Test-Path -LiteralPath $absolutePath -PathType Leaf)) {
+    $file = [System.IO.FileInfo]::new($absolutePath)
+    $file.Refresh()
+    if (-not $file.Exists) {
         # Git 索引可能包含已删除但尚未提交的文件；此时没有可扫描内容，跳过即可。
         continue
     }
 
     # 二进制文件与过大的文件不适合按文本规则扫描；密钥文件会由文件名规则和 Git 忽略规则预防。
-    $file = Get-Item -LiteralPath $absolutePath
     if ($file.Length -gt 1MB) {
         continue
     }
