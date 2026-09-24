@@ -15,6 +15,7 @@ PrizeFlux 是一个 Java 17/Spring Boot 营销抽奖与 Agent Harness 学习项�
 ## 可复现证据
 
 - 全后端：在 `backend` 目录执行 `$env:JAVA_HOME='D:\java\jdk-17'; .\mvnw.cmd -q package`。2026-09-24 Surefire 汇总 42 套件、283 项，0 失败、0 错误、0 跳过，服务 JAR 均生成。
+- 远程 CI：私有仓库提交 `f43e878` 的 GitHub Actions run `36040575827` 成功，覆盖 Maven reactor 校验、后端测试和秘密基线扫描；[查看该次运行](https://github.com/yezang-ccc/prizeflux-platform/actions/runs/36040575827)。
 - 抽奖→发奖：仓库根目录执行 `scripts/smoke-draw-worker-cross-process.ps1 -JavaHome 'D:\java\jdk-17'`。使用隔离 MySQL/Kafka 和 Campaign/Worker 两个 JVM，验证 Outbox `SENT`、Worker `SUCCEEDED`、账本恰一行。
 - 失败恢复：同脚本增加 `-InjectTransientFulfillmentFailure`。2026-09-25 实际通过：单次中奖库存扣减正确，首次暂时失败后履约共尝试 2 次，Outbox `SENT`、Worker `SUCCEEDED`，人工审核任务 0、重复账本 0；仅本地模拟执行器，不连接真实供应商。
 - 本机基准与故障：参数、三轮配对中位数/范围、逐请求原始 JSON 和恢复证据见 [`docs/baseline/README.md`](../baseline/README.md)。正式小样本中 Redis 开关两组都有运行间波动，不声称其带来吞吐提升。
