@@ -53,3 +53,8 @@ python_version = "3.12"
 mypy_path = "src"
 strict = true
 plugins = ["pydantic.mypy"]
+
+# This CLI loads huggingface-hub only for the optional local-embedding extra.
+[[tool.mypy.overrides]]
+module = ["prizeflux_agent.knowledge_cli"]
+disable_error_code = ["import-not-found"]

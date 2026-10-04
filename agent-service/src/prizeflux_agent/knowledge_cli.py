@@ -175,6 +175,7 @@ def _prepare_local_model(confirm_download: bool, service_root: Path) -> int:
         )
         return 2
     try:
+        # Optional local-embedding extra; model downloads are disabled unless explicitly requested.
         from huggingface_hub import snapshot_download
     except ImportError:
         print("Model download unavailable: install the local-embedding extra.", file=sys.stderr)
