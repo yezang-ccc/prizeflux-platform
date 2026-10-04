@@ -1,31 +1,70 @@
-# PrizeFlux 简历与面试摘要（当前可证据范围）
+# PrizeFlux 简历项目与面试证据摘要
 
-## 一句话介绍
+## 2026-10-04 简历口径（候选，待今晚交付关口）
 
-PrizeFlux 是一个 Java 17/Spring Boot 营销抽奖与 Agent Harness 学习项目：抽奖主链用 MySQL 保证库存、业务次数、幂等结果和 Outbox 的事务一致性；Kafka 将中奖事件交给独立 Worker；自建 Java Harness 通过服务端授权的只读工具查询活动。
+PrizeFlux 只写为**一个项目**：Java 高并发抽奖是主线，Python Agent Harness 是受授权、只读的产品亮点，不拆成两个重复项目。第二个简历项目以后单独建设。本条目仍须以[今晚交付关口](../architecture/release-candidate-scope.md)的实测结果收口，未通过前不写“已发布”。
 
-## 可放入简历的项目描述
+当前 Python 已有 MySQL 会话/run、SSE/取消、授权工具及检索内核，不再是单 Java 进程内存会话。本地真实 active index 已构建、校验重启和权限隔离；但产品检索默认关闭，带鉴权 HTTP/浏览器与真实回答质量尚未验收。Kimi 多轮 adapter smoke 已通过，不能据此宣称产品页面真实模型闭环。当前基线不能写成生产容量或完整 RAG 产品；本轮证据见 [交付候选记录](../architecture/release-candidate-scope.md)。
 
-- 设计并实现活动抽奖核心链路，使用 MySQL 事务、条件库存扣减、用户活动次数和请求幂等记录，避免并发超卖及重放重复扣减；集成测试以 10 轮、每轮 8 个并发请求争抢 1 份库存，稳定得到 1 次中奖、7 次售罄，库存归零且 Outbox 只写入 1 条。
-- 实现 Redis Lua 固定窗口用户限流，限流身份取自服务端 JWT；通过两个独立限流器实例的 80 路并发验证共享窗口精确放行配置上限 17，Redis 故障时启用限流的请求安全失败。
-- 实现事务 Outbox→Kafka→独立 Worker 的异步发奖链路，以事件 ID 和中奖 ID 双唯一约束实现持久化幂等；Worker 使用 MySQL 租约、过期接管和令牌 fencing，瞬时失败有界退避，永久失败/耗尽转人工补偿审核队列。
-- 为受保护的抽奖 HTTP 链路建立本机并发基准和依赖故障演练：限流开/关各 3 轮、每轮 40 请求/10 并发；校验 HTTP 结果、库存、Outbox、Worker 账本。分别注入 MySQL、Redis、Kafka 中断，验证失败隔离及恢复；仅描述本机试验，不外推生产吞吐或 Redis 性能优势。
-- 构建轻量 Java Agent Harness，提供有界模型/工具循环、服务端角色授权、参数校验、只读 Campaign 查询、进程内 owner-scoped 多轮会话和上下文预算；Fake Model 与固定评测可离线复现。
+### 一条项目的简历候选稿（提交关口前勿写“已上线”）
+
+**PrizeFlux 活动抽奖平台｜Java 17、Spring Boot、MySQL、Redis、Kafka、Python Agent**
+
+个人项目（AI 辅助开发）。搭建用户参与、创作者提审、运营审核、抽奖与模拟发奖的一体化本地演示产品；Vue 3 是演示入口，不作为主要简历卖点。
+
+- 用 MySQL 事务、条件库存扣减、用户级请求幂等与同事务 Outbox 保证抽奖结果和事件记录一致；高峰请求通过独立 Kafka 队列、MySQL 租约/fencing 和恢复扫描异步开奖，Redis 只负责入口保护，不承担库存事实。
+- 将中奖事件交由 Kafka/独立 Worker 模拟履约，以事件和中奖 ID 去重、持久化重试与人工审核状态处理重复投递及失败；本机有并发、Kafka 停机恢复和多消费者 rebalance 证据，但不宣称生产容量或真实供应商交付。
+- 接入独立 Python Agent Harness：LangGraph 控制流、调用预算、服务端只读工具白名单、Campaign 身份委托和 MySQL 会话/run 持久化；Fake Model 的本地 HTTP 闭环已验，真实模型质量和网站 RAG 效果不写为完成。
+
+应聘 Java 后端岗位时重点讲事务/幂等、Outbox 与排队故障恢复；应聘 Agent 岗位时重点讲工具权限、受控执行与证据边界。同一个项目按岗位调整顺序，不复制成两段项目经历。写入简历前，本人仍须能独立画链路、复现实验并解释失败窗口。
+
+最新队列到达率实验、逐项调优依据、Agent 框架选型边界及面试追问见独立的[项目难点与面试深挖手册](prizeflux-project-deep-dive.md)。该手册区分探索短测、稳定复测和生产容量，不应把单轮本机结果直接写成线上承诺。
+
+以下正文是 **2026-09-25 Java Harness 版本的历史简历草稿和证据，不能直接复制到当前简历**。其中“仅 Java Harness”“内存会话”“真实模型未接入”等描述仅适用旧版本；历史 CI 也不覆盖新增的 Python/队列/UI 工作树。今晚关口通过后，将在本文件顶部整理一条正式的统一项目描述。
+
+## 项目定位
+
+PrizeFlux 是个人项目，在 AI 辅助下设计和实现，以高并发抽奖后端为业务主线，并包含轻量 Java Agent Harness 作为运营只读辅助模块。面向不同岗位时调整同一条项目经历的描述顺序，不拆成两条重复项目。项目来源、AI 辅助范围和作者责任见 [NOTICE.md](../../NOTICE.md)。
+
+代码实现不等于个人掌握。简历技能栏只写本人能够独立解释、运行和复现的技术；测试数据只说明对应测试和本机实验结果，不代表线上规模。
+
+## 统一简历项目条目
+
+**PrizeFlux 营销抽奖与 Java Agent 平台｜Java 17、Spring Boot 3.5、MySQL、Redis、Kafka**
+
+个人项目（AI 辅助开发），实现活动配置、身份认证、抽奖与异步发奖链路，并构建受控的 Java Agent Harness，提供授权的只读运营查询。Agent 不参与开奖、库存扣减或业务写入。
+
+- 针对并发抽奖的超卖与重复提交，使用 MySQL 事务、条件库存扣减、请求幂等键和同事务 Outbox。集成测试覆盖 10 轮、每轮 8 个并发请求争抢 1 份库存，每轮得到 1 次中奖、7 次售罄且只产生 1 条 Outbox 事件。
+- 使用 Redis Lua 实现基于已验证 JWT 身份的跨实例固定窗口限流。两个独立限流器实例处理 80 个并发请求时，配置上限为 17 的窗口恰好放行 17 次；Redis 故障时受保护入口返回 503。限流用于抗滥用，不承担库存或参与次数的最终正确性，也不据此宣称抽奖提速。
+- 针对数据库提交与消息发布之间的双写风险，构建 Outbox → Kafka → 独立 Worker 链路，并以事件 ID、中奖 ID 唯一约束和 Worker 租约实现幂等与故障恢复。本机独立进程演示一次暂时履约失败后重试成功，且没有重复账本或人工审核任务；履约执行器为模拟实现，不连接真实供应商。
+- 实现有轮数、工具次数和时间预算的 Agent Harness 控制循环；模型输出只能成为最终回答或固定类型的工具请求，由服务端工具白名单、角色检查和参数校验决定是否执行。Bearer 身份经 Campaign 服务校验后才可用于只读查询，并支持 owner-scoped 多轮会话、版本 CAS 与上下文预算；固定评测覆盖授权读取、越权写拒绝和工具次数上限，HTTP 并发测试验证同版本竞争时只追加一轮。
+
+投递 Java 后端岗位时优先介绍抽奖事务、Redis 限流和 Kafka 发奖链路；投递 Agent 岗位时优先介绍 Harness 控制循环、工具信任边界与评测。首版使用 Fake Model，评测验证控制流程和安全行为，不验证真实模型回答质量；会话只保存在单个 AI 进程内存，不是持久化或多实例会话。不要将“接入真实大模型”“RAG 效果”或“生产 Agent”写成已完成。
 
 ## 可复现证据
 
-- 全后端：在 `backend` 目录执行 `$env:JAVA_HOME='D:\java\jdk-17'; .\mvnw.cmd -q package`。2026-09-24 Surefire 汇总 42 套件、283 项，0 失败、0 错误、0 跳过，服务 JAR 均生成。
-- 远程 CI：私有仓库提交 `f43e878` 的 GitHub Actions run `36040575827` 成功，覆盖 Maven reactor 校验、后端测试和秘密基线扫描；[查看该次运行](https://github.com/yezang-ccc/prizeflux-platform/actions/runs/36040575827)。
-- 抽奖→发奖：仓库根目录执行 `scripts/smoke-draw-worker-cross-process.ps1 -JavaHome 'D:\java\jdk-17'`。使用隔离 MySQL/Kafka 和 Campaign/Worker 两个 JVM，验证 Outbox `SENT`、Worker `SUCCEEDED`、账本恰一行。
-- 失败恢复：同脚本增加 `-InjectTransientFulfillmentFailure`。2026-09-25 实际通过：单次中奖库存扣减正确，首次暂时失败后履约共尝试 2 次，Outbox `SENT`、Worker `SUCCEEDED`，人工审核任务 0、重复账本 0；仅本地模拟执行器，不连接真实供应商。
-- 本机基准与故障：参数、三轮配对中位数/范围、逐请求原始 JSON 和恢复证据见 [`docs/baseline/README.md`](../baseline/README.md)。正式小样本中 Redis 开关两组都有运行间波动，不声称其带来吞吐提升。
-- AI→Campaign：`scripts/smoke-ai-campaign-cross-process.ps1`，验证真实 Campaign JWT 与只读活动查询；模型明确是 Fake Model。
-- 本地模拟发奖不会交付真实权益；没有真实模型、公网部署或生产集群证据。简历面试中应区分小规模本机基准、并发正确性测试和生产容量结论。
+| 能力 | 当前证据 | 结论边界 |
+| --- | --- | --- |
+| 后端集中回归 | 2026-09-24 整仓 `package`：42 套件、283 项测试，0 失败、0 错误、0 跳过 | 这是最近一次完整后端回归；后续模块测试不能直接累加成新的全后端数量 |
+| 远程 CI | 私有仓库提交 `1c6088f1cc90e439924cebcba8bb572c072c1f91` 对应 GitHub Actions run `36041312798` 成功 | 覆盖 Maven 校验、后端测试和秘密基线扫描；不代表公开部署 |
+| 抽奖并发正确性 | `scripts/smoke-draw-worker-cross-process.ps1` 与 `docs/baseline/README.md` | 并发不变量与本机吞吐是两类不同证据；三轮小样本不代表生产 QPS |
+| Kafka 发奖恢复 | 同一脚本使用 `-InjectTransientFulfillmentFailure` | 验证本机 Kafka、独立 JVM 和模拟履约适配器，不证明真实供应商交付 |
+| Harness 离线评测 | `docs/learning/harness-demo.md` 与 `HarnessDemo --eval` | 固定流程断言，不是自然语言质量或真实模型评测 |
+| Harness HTTP 并发 | 2026-09-25 本地定向回归：Contract 47 项、AI 53 项，共 100 项通过 | 覆盖 HTTP 会话同版本 CAS 竞态；该轮包含未提交的本地测试改动，不属于上面的完整回归或远程 CI |
+
+Redis 限流开关各 3 轮的本机基准、逐请求 JSON 和 MySQL/Redis/Kafka 故障恢复记录见 [流量与故障基线](../baseline/README.md)。数据未显示稳定的 Redis 性能优势，因此不写“Redis 让抽奖提速”。
+
+## 简历发布前检查
+
+当前 GitHub 仓库保持 private。面试官无法直接打开私有仓库；在简历附源码链接前，需要本人决定是否公开经过清理的版本或准备可分享的代码副本。本文件不会改变仓库可见性。
+
+真实模型、真实供应商履约、完整 Vue 页面和公网部署不在当前聚焦版交付范围。只有获得对应环境和实际验证证据后，才能将这些内容加入项目经历。`NOTICE.md` 说明了 AI 辅助开发边界，面试时应如实说明。
 
 ## 面试讲解顺序
 
-1. 先画抽奖事务：认证 Actor → 幂等占位 → 活动/次数检查 → 随机选择 → 条件扣库存 → 结果与 Outbox 同事务提交。
-2. 再解释 Outbox 为什么避免 MySQL/Kafka 双写不一致，以及消费者至少一次投递下如何用唯一键、租约和 fencing 防重与恢复。
-3. 最后讲 Harness 的信任边界：模型只选择固定工具；身份由 HTTP 宿主验证并注入；工具白名单和资源权限在服务端执行，模型不接触写操作。
+1. 画出抽奖事务：认证 Actor → 幂等占位 → 活动与次数检查 → 随机选择 → 条件扣库存 → 结果与 Outbox 同事务提交。
+2. 解释 Redis 固定窗口脚本为何把计数和设置过期时间放在一次原子执行中，以及固定窗口的边界突发和 Redis 故障行为。
+3. 解释 Outbox 如何处理数据库提交与 Kafka 发布之间的双写风险，再说明重复投递、Worker 幂等、租约接管和 fencing。
+4. 说明 Harness 如何把不可信模型输出限制为固定工具请求，以及服务端如何校验角色、参数和会话 owner。
 
-不要把本摘要里的测试规模描述成线上 QPS，也不要声称 Worker 已接入真实供应商或 Agent 已使用真实大模型。
+不要把本机实验描述成生产经验，也不要把项目代码已实现描述成学习者已掌握。

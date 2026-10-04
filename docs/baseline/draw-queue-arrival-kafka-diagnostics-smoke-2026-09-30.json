@@ -1,0 +1,2051 @@
+{
+  "Result": "PASS",
+  "Scenario": "Open-model constant arrival rate for the asynchronous draw queue",
+  "Environment": {
+    "OS": "Microsoft Windows NT 10.0.26200.0",
+    "PowerShell": "7.6.5",
+    "JavaHome": "D:/java/jdk-17",
+    "JavaVersion": "java version \"17.0.12\" 2024-07-16 LTS\r\nJava(TM) SE Runtime Environment (build 17.0.12+8-LTS-286)\r\nJava HotSpot(TM) 64-Bit Server VM (build 17.0.12+8-LTS-286, mixed mode, sharing)",
+    "K6Version": "k6.exe v2.3.0 (commit/e088784614, go1.26.8, windows/amd64)",
+    "ProcessorCount": 12,
+    "DockerEngine": "29.8.0",
+    "MySqlImage": "mysql:8.4",
+    "RedisImage": "redis:7.4-alpine",
+    "Broker": "Disposable single-node Kafka 3.9.1",
+    "FulfillmentMode": "SIMULATED",
+    "LoadGeneratorAndServicesOnSameHost": true
+  },
+  "Configuration": {
+    "MeasuredRatePerSecond": 1,
+    "MeasuredDurationSeconds": 10,
+    "PlannedMeasuredRequests": 10,
+    "WarmupRatePerSecond": 1,
+    "WarmupDurationSeconds": 30,
+    "PlannedWarmupRequests": 30,
+    "AllowedK6BoundaryIterationPerPhase": 1,
+    "AdditionalTestQuotaForBoundaryIterations": 2,
+    "Users": 1,
+    "Campaigns": 1,
+    "PrizeStock": 1,
+    "QueueConsumerInstances": 1,
+    "QueueConsumerConcurrencyPerInstance": 4,
+    "QueueConsumerGeneration": 4,
+    "CampaignHikariMaximumPoolSize": 10,
+    "QueueTopicPartitions": 12,
+    "QueueConsumerStayedOnlineDuringLoad": true,
+    "OutboxRelayBatchSize": 50,
+    "OutboxRelayFixedDelaySeconds": 1,
+    "PeriodicRecoveryScanDelayed": true,
+    "PersistentVolumes": false
+  },
+  "Metrics": {
+    "K6ExitCode": 0,
+    "MeasuredRequestsAttempted": 11,
+    "MeasuredRequestsAccepted": 11,
+    "WarmupRequestsAttempted": 31,
+    "WarmupRequestsAccepted": 31,
+    "ProtectedCapacityRejections": 0,
+    "UnexpectedResponses": 0,
+    "ClientErrors": 0,
+    "ServerErrors": 0,
+    "TransportErrors": 0,
+    "GeneratorDroppedIterations": 0,
+    "ActualAttemptRatePerSecond": 1.1,
+    "AcceptedRate": 1.0,
+    "UnexpectedErrorRate": 0.0,
+    "AdmissionP95Ms": 51.5623,
+    "AdmissionP99Ms": 61.824780000000004,
+    "TerminalLatencySampleCount": 42,
+    "AcceptedToTerminalP50Ms": 645.68,
+    "AcceptedToTerminalP95Ms": 1226.87,
+    "DrainAfterK6ExitMs": 438.33,
+    "OldestActiveQueueAgeSamples": [
+      {
+        "ElapsedSeconds": 5.4,
+        "PendingActiveRequests": 0,
+        "OldestActiveItemSeconds": 0
+      },
+      {
+        "ElapsedSeconds": 15.7,
+        "PendingActiveRequests": 1,
+        "OldestActiveItemSeconds": 0
+      },
+      {
+        "ElapsedSeconds": 24.2,
+        "PendingActiveRequests": 0,
+        "OldestActiveItemSeconds": 0
+      },
+      {
+        "ElapsedSeconds": 31.1,
+        "PendingActiveRequests": 1,
+        "OldestActiveItemSeconds": 0
+      },
+      {
+        "ElapsedSeconds": 39.0,
+        "PendingActiveRequests": 1,
+        "OldestActiveItemSeconds": 0
+      },
+      {
+        "ElapsedSeconds": 45.0,
+        "PendingActiveRequests": 0,
+        "OldestActiveItemSeconds": 0
+      }
+    ],
+    "ContainerResourceSamples": [
+      {
+        "ElapsedSeconds": 15.2,
+        "Containers": [
+          {
+            "Container": "pfx-campaign-3092178b56",
+            "CpuPercent": "6.45%",
+            "MemoryUsage": "458.1MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 5.86
+          },
+          {
+            "Container": "pfx-worker-3092178b56",
+            "CpuPercent": "1.69%",
+            "MemoryUsage": "448.6MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 5.74
+          },
+          {
+            "Container": "pfx-kafka-3092178b56",
+            "CpuPercent": "3.88%",
+            "MemoryUsage": "421.9MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 5.4
+          },
+          {
+            "Container": "pfx-redis-3092178b56",
+            "CpuPercent": "0.44%",
+            "MemoryUsage": "5.402MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 0.07
+          }
+        ]
+      },
+      {
+        "ElapsedSeconds": 23.7,
+        "Containers": [
+          {
+            "Container": "pfx-campaign-3092178b56",
+            "CpuPercent": "3.74%",
+            "MemoryUsage": "459.4MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 5.88
+          },
+          {
+            "Container": "pfx-worker-3092178b56",
+            "CpuPercent": "1.35%",
+            "MemoryUsage": "448.6MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 5.74
+          },
+          {
+            "Container": "pfx-kafka-3092178b56",
+            "CpuPercent": "4.68%",
+            "MemoryUsage": "424.9MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 5.44
+          },
+          {
+            "Container": "pfx-redis-3092178b56",
+            "CpuPercent": "0.36%",
+            "MemoryUsage": "5.383MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 0.07
+          }
+        ]
+      },
+      {
+        "ElapsedSeconds": 30.6,
+        "Containers": [
+          {
+            "Container": "pfx-campaign-3092178b56",
+            "CpuPercent": "3.97%",
+            "MemoryUsage": "460.1MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 5.89
+          },
+          {
+            "Container": "pfx-worker-3092178b56",
+            "CpuPercent": "1.36%",
+            "MemoryUsage": "448.6MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 5.74
+          },
+          {
+            "Container": "pfx-kafka-3092178b56",
+            "CpuPercent": "3.06%",
+            "MemoryUsage": "427.9MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 5.48
+          },
+          {
+            "Container": "pfx-redis-3092178b56",
+            "CpuPercent": "0.32%",
+            "MemoryUsage": "5.367MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 0.07
+          }
+        ]
+      },
+      {
+        "ElapsedSeconds": 38.5,
+        "Containers": [
+          {
+            "Container": "pfx-campaign-3092178b56",
+            "CpuPercent": "3.68%",
+            "MemoryUsage": "459.8MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 5.89
+          },
+          {
+            "Container": "pfx-worker-3092178b56",
+            "CpuPercent": "1.02%",
+            "MemoryUsage": "448.5MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 5.74
+          },
+          {
+            "Container": "pfx-kafka-3092178b56",
+            "CpuPercent": "4.35%",
+            "MemoryUsage": "430.5MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 5.51
+          },
+          {
+            "Container": "pfx-redis-3092178b56",
+            "CpuPercent": "0.37%",
+            "MemoryUsage": "5.359MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 0.07
+          }
+        ]
+      },
+      {
+        "ElapsedSeconds": 44.5,
+        "Containers": [
+          {
+            "Container": "pfx-campaign-3092178b56",
+            "CpuPercent": "2.52%",
+            "MemoryUsage": "460.5MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 5.9
+          },
+          {
+            "Container": "pfx-worker-3092178b56",
+            "CpuPercent": "0.79%",
+            "MemoryUsage": "448.3MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 5.74
+          },
+          {
+            "Container": "pfx-kafka-3092178b56",
+            "CpuPercent": "3.36%",
+            "MemoryUsage": "432.8MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 5.54
+          },
+          {
+            "Container": "pfx-redis-3092178b56",
+            "CpuPercent": "0.33%",
+            "MemoryUsage": "5.359MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 0.07
+          }
+        ]
+      },
+      {
+        "ElapsedSeconds": 50.3,
+        "Containers": [
+          {
+            "Container": "pfx-campaign-3092178b56",
+            "CpuPercent": "0.89%",
+            "MemoryUsage": "460.5MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 5.9
+          },
+          {
+            "Container": "pfx-worker-3092178b56",
+            "CpuPercent": "1.17%",
+            "MemoryUsage": "448.3MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 5.74
+          },
+          {
+            "Container": "pfx-kafka-3092178b56",
+            "CpuPercent": "3.29%",
+            "MemoryUsage": "434.9MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 5.57
+          },
+          {
+            "Container": "pfx-redis-3092178b56",
+            "CpuPercent": "0.34%",
+            "MemoryUsage": "5.34MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 0.07
+          }
+        ]
+      }
+    ],
+    "HostProcessCpuSamples": [
+      {
+        "ElapsedSeconds": 12.8,
+        "CampaignJvmCpuPercentOfOneCore": null,
+        "WorkerJvmCpuPercentOfOneCore": null
+      },
+      {
+        "ElapsedSeconds": 21.5,
+        "CampaignJvmCpuPercentOfOneCore": 10.61,
+        "WorkerJvmCpuPercentOfOneCore": 1.98
+      },
+      {
+        "ElapsedSeconds": 28.4,
+        "CampaignJvmCpuPercentOfOneCore": 10.05,
+        "WorkerJvmCpuPercentOfOneCore": 2.97
+      },
+      {
+        "ElapsedSeconds": 36.3,
+        "CampaignJvmCpuPercentOfOneCore": 6.1,
+        "WorkerJvmCpuPercentOfOneCore": 2.36
+      },
+      {
+        "ElapsedSeconds": 42.4,
+        "CampaignJvmCpuPercentOfOneCore": 12.14,
+        "WorkerJvmCpuPercentOfOneCore": 1.81
+      },
+      {
+        "ElapsedSeconds": 48.1,
+        "CampaignJvmCpuPercentOfOneCore": 8.99,
+        "WorkerJvmCpuPercentOfOneCore": 1.63
+      }
+    ],
+    "CampaignRuntimeMetricSamples": [
+      {
+        "ElapsedSeconds": 5.5,
+        "SampleStatus": "OK",
+        "HikariActiveConnections": 0.0,
+        "HikariIdleConnections": 10.0,
+        "HikariPendingConnections": 0.0,
+        "HikariMaximumConnections": 10.0,
+        "MySqlLockWaitRelationships": 0.0,
+        "MySqlLockSampleLastSuccessEpochSeconds": 1790764980.0,
+        "MySqlLockSampleFailures": 0.0,
+        "QueueProcessingCountByOutcome": {
+          "completed": 6.0,
+          "rejected": null,
+          "retry_scheduled": null,
+          "manual_review": null,
+          "already_terminal": null,
+          "claimed_elsewhere": null,
+          "claim_lost": null,
+          "failed": null
+        },
+        "QueueProcessingTimerCountByOutcome": {
+          "completed": 6.0,
+          "rejected": null,
+          "retry_scheduled": null,
+          "manual_review": null,
+          "already_terminal": null,
+          "claimed_elsewhere": null,
+          "claim_lost": null,
+          "failed": null
+        },
+        "QueueProcessingTimerSecondsByOutcome": {
+          "completed": 1.5160557,
+          "rejected": null,
+          "retry_scheduled": null,
+          "manual_review": null,
+          "already_terminal": null,
+          "claimed_elsewhere": null,
+          "claim_lost": null,
+          "failed": null
+        },
+        "DrawTransactionCountByOutcome": {
+          "committed": 6.0,
+          "rolled_back": null
+        },
+        "DrawTransactionTimerCountByOutcome": {
+          "committed": 6.0,
+          "rolled_back": null
+        },
+        "DrawTransactionTimerSecondsByOutcome": {
+          "committed": 0.8217944,
+          "rolled_back": null
+        },
+        "DrawDatabaseSegmentTimerCount": {
+          "config_lock_and_load.success": 6.0,
+          "config_lock_and_load.failure": null,
+          "idempotency_insert.success": 6.0,
+          "idempotency_insert.failure": null,
+          "quota_update.success": 6.0,
+          "quota_update.failure": null,
+          "inventory_decrement.success": 6.0,
+          "inventory_decrement.failure": null,
+          "result_insert.success": 6.0,
+          "result_insert.failure": null,
+          "outbox_insert.success": 1.0,
+          "outbox_insert.failure": null,
+          "request_complete.success": 6.0,
+          "request_complete.failure": null
+        },
+        "DrawDatabaseSegmentTimerSeconds": {
+          "config_lock_and_load.success": 0.1371149,
+          "config_lock_and_load.failure": null,
+          "idempotency_insert.success": 0.0675509,
+          "idempotency_insert.failure": null,
+          "quota_update.success": 0.1014573,
+          "quota_update.failure": null,
+          "inventory_decrement.success": 0.1029549,
+          "inventory_decrement.failure": null,
+          "result_insert.success": 0.0661114,
+          "result_insert.failure": null,
+          "outbox_insert.success": 0.0384649,
+          "outbox_insert.failure": null,
+          "request_complete.success": 0.0690527,
+          "request_complete.failure": null
+        },
+        "OutboxPublishTimerCountByOutcome": {
+          "sent": 7.0,
+          "retry_scheduled": null,
+          "dead_lettered": null,
+          "claim_lost": null
+        },
+        "OutboxPublishTimerSecondsByOutcome": {
+          "sent": 1.1641039,
+          "retry_scheduled": null,
+          "dead_lettered": null,
+          "claim_lost": null
+        },
+        "OutboxCreateToConfirmTimerCount": 7.0,
+        "OutboxCreateToConfirmTimerSeconds": 5.3925202,
+        "KafkaPublishStageTimerCount": {
+          "draw_queue.enqueue.success": 6.0,
+          "draw_queue.enqueue.failure": null,
+          "draw_queue.broker_ack_wait.success": 6.0,
+          "draw_queue.broker_ack_wait.failure": null,
+          "fulfillment.enqueue.success": 1.0,
+          "fulfillment.enqueue.failure": null,
+          "fulfillment.broker_ack_wait.success": 1.0,
+          "fulfillment.broker_ack_wait.failure": null
+        },
+        "KafkaPublishStageTimerSeconds": {
+          "draw_queue.enqueue.success": 0.846639,
+          "draw_queue.enqueue.failure": null,
+          "draw_queue.broker_ack_wait.success": 0.1241267,
+          "draw_queue.broker_ack_wait.failure": null,
+          "fulfillment.enqueue.success": 0.0078818,
+          "fulfillment.enqueue.failure": null,
+          "fulfillment.broker_ack_wait.success": 0.0088948,
+          "fulfillment.broker_ack_wait.failure": null
+        },
+        "KafkaConsumerMetrics": {
+          "kafka_consumer_coordinator_commit_latency_avg": [
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-1\",kafka_version=\"3.9.2\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-1\"",
+              "Value": 6.0,
+              "IsFinite": true
+            },
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-2\",kafka_version=\"3.9.2\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-2\"",
+              "Value": 30.0,
+              "IsFinite": true
+            },
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-3\",kafka_version=\"3.9.2\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-3\"",
+              "Value": 22.0,
+              "IsFinite": true
+            },
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-4\",kafka_version=\"3.9.2\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-4\"",
+              "Value": 7.5,
+              "IsFinite": true
+            }
+          ],
+          "kafka_consumer_coordinator_commit_latency_max": [
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-1\",kafka_version=\"3.9.2\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-1\"",
+              "Value": 6.0,
+              "IsFinite": true
+            },
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-2\",kafka_version=\"3.9.2\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-2\"",
+              "Value": 30.0,
+              "IsFinite": true
+            },
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-3\",kafka_version=\"3.9.2\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-3\"",
+              "Value": 31.0,
+              "IsFinite": true
+            },
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-4\",kafka_version=\"3.9.2\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-4\"",
+              "Value": 11.0,
+              "IsFinite": true
+            }
+          ],
+          "kafka_consumer_coordinator_commit_total": [
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-1\",kafka_version=\"3.9.2\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-1\"",
+              "Value": 1.0,
+              "IsFinite": true
+            },
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-2\",kafka_version=\"3.9.2\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-2\"",
+              "Value": 1.0,
+              "IsFinite": true
+            },
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-3\",kafka_version=\"3.9.2\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-3\"",
+              "Value": 2.0,
+              "IsFinite": true
+            },
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-4\",kafka_version=\"3.9.2\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-4\"",
+              "Value": 2.0,
+              "IsFinite": true
+            }
+          ],
+          "kafka_consumer_coordinator_commit_rate": [
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-1\",kafka_version=\"3.9.2\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-1\"",
+              "Value": 0.03281270507940675,
+              "IsFinite": true
+            },
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-2\",kafka_version=\"3.9.2\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-2\"",
+              "Value": 0.03282778543759438,
+              "IsFinite": true
+            },
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-3\",kafka_version=\"3.9.2\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-3\"",
+              "Value": 0.0656943896991197,
+              "IsFinite": true
+            },
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-4\",kafka_version=\"3.9.2\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-4\"",
+              "Value": 0.06571381632988336,
+              "IsFinite": true
+            }
+          ],
+          "kafka_consumer_coordinator_assigned_partitions": [
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-1\",kafka_version=\"3.9.2\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-1\"",
+              "Value": 3.0,
+              "IsFinite": true
+            },
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-2\",kafka_version=\"3.9.2\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-2\"",
+              "Value": 3.0,
+              "IsFinite": true
+            },
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-3\",kafka_version=\"3.9.2\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-3\"",
+              "Value": 3.0,
+              "IsFinite": true
+            },
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-4\",kafka_version=\"3.9.2\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-4\"",
+              "Value": 3.0,
+              "IsFinite": true
+            }
+          ],
+          "kafka_consumer_fetch_manager_records_lag_max": [
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-1\",kafka_version=\"3.9.2\",partition=\"0\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-1\",topic=\"prizeflux_draw_queued\"",
+              "Value": null,
+              "IsFinite": false
+            },
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-1\",kafka_version=\"3.9.2\",partition=\"1\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-1\",topic=\"prizeflux_draw_queued\"",
+              "Value": 0.0,
+              "IsFinite": true
+            },
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-1\",kafka_version=\"3.9.2\",partition=\"2\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-1\",topic=\"prizeflux_draw_queued\"",
+              "Value": null,
+              "IsFinite": false
+            },
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-2\",kafka_version=\"3.9.2\",partition=\"6\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-2\",topic=\"prizeflux_draw_queued\"",
+              "Value": null,
+              "IsFinite": false
+            },
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-2\",kafka_version=\"3.9.2\",partition=\"7\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-2\",topic=\"prizeflux_draw_queued\"",
+              "Value": null,
+              "IsFinite": false
+            },
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-3\",kafka_version=\"3.9.2\",partition=\"8\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-3\",topic=\"prizeflux_draw_queued\"",
+              "Value": 0.0,
+              "IsFinite": true
+            },
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-3\",kafka_version=\"3.9.2\",partition=\"9\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-3\",topic=\"prizeflux_draw_queued\"",
+              "Value": null,
+              "IsFinite": false
+            },
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-4\",kafka_version=\"3.9.2\",partition=\"10\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-4\",topic=\"prizeflux_draw_queued\"",
+              "Value": 0.0,
+              "IsFinite": true
+            },
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-4\",kafka_version=\"3.9.2\",partition=\"11\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-4\",topic=\"prizeflux_draw_queued\"",
+              "Value": 0.0,
+              "IsFinite": true
+            }
+          ]
+        },
+        "DrawQueueKafkaConsumerLag": 0.0,
+        "DrawQueueKafkaLagLastSuccessEpochSeconds": 1790764977.0,
+        "DrawQueueKafkaLagSampleFailures": 0.0,
+        "FailureType": null
+      },
+      {
+        "ElapsedSeconds": 15.7,
+        "SampleStatus": "OK",
+        "HikariActiveConnections": 0.0,
+        "HikariIdleConnections": 10.0,
+        "HikariPendingConnections": 0.0,
+        "HikariMaximumConnections": 10.0,
+        "MySqlLockWaitRelationships": 0.0,
+        "MySqlLockSampleLastSuccessEpochSeconds": 1790764990.0,
+        "MySqlLockSampleFailures": 0.0,
+        "QueueProcessingCountByOutcome": {
+          "completed": 15.0,
+          "rejected": null,
+          "retry_scheduled": null,
+          "manual_review": null,
+          "already_terminal": null,
+          "claimed_elsewhere": null,
+          "claim_lost": null,
+          "failed": null
+        },
+        "QueueProcessingTimerCountByOutcome": {
+          "completed": 15.0,
+          "rejected": null,
+          "retry_scheduled": null,
+          "manual_review": null,
+          "already_terminal": null,
+          "claimed_elsewhere": null,
+          "claim_lost": null,
+          "failed": null
+        },
+        "QueueProcessingTimerSecondsByOutcome": {
+          "completed": 2.8526525,
+          "rejected": null,
+          "retry_scheduled": null,
+          "manual_review": null,
+          "already_terminal": null,
+          "claimed_elsewhere": null,
+          "claim_lost": null,
+          "failed": null
+        },
+        "DrawTransactionCountByOutcome": {
+          "committed": 15.0,
+          "rolled_back": null
+        },
+        "DrawTransactionTimerCountByOutcome": {
+          "committed": 15.0,
+          "rolled_back": null
+        },
+        "DrawTransactionTimerSecondsByOutcome": {
+          "committed": 1.5172611,
+          "rolled_back": null
+        },
+        "DrawDatabaseSegmentTimerCount": {
+          "config_lock_and_load.success": 15.0,
+          "config_lock_and_load.failure": null,
+          "idempotency_insert.success": 15.0,
+          "idempotency_insert.failure": null,
+          "quota_update.success": 15.0,
+          "quota_update.failure": null,
+          "inventory_decrement.success": 15.0,
+          "inventory_decrement.failure": null,
+          "result_insert.success": 15.0,
+          "result_insert.failure": null,
+          "outbox_insert.success": 1.0,
+          "outbox_insert.failure": null,
+          "request_complete.success": 15.0,
+          "request_complete.failure": null
+        },
+        "DrawDatabaseSegmentTimerSeconds": {
+          "config_lock_and_load.success": 0.2549426,
+          "config_lock_and_load.failure": null,
+          "idempotency_insert.success": 0.1227333,
+          "idempotency_insert.failure": null,
+          "quota_update.success": 0.2180601,
+          "quota_update.failure": null,
+          "inventory_decrement.success": 0.1886959,
+          "inventory_decrement.failure": null,
+          "result_insert.success": 0.1321133,
+          "result_insert.failure": null,
+          "outbox_insert.success": 0.0384649,
+          "outbox_insert.failure": null,
+          "request_complete.success": 0.1207703,
+          "request_complete.failure": null
+        },
+        "OutboxPublishTimerCountByOutcome": {
+          "sent": 16.0,
+          "retry_scheduled": null,
+          "dead_lettered": null,
+          "claim_lost": null
+        },
+        "OutboxPublishTimerSecondsByOutcome": {
+          "sent": 1.3681905,
+          "retry_scheduled": null,
+          "dead_lettered": null,
+          "claim_lost": null
+        },
+        "OutboxCreateToConfirmTimerCount": 16.0,
+        "OutboxCreateToConfirmTimerSeconds": 11.214709,
+        "KafkaPublishStageTimerCount": {
+          "draw_queue.enqueue.success": 15.0,
+          "draw_queue.enqueue.failure": null,
+          "draw_queue.broker_ack_wait.success": 15.0,
+          "draw_queue.broker_ack_wait.failure": null,
+          "fulfillment.enqueue.success": 1.0,
+          "fulfillment.enqueue.failure": null,
+          "fulfillment.broker_ack_wait.success": 1.0,
+          "fulfillment.broker_ack_wait.failure": null
+        },
+        "KafkaPublishStageTimerSeconds": {
+          "draw_queue.enqueue.success": 0.8485899,
+          "draw_queue.enqueue.failure": null,
+          "draw_queue.broker_ack_wait.success": 0.1898009,
+          "draw_queue.broker_ack_wait.failure": null,
+          "fulfillment.enqueue.success": 0.0078818,
+          "fulfillment.enqueue.failure": null,
+          "fulfillment.broker_ack_wait.success": 0.0088948,
+          "fulfillment.broker_ack_wait.failure": null
+        },
+        "KafkaConsumerMetrics": {
+          "kafka_consumer_coordinator_commit_latency_avg": [
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-1\",kafka_version=\"3.9.2\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-1\"",
+              "Value": 5.0,
+              "IsFinite": true
+            },
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-2\",kafka_version=\"3.9.2\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-2\"",
+              "Value": 17.0,
+              "IsFinite": true
+            },
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-3\",kafka_version=\"3.9.2\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-3\"",
+              "Value": 13.0,
+              "IsFinite": true
+            },
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-4\",kafka_version=\"3.9.2\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-4\"",
+              "Value": 7.2,
+              "IsFinite": true
+            }
+          ],
+          "kafka_consumer_coordinator_commit_latency_max": [
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-1\",kafka_version=\"3.9.2\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-1\"",
+              "Value": 6.0,
+              "IsFinite": true
+            },
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-2\",kafka_version=\"3.9.2\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-2\"",
+              "Value": 30.0,
+              "IsFinite": true
+            },
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-3\",kafka_version=\"3.9.2\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-3\"",
+              "Value": 31.0,
+              "IsFinite": true
+            },
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-4\",kafka_version=\"3.9.2\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-4\"",
+              "Value": 11.0,
+              "IsFinite": true
+            }
+          ],
+          "kafka_consumer_coordinator_commit_total": [
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-1\",kafka_version=\"3.9.2\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-1\"",
+              "Value": 2.0,
+              "IsFinite": true
+            },
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-2\",kafka_version=\"3.9.2\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-2\"",
+              "Value": 3.0,
+              "IsFinite": true
+            },
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-3\",kafka_version=\"3.9.2\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-3\"",
+              "Value": 5.0,
+              "IsFinite": true
+            },
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-4\",kafka_version=\"3.9.2\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-4\"",
+              "Value": 5.0,
+              "IsFinite": true
+            }
+          ],
+          "kafka_consumer_coordinator_commit_rate": [
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-1\",kafka_version=\"3.9.2\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-1\"",
+              "Value": 0.05191299382235373,
+              "IsFinite": true
+            },
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-2\",kafka_version=\"3.9.2\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-2\"",
+              "Value": 0.07789779808890736,
+              "IsFinite": true
+            },
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-3\",kafka_version=\"3.9.2\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-3\"",
+              "Value": 0.12988699831146902,
+              "IsFinite": true
+            },
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-4\",kafka_version=\"3.9.2\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-4\"",
+              "Value": 0.12991737255105754,
+              "IsFinite": true
+            }
+          ],
+          "kafka_consumer_coordinator_assigned_partitions": [
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-1\",kafka_version=\"3.9.2\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-1\"",
+              "Value": 3.0,
+              "IsFinite": true
+            },
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-2\",kafka_version=\"3.9.2\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-2\"",
+              "Value": 3.0,
+              "IsFinite": true
+            },
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-3\",kafka_version=\"3.9.2\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-3\"",
+              "Value": 3.0,
+              "IsFinite": true
+            },
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-4\",kafka_version=\"3.9.2\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-4\"",
+              "Value": 3.0,
+              "IsFinite": true
+            }
+          ],
+          "kafka_consumer_fetch_manager_records_lag_max": [
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-1\",kafka_version=\"3.9.2\",partition=\"0\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-1\",topic=\"prizeflux_draw_queued\"",
+              "Value": 0.0,
+              "IsFinite": true
+            },
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-1\",kafka_version=\"3.9.2\",partition=\"1\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-1\",topic=\"prizeflux_draw_queued\"",
+              "Value": 0.0,
+              "IsFinite": true
+            },
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-1\",kafka_version=\"3.9.2\",partition=\"2\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-1\",topic=\"prizeflux_draw_queued\"",
+              "Value": null,
+              "IsFinite": false
+            },
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-2\",kafka_version=\"3.9.2\",partition=\"6\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-2\",topic=\"prizeflux_draw_queued\"",
+              "Value": null,
+              "IsFinite": false
+            },
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-2\",kafka_version=\"3.9.2\",partition=\"7\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-2\",topic=\"prizeflux_draw_queued\"",
+              "Value": null,
+              "IsFinite": false
+            },
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-3\",kafka_version=\"3.9.2\",partition=\"8\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-3\",topic=\"prizeflux_draw_queued\"",
+              "Value": 0.0,
+              "IsFinite": true
+            },
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-3\",kafka_version=\"3.9.2\",partition=\"9\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-3\",topic=\"prizeflux_draw_queued\"",
+              "Value": null,
+              "IsFinite": false
+            },
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-4\",kafka_version=\"3.9.2\",partition=\"10\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-4\",topic=\"prizeflux_draw_queued\"",
+              "Value": 0.0,
+              "IsFinite": true
+            },
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-4\",kafka_version=\"3.9.2\",partition=\"11\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-4\",topic=\"prizeflux_draw_queued\"",
+              "Value": 0.0,
+              "IsFinite": true
+            }
+          ]
+        },
+        "DrawQueueKafkaConsumerLag": 0.0,
+        "DrawQueueKafkaLagLastSuccessEpochSeconds": 1790764987.0,
+        "DrawQueueKafkaLagSampleFailures": 0.0,
+        "FailureType": null
+      },
+      {
+        "ElapsedSeconds": 24.2,
+        "SampleStatus": "OK",
+        "HikariActiveConnections": 1.0,
+        "HikariIdleConnections": 9.0,
+        "HikariPendingConnections": 0.0,
+        "HikariMaximumConnections": 10.0,
+        "MySqlLockWaitRelationships": 0.0,
+        "MySqlLockSampleLastSuccessEpochSeconds": 1790765000.0,
+        "MySqlLockSampleFailures": 0.0,
+        "QueueProcessingCountByOutcome": {
+          "completed": 23.0,
+          "rejected": null,
+          "retry_scheduled": null,
+          "manual_review": null,
+          "already_terminal": null,
+          "claimed_elsewhere": null,
+          "claim_lost": null,
+          "failed": null
+        },
+        "QueueProcessingTimerCountByOutcome": {
+          "completed": 23.0,
+          "rejected": null,
+          "retry_scheduled": null,
+          "manual_review": null,
+          "already_terminal": null,
+          "claimed_elsewhere": null,
+          "claim_lost": null,
+          "failed": null
+        },
+        "QueueProcessingTimerSecondsByOutcome": {
+          "completed": 3.7993255,
+          "rejected": null,
+          "retry_scheduled": null,
+          "manual_review": null,
+          "already_terminal": null,
+          "claimed_elsewhere": null,
+          "claim_lost": null,
+          "failed": null
+        },
+        "DrawTransactionCountByOutcome": {
+          "committed": 23.0,
+          "rolled_back": null
+        },
+        "DrawTransactionTimerCountByOutcome": {
+          "committed": 23.0,
+          "rolled_back": null
+        },
+        "DrawTransactionTimerSecondsByOutcome": {
+          "committed": 1.9440385,
+          "rolled_back": null
+        },
+        "DrawDatabaseSegmentTimerCount": {
+          "config_lock_and_load.success": 23.0,
+          "config_lock_and_load.failure": null,
+          "idempotency_insert.success": 23.0,
+          "idempotency_insert.failure": null,
+          "quota_update.success": 23.0,
+          "quota_update.failure": null,
+          "inventory_decrement.success": 23.0,
+          "inventory_decrement.failure": null,
+          "result_insert.success": 23.0,
+          "result_insert.failure": null,
+          "outbox_insert.success": 1.0,
+          "outbox_insert.failure": null,
+          "request_complete.success": 23.0,
+          "request_complete.failure": null
+        },
+        "DrawDatabaseSegmentTimerSeconds": {
+          "config_lock_and_load.success": 0.3277702,
+          "config_lock_and_load.failure": null,
+          "idempotency_insert.success": 0.1517807,
+          "idempotency_insert.failure": null,
+          "quota_update.success": 0.2867546,
+          "quota_update.failure": null,
+          "inventory_decrement.success": 0.25396,
+          "inventory_decrement.failure": null,
+          "result_insert.success": 0.1593191,
+          "result_insert.failure": null,
+          "outbox_insert.success": 0.0384649,
+          "outbox_insert.failure": null,
+          "request_complete.success": 0.1526588,
+          "request_complete.failure": null
+        },
+        "OutboxPublishTimerCountByOutcome": {
+          "sent": 24.0,
+          "retry_scheduled": null,
+          "dead_lettered": null,
+          "claim_lost": null
+        },
+        "OutboxPublishTimerSecondsByOutcome": {
+          "sent": 1.5184246,
+          "retry_scheduled": null,
+          "dead_lettered": null,
+          "claim_lost": null
+        },
+        "OutboxCreateToConfirmTimerCount": 24.0,
+        "OutboxCreateToConfirmTimerSeconds": 14.2720021,
+        "KafkaPublishStageTimerCount": {
+          "draw_queue.enqueue.success": 23.0,
+          "draw_queue.enqueue.failure": null,
+          "draw_queue.broker_ack_wait.success": 23.0,
+          "draw_queue.broker_ack_wait.failure": null,
+          "fulfillment.enqueue.success": 1.0,
+          "fulfillment.enqueue.failure": null,
+          "fulfillment.broker_ack_wait.success": 1.0,
+          "fulfillment.broker_ack_wait.failure": null
+        },
+        "KafkaPublishStageTimerSeconds": {
+          "draw_queue.enqueue.success": 0.8502832,
+          "draw_queue.enqueue.failure": null,
+          "draw_queue.broker_ack_wait.success": 0.2389133,
+          "draw_queue.broker_ack_wait.failure": null,
+          "fulfillment.enqueue.success": 0.0078818,
+          "fulfillment.enqueue.failure": null,
+          "fulfillment.broker_ack_wait.success": 0.0088948,
+          "fulfillment.broker_ack_wait.failure": null
+        },
+        "KafkaConsumerMetrics": {
+          "kafka_consumer_coordinator_commit_latency_avg": [
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-1\",kafka_version=\"3.9.2\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-1\"",
+              "Value": 3.8,
+              "IsFinite": true
+            },
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-2\",kafka_version=\"3.9.2\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-2\"",
+              "Value": 11.5,
+              "IsFinite": true
+            },
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-3\",kafka_version=\"3.9.2\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-3\"",
+              "Value": 11.5,
+              "IsFinite": true
+            },
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-4\",kafka_version=\"3.9.2\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-4\"",
+              "Value": 6.666666666666667,
+              "IsFinite": true
+            }
+          ],
+          "kafka_consumer_coordinator_commit_latency_max": [
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-1\",kafka_version=\"3.9.2\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-1\"",
+              "Value": 6.0,
+              "IsFinite": true
+            },
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-2\",kafka_version=\"3.9.2\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-2\"",
+              "Value": 30.0,
+              "IsFinite": true
+            },
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-3\",kafka_version=\"3.9.2\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-3\"",
+              "Value": 31.0,
+              "IsFinite": true
+            },
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-4\",kafka_version=\"3.9.2\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-4\"",
+              "Value": 11.0,
+              "IsFinite": true
+            }
+          ],
+          "kafka_consumer_coordinator_commit_total": [
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-1\",kafka_version=\"3.9.2\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-1\"",
+              "Value": 5.0,
+              "IsFinite": true
+            },
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-2\",kafka_version=\"3.9.2\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-2\"",
+              "Value": 6.0,
+              "IsFinite": true
+            },
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-3\",kafka_version=\"3.9.2\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-3\"",
+              "Value": 6.0,
+              "IsFinite": true
+            },
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-4\",kafka_version=\"3.9.2\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-4\"",
+              "Value": 6.0,
+              "IsFinite": true
+            }
+          ],
+          "kafka_consumer_coordinator_commit_rate": [
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-1\",kafka_version=\"3.9.2\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-1\"",
+              "Value": 0.10646452601993016,
+              "IsFinite": true
+            },
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-2\",kafka_version=\"3.9.2\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-2\"",
+              "Value": 0.12779552715654952,
+              "IsFinite": true
+            },
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-3\",kafka_version=\"3.9.2\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-3\"",
+              "Value": 0.12784181705835979,
+              "IsFinite": true
+            },
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-4\",kafka_version=\"3.9.2\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-4\"",
+              "Value": 0.12786633705566447,
+              "IsFinite": true
+            }
+          ],
+          "kafka_consumer_coordinator_assigned_partitions": [
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-1\",kafka_version=\"3.9.2\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-1\"",
+              "Value": 3.0,
+              "IsFinite": true
+            },
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-2\",kafka_version=\"3.9.2\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-2\"",
+              "Value": 3.0,
+              "IsFinite": true
+            },
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-3\",kafka_version=\"3.9.2\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-3\"",
+              "Value": 3.0,
+              "IsFinite": true
+            },
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-4\",kafka_version=\"3.9.2\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-4\"",
+              "Value": 3.0,
+              "IsFinite": true
+            }
+          ],
+          "kafka_consumer_fetch_manager_records_lag_max": [
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-1\",kafka_version=\"3.9.2\",partition=\"0\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-1\",topic=\"prizeflux_draw_queued\"",
+              "Value": 0.0,
+              "IsFinite": true
+            },
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-1\",kafka_version=\"3.9.2\",partition=\"1\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-1\",topic=\"prizeflux_draw_queued\"",
+              "Value": 0.0,
+              "IsFinite": true
+            },
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-1\",kafka_version=\"3.9.2\",partition=\"2\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-1\",topic=\"prizeflux_draw_queued\"",
+              "Value": null,
+              "IsFinite": false
+            },
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-2\",kafka_version=\"3.9.2\",partition=\"6\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-2\",topic=\"prizeflux_draw_queued\"",
+              "Value": null,
+              "IsFinite": false
+            },
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-2\",kafka_version=\"3.9.2\",partition=\"7\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-2\",topic=\"prizeflux_draw_queued\"",
+              "Value": null,
+              "IsFinite": false
+            },
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-3\",kafka_version=\"3.9.2\",partition=\"8\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-3\",topic=\"prizeflux_draw_queued\"",
+              "Value": 0.0,
+              "IsFinite": true
+            },
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-3\",kafka_version=\"3.9.2\",partition=\"9\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-3\",topic=\"prizeflux_draw_queued\"",
+              "Value": null,
+              "IsFinite": false
+            },
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-4\",kafka_version=\"3.9.2\",partition=\"10\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-4\",topic=\"prizeflux_draw_queued\"",
+              "Value": 0.0,
+              "IsFinite": true
+            },
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-4\",kafka_version=\"3.9.2\",partition=\"11\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-4\",topic=\"prizeflux_draw_queued\"",
+              "Value": 0.0,
+              "IsFinite": true
+            }
+          ]
+        },
+        "DrawQueueKafkaConsumerLag": 0.0,
+        "DrawQueueKafkaLagLastSuccessEpochSeconds": 1790764997.0,
+        "DrawQueueKafkaLagSampleFailures": 0.0,
+        "FailureType": null
+      },
+      {
+        "ElapsedSeconds": 31.1,
+        "SampleStatus": "OK",
+        "HikariActiveConnections": 2.0,
+        "HikariIdleConnections": 8.0,
+        "HikariPendingConnections": 0.0,
+        "HikariMaximumConnections": 10.0,
+        "MySqlLockWaitRelationships": 0.0,
+        "MySqlLockSampleLastSuccessEpochSeconds": 1790765005.0,
+        "MySqlLockSampleFailures": 0.0,
+        "QueueProcessingCountByOutcome": {
+          "completed": 29.0,
+          "rejected": null,
+          "retry_scheduled": null,
+          "manual_review": null,
+          "already_terminal": null,
+          "claimed_elsewhere": null,
+          "claim_lost": null,
+          "failed": null
+        },
+        "QueueProcessingTimerCountByOutcome": {
+          "completed": 29.0,
+          "rejected": null,
+          "retry_scheduled": null,
+          "manual_review": null,
+          "already_terminal": null,
+          "claimed_elsewhere": null,
+          "claim_lost": null,
+          "failed": null
+        },
+        "QueueProcessingTimerSecondsByOutcome": {
+          "completed": 4.261466,
+          "rejected": null,
+          "retry_scheduled": null,
+          "manual_review": null,
+          "already_terminal": null,
+          "claimed_elsewhere": null,
+          "claim_lost": null,
+          "failed": null
+        },
+        "DrawTransactionCountByOutcome": {
+          "committed": 29.0,
+          "rolled_back": null
+        },
+        "DrawTransactionTimerCountByOutcome": {
+          "committed": 29.0,
+          "rolled_back": null
+        },
+        "DrawTransactionTimerSecondsByOutcome": {
+          "committed": 2.1459935,
+          "rolled_back": null
+        },
+        "DrawDatabaseSegmentTimerCount": {
+          "config_lock_and_load.success": 29.0,
+          "config_lock_and_load.failure": null,
+          "idempotency_insert.success": 29.0,
+          "idempotency_insert.failure": null,
+          "quota_update.success": 29.0,
+          "quota_update.failure": null,
+          "inventory_decrement.success": 29.0,
+          "inventory_decrement.failure": null,
+          "result_insert.success": 29.0,
+          "result_insert.failure": null,
+          "outbox_insert.success": 1.0,
+          "outbox_insert.failure": null,
+          "request_complete.success": 29.0,
+          "request_complete.failure": null
+        },
+        "DrawDatabaseSegmentTimerSeconds": {
+          "config_lock_and_load.success": 0.3573856,
+          "config_lock_and_load.failure": null,
+          "idempotency_insert.success": 0.1645196,
+          "idempotency_insert.failure": null,
+          "quota_update.success": 0.310892,
+          "quota_update.failure": null,
+          "inventory_decrement.success": 0.2809195,
+          "inventory_decrement.failure": null,
+          "result_insert.success": 0.1737376,
+          "result_insert.failure": null,
+          "outbox_insert.success": 0.0384649,
+          "outbox_insert.failure": null,
+          "request_complete.success": 0.1637232,
+          "request_complete.failure": null
+        },
+        "OutboxPublishTimerCountByOutcome": {
+          "sent": 31.0,
+          "retry_scheduled": null,
+          "dead_lettered": null,
+          "claim_lost": null
+        },
+        "OutboxPublishTimerSecondsByOutcome": {
+          "sent": 1.6173012,
+          "retry_scheduled": null,
+          "dead_lettered": null,
+          "claim_lost": null
+        },
+        "OutboxCreateToConfirmTimerCount": 31.0,
+        "OutboxCreateToConfirmTimerSeconds": 18.8051963,
+        "KafkaPublishStageTimerCount": {
+          "draw_queue.enqueue.success": 30.0,
+          "draw_queue.enqueue.failure": null,
+          "draw_queue.broker_ack_wait.success": 30.0,
+          "draw_queue.broker_ack_wait.failure": null,
+          "fulfillment.enqueue.success": 1.0,
+          "fulfillment.enqueue.failure": null,
+          "fulfillment.broker_ack_wait.success": 1.0,
+          "fulfillment.broker_ack_wait.failure": null
+        },
+        "KafkaPublishStageTimerSeconds": {
+          "draw_queue.enqueue.success": 0.8520282,
+          "draw_queue.enqueue.failure": null,
+          "draw_queue.broker_ack_wait.success": 0.2656298,
+          "draw_queue.broker_ack_wait.failure": null,
+          "fulfillment.enqueue.success": 0.0078818,
+          "fulfillment.enqueue.failure": null,
+          "fulfillment.broker_ack_wait.success": 0.0088948,
+          "fulfillment.broker_ack_wait.failure": null
+        },
+        "KafkaConsumerMetrics": {
+          "kafka_consumer_coordinator_commit_latency_avg": [
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-1\",kafka_version=\"3.9.2\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-1\"",
+              "Value": 3.2857142857142856,
+              "IsFinite": true
+            },
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-2\",kafka_version=\"3.9.2\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-2\"",
+              "Value": 8.88888888888889,
+              "IsFinite": true
+            },
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-3\",kafka_version=\"3.9.2\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-3\"",
+              "Value": 11.5,
+              "IsFinite": true
+            },
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-4\",kafka_version=\"3.9.2\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-4\"",
+              "Value": 6.142857142857143,
+              "IsFinite": true
+            }
+          ],
+          "kafka_consumer_coordinator_commit_latency_max": [
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-1\",kafka_version=\"3.9.2\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-1\"",
+              "Value": 6.0,
+              "IsFinite": true
+            },
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-2\",kafka_version=\"3.9.2\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-2\"",
+              "Value": 30.0,
+              "IsFinite": true
+            },
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-3\",kafka_version=\"3.9.2\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-3\"",
+              "Value": 31.0,
+              "IsFinite": true
+            },
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-4\",kafka_version=\"3.9.2\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-4\"",
+              "Value": 11.0,
+              "IsFinite": true
+            }
+          ],
+          "kafka_consumer_coordinator_commit_total": [
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-1\",kafka_version=\"3.9.2\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-1\"",
+              "Value": 7.0,
+              "IsFinite": true
+            },
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-2\",kafka_version=\"3.9.2\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-2\"",
+              "Value": 9.0,
+              "IsFinite": true
+            },
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-3\",kafka_version=\"3.9.2\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-3\"",
+              "Value": 6.0,
+              "IsFinite": true
+            },
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-4\",kafka_version=\"3.9.2\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-4\"",
+              "Value": 7.0,
+              "IsFinite": true
+            }
+          ],
+          "kafka_consumer_coordinator_commit_rate": [
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-1\",kafka_version=\"3.9.2\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-1\"",
+              "Value": 0.13022044460980373,
+              "IsFinite": true
+            },
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-2\",kafka_version=\"3.9.2\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-2\"",
+              "Value": 0.16746990193706854,
+              "IsFinite": true
+            },
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-3\",kafka_version=\"3.9.2\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-3\"",
+              "Value": 0.11168192986374806,
+              "IsFinite": true
+            },
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-4\",kafka_version=\"3.9.2\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-4\"",
+              "Value": 0.1303174159918086,
+              "IsFinite": true
+            }
+          ],
+          "kafka_consumer_coordinator_assigned_partitions": [
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-1\",kafka_version=\"3.9.2\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-1\"",
+              "Value": 3.0,
+              "IsFinite": true
+            },
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-2\",kafka_version=\"3.9.2\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-2\"",
+              "Value": 3.0,
+              "IsFinite": true
+            },
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-3\",kafka_version=\"3.9.2\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-3\"",
+              "Value": 3.0,
+              "IsFinite": true
+            },
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-4\",kafka_version=\"3.9.2\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-4\"",
+              "Value": 3.0,
+              "IsFinite": true
+            }
+          ],
+          "kafka_consumer_fetch_manager_records_lag_max": [
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-1\",kafka_version=\"3.9.2\",partition=\"0\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-1\",topic=\"prizeflux_draw_queued\"",
+              "Value": 0.0,
+              "IsFinite": true
+            },
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-1\",kafka_version=\"3.9.2\",partition=\"1\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-1\",topic=\"prizeflux_draw_queued\"",
+              "Value": 0.0,
+              "IsFinite": true
+            },
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-1\",kafka_version=\"3.9.2\",partition=\"2\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-1\",topic=\"prizeflux_draw_queued\"",
+              "Value": null,
+              "IsFinite": false
+            },
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-2\",kafka_version=\"3.9.2\",partition=\"6\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-2\",topic=\"prizeflux_draw_queued\"",
+              "Value": null,
+              "IsFinite": false
+            },
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-2\",kafka_version=\"3.9.2\",partition=\"7\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-2\",topic=\"prizeflux_draw_queued\"",
+              "Value": null,
+              "IsFinite": false
+            },
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-3\",kafka_version=\"3.9.2\",partition=\"8\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-3\",topic=\"prizeflux_draw_queued\"",
+              "Value": 0.0,
+              "IsFinite": true
+            },
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-3\",kafka_version=\"3.9.2\",partition=\"9\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-3\",topic=\"prizeflux_draw_queued\"",
+              "Value": null,
+              "IsFinite": false
+            },
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-4\",kafka_version=\"3.9.2\",partition=\"10\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-4\",topic=\"prizeflux_draw_queued\"",
+              "Value": 0.0,
+              "IsFinite": true
+            },
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-4\",kafka_version=\"3.9.2\",partition=\"11\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-4\",topic=\"prizeflux_draw_queued\"",
+              "Value": 0.0,
+              "IsFinite": true
+            }
+          ]
+        },
+        "DrawQueueKafkaConsumerLag": 0.0,
+        "DrawQueueKafkaLagLastSuccessEpochSeconds": 1790765007.0,
+        "DrawQueueKafkaLagSampleFailures": 0.0,
+        "FailureType": null
+      },
+      {
+        "ElapsedSeconds": 39.0,
+        "SampleStatus": "OK",
+        "HikariActiveConnections": 0.0,
+        "HikariIdleConnections": 10.0,
+        "HikariPendingConnections": 0.0,
+        "HikariMaximumConnections": 10.0,
+        "MySqlLockWaitRelationships": 0.0,
+        "MySqlLockSampleLastSuccessEpochSeconds": 1790765016.0,
+        "MySqlLockSampleFailures": 0.0,
+        "QueueProcessingCountByOutcome": {
+          "completed": 33.0,
+          "rejected": null,
+          "retry_scheduled": null,
+          "manual_review": null,
+          "already_terminal": null,
+          "claimed_elsewhere": null,
+          "claim_lost": null,
+          "failed": null
+        },
+        "QueueProcessingTimerCountByOutcome": {
+          "completed": 33.0,
+          "rejected": null,
+          "retry_scheduled": null,
+          "manual_review": null,
+          "already_terminal": null,
+          "claimed_elsewhere": null,
+          "claim_lost": null,
+          "failed": null
+        },
+        "QueueProcessingTimerSecondsByOutcome": {
+          "completed": 4.8621996,
+          "rejected": null,
+          "retry_scheduled": null,
+          "manual_review": null,
+          "already_terminal": null,
+          "claimed_elsewhere": null,
+          "claim_lost": null,
+          "failed": null
+        },
+        "DrawTransactionCountByOutcome": {
+          "committed": 33.0,
+          "rolled_back": null
+        },
+        "DrawTransactionTimerCountByOutcome": {
+          "committed": 33.0,
+          "rolled_back": null
+        },
+        "DrawTransactionTimerSecondsByOutcome": {
+          "committed": 2.4890684,
+          "rolled_back": null
+        },
+        "DrawDatabaseSegmentTimerCount": {
+          "config_lock_and_load.success": 33.0,
+          "config_lock_and_load.failure": null,
+          "idempotency_insert.success": 33.0,
+          "idempotency_insert.failure": null,
+          "quota_update.success": 33.0,
+          "quota_update.failure": null,
+          "inventory_decrement.success": 33.0,
+          "inventory_decrement.failure": null,
+          "result_insert.success": 33.0,
+          "result_insert.failure": null,
+          "outbox_insert.success": 1.0,
+          "outbox_insert.failure": null,
+          "request_complete.success": 33.0,
+          "request_complete.failure": null
+        },
+        "DrawDatabaseSegmentTimerSeconds": {
+          "config_lock_and_load.success": 0.3980614,
+          "config_lock_and_load.failure": null,
+          "idempotency_insert.success": 0.1921072,
+          "idempotency_insert.failure": null,
+          "quota_update.success": 0.3898204,
+          "quota_update.failure": null,
+          "inventory_decrement.success": 0.3589117,
+          "inventory_decrement.failure": null,
+          "result_insert.success": 0.1879734,
+          "result_insert.failure": null,
+          "outbox_insert.success": 0.0384649,
+          "outbox_insert.failure": null,
+          "request_complete.success": 0.1786134,
+          "request_complete.failure": null
+        },
+        "OutboxPublishTimerCountByOutcome": {
+          "sent": 34.0,
+          "retry_scheduled": null,
+          "dead_lettered": null,
+          "claim_lost": null
+        },
+        "OutboxPublishTimerSecondsByOutcome": {
+          "sent": 1.6688192,
+          "retry_scheduled": null,
+          "dead_lettered": null,
+          "claim_lost": null
+        },
+        "OutboxCreateToConfirmTimerCount": 34.0,
+        "OutboxCreateToConfirmTimerSeconds": 21.3827436,
+        "KafkaPublishStageTimerCount": {
+          "draw_queue.enqueue.success": 33.0,
+          "draw_queue.enqueue.failure": null,
+          "draw_queue.broker_ack_wait.success": 33.0,
+          "draw_queue.broker_ack_wait.failure": null,
+          "fulfillment.enqueue.success": 1.0,
+          "fulfillment.enqueue.failure": null,
+          "fulfillment.broker_ack_wait.success": 1.0,
+          "fulfillment.broker_ack_wait.failure": null
+        },
+        "KafkaPublishStageTimerSeconds": {
+          "draw_queue.enqueue.success": 0.8527137,
+          "draw_queue.enqueue.failure": null,
+          "draw_queue.broker_ack_wait.success": 0.2765501,
+          "draw_queue.broker_ack_wait.failure": null,
+          "fulfillment.enqueue.success": 0.0078818,
+          "fulfillment.enqueue.failure": null,
+          "fulfillment.broker_ack_wait.success": 0.0088948,
+          "fulfillment.broker_ack_wait.failure": null
+        },
+        "KafkaConsumerMetrics": {
+          "kafka_consumer_coordinator_commit_latency_avg": [
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-1\",kafka_version=\"3.9.2\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-1\"",
+              "Value": 3.2857142857142856,
+              "IsFinite": true
+            },
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-2\",kafka_version=\"3.9.2\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-2\"",
+              "Value": 8.090909090909092,
+              "IsFinite": true
+            },
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-3\",kafka_version=\"3.9.2\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-3\"",
+              "Value": 10.857142857142858,
+              "IsFinite": true
+            },
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-4\",kafka_version=\"3.9.2\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-4\"",
+              "Value": 5.75,
+              "IsFinite": true
+            }
+          ],
+          "kafka_consumer_coordinator_commit_latency_max": [
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-1\",kafka_version=\"3.9.2\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-1\"",
+              "Value": 6.0,
+              "IsFinite": true
+            },
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-2\",kafka_version=\"3.9.2\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-2\"",
+              "Value": 30.0,
+              "IsFinite": true
+            },
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-3\",kafka_version=\"3.9.2\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-3\"",
+              "Value": 31.0,
+              "IsFinite": true
+            },
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-4\",kafka_version=\"3.9.2\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-4\"",
+              "Value": 11.0,
+              "IsFinite": true
+            }
+          ],
+          "kafka_consumer_coordinator_commit_total": [
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-1\",kafka_version=\"3.9.2\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-1\"",
+              "Value": 7.0,
+              "IsFinite": true
+            },
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-2\",kafka_version=\"3.9.2\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-2\"",
+              "Value": 11.0,
+              "IsFinite": true
+            },
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-3\",kafka_version=\"3.9.2\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-3\"",
+              "Value": 7.0,
+              "IsFinite": true
+            },
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-4\",kafka_version=\"3.9.2\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-4\"",
+              "Value": 8.0,
+              "IsFinite": true
+            }
+          ],
+          "kafka_consumer_coordinator_commit_rate": [
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-1\",kafka_version=\"3.9.2\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-1\"",
+              "Value": 0.11354420113544202,
+              "IsFinite": true
+            },
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-2\",kafka_version=\"3.9.2\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-2\"",
+              "Value": 0.17846712959958466,
+              "IsFinite": true
+            },
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-3\",kafka_version=\"3.9.2\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-3\"",
+              "Value": 0.11360132426686574,
+              "IsFinite": true
+            },
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-4\",kafka_version=\"3.9.2\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-4\"",
+              "Value": 0.12984905047881837,
+              "IsFinite": true
+            }
+          ],
+          "kafka_consumer_coordinator_assigned_partitions": [
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-1\",kafka_version=\"3.9.2\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-1\"",
+              "Value": 3.0,
+              "IsFinite": true
+            },
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-2\",kafka_version=\"3.9.2\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-2\"",
+              "Value": 3.0,
+              "IsFinite": true
+            },
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-3\",kafka_version=\"3.9.2\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-3\"",
+              "Value": 3.0,
+              "IsFinite": true
+            },
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-4\",kafka_version=\"3.9.2\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-4\"",
+              "Value": 3.0,
+              "IsFinite": true
+            }
+          ],
+          "kafka_consumer_fetch_manager_records_lag_max": [
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-1\",kafka_version=\"3.9.2\",partition=\"0\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-1\",topic=\"prizeflux_draw_queued\"",
+              "Value": 0.0,
+              "IsFinite": true
+            },
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-1\",kafka_version=\"3.9.2\",partition=\"1\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-1\",topic=\"prizeflux_draw_queued\"",
+              "Value": 0.0,
+              "IsFinite": true
+            },
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-2\",kafka_version=\"3.9.2\",partition=\"3\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-2\",topic=\"prizeflux_draw_queued\"",
+              "Value": 0.0,
+              "IsFinite": true
+            },
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-2\",kafka_version=\"3.9.2\",partition=\"4\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-2\",topic=\"prizeflux_draw_queued\"",
+              "Value": 0.0,
+              "IsFinite": true
+            },
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-2\",kafka_version=\"3.9.2\",partition=\"5\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-2\",topic=\"prizeflux_draw_queued\"",
+              "Value": 0.0,
+              "IsFinite": true
+            },
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-3\",kafka_version=\"3.9.2\",partition=\"6\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-3\",topic=\"prizeflux_draw_queued\"",
+              "Value": 0.0,
+              "IsFinite": true
+            },
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-3\",kafka_version=\"3.9.2\",partition=\"7\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-3\",topic=\"prizeflux_draw_queued\"",
+              "Value": 0.0,
+              "IsFinite": true
+            },
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-3\",kafka_version=\"3.9.2\",partition=\"8\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-3\",topic=\"prizeflux_draw_queued\"",
+              "Value": 0.0,
+              "IsFinite": true
+            },
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-4\",kafka_version=\"3.9.2\",partition=\"10\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-4\",topic=\"prizeflux_draw_queued\"",
+              "Value": 0.0,
+              "IsFinite": true
+            },
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-4\",kafka_version=\"3.9.2\",partition=\"11\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-4\",topic=\"prizeflux_draw_queued\"",
+              "Value": 0.0,
+              "IsFinite": true
+            },
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-4\",kafka_version=\"3.9.2\",partition=\"9\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-4\",topic=\"prizeflux_draw_queued\"",
+              "Value": 0.0,
+              "IsFinite": true
+            }
+          ]
+        },
+        "DrawQueueKafkaConsumerLag": 0.0,
+        "DrawQueueKafkaLagLastSuccessEpochSeconds": 1790765017.0,
+        "DrawQueueKafkaLagSampleFailures": 0.0,
+        "FailureType": null
+      },
+      {
+        "ElapsedSeconds": 45.0,
+        "SampleStatus": "OK",
+        "HikariActiveConnections": 0.0,
+        "HikariIdleConnections": 10.0,
+        "HikariPendingConnections": 0.0,
+        "HikariMaximumConnections": 10.0,
+        "MySqlLockWaitRelationships": 0.0,
+        "MySqlLockSampleLastSuccessEpochSeconds": 1790765021.0,
+        "MySqlLockSampleFailures": 0.0,
+        "QueueProcessingCountByOutcome": {
+          "completed": 40.0,
+          "rejected": null,
+          "retry_scheduled": null,
+          "manual_review": null,
+          "already_terminal": null,
+          "claimed_elsewhere": null,
+          "claim_lost": null,
+          "failed": null
+        },
+        "QueueProcessingTimerCountByOutcome": {
+          "completed": 40.0,
+          "rejected": null,
+          "retry_scheduled": null,
+          "manual_review": null,
+          "already_terminal": null,
+          "claimed_elsewhere": null,
+          "claim_lost": null,
+          "failed": null
+        },
+        "QueueProcessingTimerSecondsByOutcome": {
+          "completed": 5.3143439,
+          "rejected": null,
+          "retry_scheduled": null,
+          "manual_review": null,
+          "already_terminal": null,
+          "claimed_elsewhere": null,
+          "claim_lost": null,
+          "failed": null
+        },
+        "DrawTransactionCountByOutcome": {
+          "committed": 40.0,
+          "rolled_back": null
+        },
+        "DrawTransactionTimerCountByOutcome": {
+          "committed": 40.0,
+          "rolled_back": null
+        },
+        "DrawTransactionTimerSecondsByOutcome": {
+          "committed": 2.6653588,
+          "rolled_back": null
+        },
+        "DrawDatabaseSegmentTimerCount": {
+          "config_lock_and_load.success": 40.0,
+          "config_lock_and_load.failure": null,
+          "idempotency_insert.success": 40.0,
+          "idempotency_insert.failure": null,
+          "quota_update.success": 40.0,
+          "quota_update.failure": null,
+          "inventory_decrement.success": 40.0,
+          "inventory_decrement.failure": null,
+          "result_insert.success": 40.0,
+          "result_insert.failure": null,
+          "outbox_insert.success": 1.0,
+          "outbox_insert.failure": null,
+          "request_complete.success": 40.0,
+          "request_complete.failure": null
+        },
+        "DrawDatabaseSegmentTimerSeconds": {
+          "config_lock_and_load.success": 0.4200903,
+          "config_lock_and_load.failure": null,
+          "idempotency_insert.success": 0.2032303,
+          "idempotency_insert.failure": null,
+          "quota_update.success": 0.4162542,
+          "quota_update.failure": null,
+          "inventory_decrement.success": 0.3767955,
+          "inventory_decrement.failure": null,
+          "result_insert.success": 0.1972593,
+          "result_insert.failure": null,
+          "outbox_insert.success": 0.0384649,
+          "outbox_insert.failure": null,
+          "request_complete.success": 0.1881225,
+          "request_complete.failure": null
+        },
+        "OutboxPublishTimerCountByOutcome": {
+          "sent": 41.0,
+          "retry_scheduled": null,
+          "dead_lettered": null,
+          "claim_lost": null
+        },
+        "OutboxPublishTimerSecondsByOutcome": {
+          "sent": 1.7659781,
+          "retry_scheduled": null,
+          "dead_lettered": null,
+          "claim_lost": null
+        },
+        "OutboxCreateToConfirmTimerCount": 41.0,
+        "OutboxCreateToConfirmTimerSeconds": 24.7340044,
+        "KafkaPublishStageTimerCount": {
+          "draw_queue.enqueue.success": 40.0,
+          "draw_queue.enqueue.failure": null,
+          "draw_queue.broker_ack_wait.success": 40.0,
+          "draw_queue.broker_ack_wait.failure": null,
+          "fulfillment.enqueue.success": 1.0,
+          "fulfillment.enqueue.failure": null,
+          "fulfillment.broker_ack_wait.success": 1.0,
+          "fulfillment.broker_ack_wait.failure": null
+        },
+        "KafkaPublishStageTimerSeconds": {
+          "draw_queue.enqueue.success": 0.8540714,
+          "draw_queue.enqueue.failure": null,
+          "draw_queue.broker_ack_wait.success": 0.306929,
+          "draw_queue.broker_ack_wait.failure": null,
+          "fulfillment.enqueue.success": 0.0078818,
+          "fulfillment.enqueue.failure": null,
+          "fulfillment.broker_ack_wait.success": 0.0088948,
+          "fulfillment.broker_ack_wait.failure": null
+        },
+        "KafkaConsumerMetrics": {
+          "kafka_consumer_coordinator_commit_latency_avg": [
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-1\",kafka_version=\"3.9.2\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-1\"",
+              "Value": 3.125,
+              "IsFinite": true
+            },
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-2\",kafka_version=\"3.9.2\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-2\"",
+              "Value": 7.384615384615385,
+              "IsFinite": true
+            },
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-3\",kafka_version=\"3.9.2\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-3\"",
+              "Value": 7.909090909090909,
+              "IsFinite": true
+            },
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-4\",kafka_version=\"3.9.2\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-4\"",
+              "Value": 5.75,
+              "IsFinite": true
+            }
+          ],
+          "kafka_consumer_coordinator_commit_latency_max": [
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-1\",kafka_version=\"3.9.2\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-1\"",
+              "Value": 6.0,
+              "IsFinite": true
+            },
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-2\",kafka_version=\"3.9.2\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-2\"",
+              "Value": 30.0,
+              "IsFinite": true
+            },
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-3\",kafka_version=\"3.9.2\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-3\"",
+              "Value": 31.0,
+              "IsFinite": true
+            },
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-4\",kafka_version=\"3.9.2\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-4\"",
+              "Value": 11.0,
+              "IsFinite": true
+            }
+          ],
+          "kafka_consumer_coordinator_commit_total": [
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-1\",kafka_version=\"3.9.2\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-1\"",
+              "Value": 8.0,
+              "IsFinite": true
+            },
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-2\",kafka_version=\"3.9.2\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-2\"",
+              "Value": 13.0,
+              "IsFinite": true
+            },
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-3\",kafka_version=\"3.9.2\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-3\"",
+              "Value": 11.0,
+              "IsFinite": true
+            },
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-4\",kafka_version=\"3.9.2\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-4\"",
+              "Value": 8.0,
+              "IsFinite": true
+            }
+          ],
+          "kafka_consumer_coordinator_commit_rate": [
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-1\",kafka_version=\"3.9.2\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-1\"",
+              "Value": 0.11826971408296622,
+              "IsFinite": true
+            },
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-2\",kafka_version=\"3.9.2\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-2\"",
+              "Value": 0.192228071213107,
+              "IsFinite": true
+            },
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-3\",kafka_version=\"3.9.2\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-3\"",
+              "Value": 0.1626954193844197,
+              "IsFinite": true
+            },
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-4\",kafka_version=\"3.9.2\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-4\"",
+              "Value": 0.11833969409189077,
+              "IsFinite": true
+            }
+          ],
+          "kafka_consumer_coordinator_assigned_partitions": [
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-1\",kafka_version=\"3.9.2\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-1\"",
+              "Value": 3.0,
+              "IsFinite": true
+            },
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-2\",kafka_version=\"3.9.2\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-2\"",
+              "Value": 3.0,
+              "IsFinite": true
+            },
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-3\",kafka_version=\"3.9.2\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-3\"",
+              "Value": 3.0,
+              "IsFinite": true
+            },
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-4\",kafka_version=\"3.9.2\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-4\"",
+              "Value": 3.0,
+              "IsFinite": true
+            }
+          ],
+          "kafka_consumer_fetch_manager_records_lag_max": [
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-1\",kafka_version=\"3.9.2\",partition=\"0\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-1\",topic=\"prizeflux_draw_queued\"",
+              "Value": 0.0,
+              "IsFinite": true
+            },
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-1\",kafka_version=\"3.9.2\",partition=\"1\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-1\",topic=\"prizeflux_draw_queued\"",
+              "Value": 0.0,
+              "IsFinite": true
+            },
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-2\",kafka_version=\"3.9.2\",partition=\"3\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-2\",topic=\"prizeflux_draw_queued\"",
+              "Value": 0.0,
+              "IsFinite": true
+            },
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-2\",kafka_version=\"3.9.2\",partition=\"4\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-2\",topic=\"prizeflux_draw_queued\"",
+              "Value": 0.0,
+              "IsFinite": true
+            },
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-2\",kafka_version=\"3.9.2\",partition=\"5\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-2\",topic=\"prizeflux_draw_queued\"",
+              "Value": 0.0,
+              "IsFinite": true
+            },
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-3\",kafka_version=\"3.9.2\",partition=\"6\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-3\",topic=\"prizeflux_draw_queued\"",
+              "Value": 0.0,
+              "IsFinite": true
+            },
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-3\",kafka_version=\"3.9.2\",partition=\"7\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-3\",topic=\"prizeflux_draw_queued\"",
+              "Value": 0.0,
+              "IsFinite": true
+            },
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-3\",kafka_version=\"3.9.2\",partition=\"8\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-3\",topic=\"prizeflux_draw_queued\"",
+              "Value": 0.0,
+              "IsFinite": true
+            },
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-4\",kafka_version=\"3.9.2\",partition=\"10\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-4\",topic=\"prizeflux_draw_queued\"",
+              "Value": 0.0,
+              "IsFinite": true
+            },
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-4\",kafka_version=\"3.9.2\",partition=\"11\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-4\",topic=\"prizeflux_draw_queued\"",
+              "Value": 0.0,
+              "IsFinite": true
+            },
+            {
+              "Labels": "client_id=\"consumer-prizeflux-campaign-draw-queue-4\",kafka_version=\"3.9.2\",partition=\"9\",spring_id=\"kafkaConsumerFactory.consumer-prizeflux-campaign-draw-queue-4\",topic=\"prizeflux_draw_queued\"",
+              "Value": 0.0,
+              "IsFinite": true
+            }
+          ]
+        },
+        "DrawQueueKafkaConsumerLag": 0.0,
+        "DrawQueueKafkaLagLastSuccessEpochSeconds": 1790765017.0,
+        "DrawQueueKafkaLagSampleFailures": 0.0,
+        "FailureType": null
+      }
+    ],
+    "CampaignRuntimeMetricScrapeFailures": 0,
+    "MaxHikariActiveConnections": 2.0,
+    "MaxHikariPendingConnections": 0.0,
+    "MaxObservedMysqlLockWaitRelationships": 0.0,
+    "MaxObservedPendingQueueRequests": 1,
+    "MaxObservedQueueAgeSeconds": 0,
+    "MaxObservedMemoryPercentOfReportedContainerLimit": 5.9,
+    "StopThresholdExceeded": false,
+    "ResourceSamplingNote": "docker stats samples only disposable Campaign/Worker MySQL, Kafka and Redis containers. Campaign/Worker JVM CPU is sampled from Windows process cumulative CPU time and reported as percent of one logical core. Queue active row count/oldest age, Campaign Hikari gauges, bounded draw-queue processing outcome counters/timer sums, draw transaction and low-cardinality repository segment timer counts/sums, and sampled MySQL InnoDB lock-wait relationships are sampled every 5s. Lock waits are point-in-time samples and transient waits may be missed. Memory percentage uses Docker-reported limits. Same-host generator and control-query overhead are present. An exceeded stop threshold fails this bounded stage and blocks using it to justify a higher stage."
+  },
+  "Correctness": {
+    "QueueRows": 42,
+    "CompletedQueueRows": 42,
+    "RejectedQueueRows": 0,
+    "PendingQueueRows": 0,
+    "DrawRows": 42,
+    "WonResults": 1,
+    "InventoryRemaining": 0,
+    "SentDrawQueuedOutboxRows": 42,
+    "SentFulfillmentOutboxRows": 1,
+    "WorkerLedgerRows": 1,
+    "WorkerSucceededRows": 1,
+    "WorkerAttemptCountTotal": 1,
+    "ManualReviewTasks": 0,
+    "DuplicateDrawFulfillments": 0
+  },
+  "Checks": {
+    "PerformanceThresholdsPassed": true,
+    "BusinessReconciliationPassed": true,
+    "DrainWithin120Seconds": true,
+    "OverallPassed": true
+  },
+  "K6SummaryPath": "docs\\baseline\\draw-queue-arrival-kafka-diagnostics-smoke-2026-09-30.k6-summary.json",
+  "CredentialsOrTokensPrinted": false,
+  "Note": "Single Windows host with disposable containers, one Campaign queue consumer and one Worker; synthetic tokens are held only in a temporary local file and removed during cleanup. Not production capacity or HA evidence."
+}

@@ -1,4 +1,4 @@
-# Worker 独立进程配置：只消费 Kafka、落自己的发奖账本，不启动内嵌 Web 服务器。
+# Worker 默认只消费 Kafka 并落自己的发奖账本，不启动业务 Web；local-full 可另启隔离管理端口。
 spring:
   application:
     name: prizeflux-worker
@@ -6,13 +6,18 @@ spring:
     web-application-type: none
   datasource:
     # Worker 与 Campaign 可共用一台 MySQL 实例，但使用不同 schema 与各自 Flyway 历史。
-    url: ${PFX_WORKER_DB_URL:jdbc:mysql://127.0.0.1:3306/prizeflux_worker}
+    url: ${PFX_WORKER_DB_URL:jdbc:mysql://127.0.0.1:3307/prizeflux_worker}
     username: ${PFX_WORKER_DB_USER:prizeflux}
     password: ${PFX_WORKER_DB_PASSWORD}
     hikari:
       connection-init-sql: SET time_zone = '+00:00'
   flyway:
     enabled: true
+    # Use a dedicated schema DDL account for migrations; the datasource account
+    # remains limited to the fulfillment ledger's runtime DML.
+    url: ${PFX_WORKER_MIGRATION_DB_URL:${PFX_WORKER_DB_URL:jdbc:mysql://127.0.0.1:3307/prizeflux_worker}}
+    user: ${PFX_WORKER_MIGRATION_DB_USER:${PFX_WORKER_DB_USER:prizeflux}}
+    password: ${PFX_WORKER_MIGRATION_DB_PASSWORD:${PFX_WORKER_DB_PASSWORD}}
   kafka:
     bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
     consumer:

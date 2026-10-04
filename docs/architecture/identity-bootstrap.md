@@ -1,6 +1,6 @@
 # 运营账号的一次性初始化
 
-当前状态：I2 Java 代码和单测已通过；真实应用进程的初始化冒烟要在 I7 集中验证。此流程不是公开注册接口，也不表示 I3 JWT 或 I4 登录已经实现。
+当前状态：普通 USER 已可通过 `POST /api/auth/register` 自助创建；OPERATOR 仍需本文件的一次性受控初始化。USER 的 bootstrap 仅供自动化冒烟或离线演示，不是普通用户使用前端的必需步骤。
 
 数据库迁移 V3 只建表，不预置可登录账号。需要初始化时，在运行 Campaign 的同一个受保护终端设置 `PRIZEFLUX_BOOTSTRAP_OPERATOR_ENABLED=true`、`PFX_BOOTSTRAP_OPERATOR_USERNAME`、`PFX_BOOTSTRAP_OPERATOR_PASSWORD`，且该终端还需具备正常数据库配置。用户名仅允许 3～64 位小写字母、数字、点、下划线和连字符；口令要求 12～128 字符。程序启动时仅创建不存在的运营账号，密码以 BCrypt 12 编码入库；缺少配置或账号已存在会让启动失败，不覆盖旧账号。
 

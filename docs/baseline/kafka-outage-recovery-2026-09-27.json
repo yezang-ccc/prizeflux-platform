@@ -1,0 +1,77 @@
+{
+  "Result": "PASS",
+  "Scenario": "Kafka broker outage with Outbox retry and Worker recovery",
+  "Environment": {
+    "OS": "Microsoft Windows NT 10.0.26200.0",
+    "PowerShell": "7.6.5",
+    "JavaHome": "D:\\java\\jdk-17",
+    "JavaVersion": "java version \"17.0.12\" 2024-07-16 LTS\r\nJava(TM) SE Runtime Environment (build 17.0.12+8-LTS-286)\r\nJava HotSpot(TM) 64-Bit Server VM (build 17.0.12+8-LTS-286, mixed mode, sharing)",
+    "ProcessorCount": 12,
+    "DockerEngine": "29.8.0",
+    "MySqlImage": "mysql:8.4",
+    "RedisImage": "disabled",
+    "Broker": "Disposable single-node Kafka 3.9.1",
+    "FulfillmentMode": "SIMULATED"
+  },
+  "PortAssignments": {
+    "CampaignApi": 53559,
+    "CampaignMySql": 53556,
+    "WorkerMySql": 53557,
+    "Kafka": 53558,
+    "Redis": null
+  },
+  "Configuration": {
+    "RedisLimiterEnabled": false,
+    "RequestCount": 1,
+    "Concurrency": 1,
+    "PrizeStock": 1,
+    "UserDailyLimit": 1,
+    "SimulatedFailFirstFulfillmentAttempt": false,
+    "RateLimitMaxRequests": 6,
+    "RateLimitWindowSeconds": 3600,
+    "RedisConnectTimeout": "1s",
+    "RedisCommandTimeout": "1s",
+    "CampaignDbConnectionTimeoutMs": 3000,
+    "Warmup": "Health GET, authenticated Campaign GET, and one authenticated invalid draw stopped by validation before timed batch (warms Redis/Lettuce when enabled)"
+  },
+  "Metrics": {
+    "TotalElapsedMs": 223.95,
+    "RequestsPerSecond": 4.47,
+    "P50Ms": 79.82,
+    "P95Ms": 79.82,
+    "P99Ms": 79.82,
+    "HttpFailures": 0,
+    "Won": 1,
+    "SoldOut": 0,
+    "NoPrize": 0
+  },
+  "Correctness": {
+    "DrawRows": 1,
+    "InventoryRemaining": 0,
+    "SentOutboxRows": 1,
+    "WorkerLedgerRows": 1,
+    "WorkerSucceededRows": 1,
+    "WorkerAttemptCountTotal": 1,
+    "ManualReviewTasks": 0,
+    "DuplicateDrawFulfillments": 0
+  },
+  "FaultInjection": {
+    "Dependency": "Kafka",
+    "OutboxStateBeforeRecovery": "PENDING",
+    "PublishAttemptsBeforeRecovery": 1,
+    "Recovery": "Kafka broker restarted; Outbox and Worker completion are verified in the normal chain",
+    "TimeToBrokerPortMs": 8883.21
+  },
+  "Samples": [
+    {
+      "Index": 1,
+      "HttpStatus": 200,
+      "Outcome": "WON",
+      "DrawId": 1,
+      "LatencyMs": 79.8193,
+      "ErrorType": ""
+    }
+  ],
+  "CredentialsOrTokensPrinted": false,
+  "Note": "Local benchmark only; not production capacity evidence and not evidence that Redis makes MySQL faster."
+}

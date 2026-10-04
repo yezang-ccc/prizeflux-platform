@@ -2,7 +2,9 @@ package com.prizeflux.campaign.infrastructure.persistence;
 
 import com.prizeflux.campaign.application.AppUser;
 import com.prizeflux.campaign.application.AppUserRepository;
+import com.prizeflux.campaign.application.UsernameAlreadyRegisteredException;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Repository;
@@ -31,6 +33,20 @@ public class JdbcAppUserRepository implements AppUserRepository {
 
     @Override
     public long create(String username, String passwordHash, AppUser.Role role) {
+        return insert(username, passwordHash, role);
+    }
+
+    @Override
+    public long registerUser(String username, String passwordHash) {
+        try {
+            return insert(username, passwordHash, AppUser.Role.USER);
+        } catch (DuplicateKeyException ex) {
+            // 预查询不能消除并发竞争；唯一索引是最终裁决，且不向调用方泄露 SQL。
+            throw new UsernameAlreadyRegisteredException();
+        }
+    }
+
+    private long insert(String username, String passwordHash, AppUser.Role role) {
         // 与迁移中的约束保持一致；参数化 SQL 避免把用户名和哈希拼入语句。
         new AppUser(1, username, passwordHash, role, AppUser.State.ACTIVE);
         GeneratedKeyHolder keys = new GeneratedKeyHolder();

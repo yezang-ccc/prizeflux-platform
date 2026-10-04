@@ -4,6 +4,9 @@ import com.prizeflux.contract.api.ApiResponse;
 import com.prizeflux.contract.error.BusinessException;
 import com.prizeflux.contract.error.ErrorCode;
 import com.prizeflux.campaign.application.InvalidCredentialsException;
+import com.prizeflux.campaign.application.DrawQueueRateLimitException;
+import com.prizeflux.campaign.application.DrawQueueProtectionUnavailableException;
+import com.prizeflux.campaign.application.UsernameAlreadyRegisteredException;
 import org.springframework.beans.TypeMismatchException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -73,8 +76,17 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
             // BusinessException构造器已拒绝SUCCESS；这里防止将成功当作异常响应。
             case SUCCESS -> throw new IllegalStateException("业务异常不能携带成功标识");
         };
-        log.warn("business_failure code={}", errorCode.code());
-        return ResponseEntity.status(status).body(ApiResponse.failure(errorCode));
+        if (ex instanceof DrawQueueProtectionUnavailableException protectionFailure) {
+            log.warn("draw_queue_protection_rejected code={} reason={}",
+                    errorCode.code(), protectionFailure.reason().name());
+        } else {
+            log.warn("business_failure code={}", errorCode.code());
+        }
+        ResponseEntity.BodyBuilder response = ResponseEntity.status(status);
+        if (ex instanceof DrawQueueRateLimitException limited) {
+            response.header(HttpHeaders.RETRY_AFTER, Long.toString(limited.retryAfterSeconds()));
+        }
+        return response.body(ApiResponse.failure(errorCode));
     }
 
     /**
@@ -86,6 +98,13 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         log.warn("login_failed");
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                 .body(ApiResponse.failure(ErrorCode.UNAUTHORIZED));
+    }
+
+    /** 注册冲突返回稳定409；不把数据库约束、用户名或 SQL 细节写入日志/响应。 */
+    @ExceptionHandler(UsernameAlreadyRegisteredException.class)
+    public ResponseEntity<ApiResponse<Void>> handleUsernameConflict(UsernameAlreadyRegisteredException ex) {
+        log.warn("registration_conflict");
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(ApiResponse.failure(ErrorCode.CONFLICT));
     }
 
     /**

@@ -1,0 +1,4 @@
+INFO unrelated fixture message
+WARN draw_queue_protection_rejected code=PFX-9001 reason=MYSQL_CONNECTION_POOL_PRESSURE
+WARN draw_queue_protection_rejected code=PFX-9001 reason=MYSQL_BACKLOG_LIMIT
+WARN draw_queue_protection_rejected code=PFX-9001 reason=MYSQL_CONNECTION_POOL_PRESSURE

@@ -1,0 +1,2322 @@
+{
+  "Result": "PASS",
+  "Scenario": "Concurrent async draw-queue admission with Kafka backlog drain and fulfillment reconciliation",
+  "Environment": {
+    "OS": "Microsoft Windows NT 10.0.26200.0",
+    "PowerShell": "7.6.5",
+    "JavaHome": "D:\\java\\jdk-17",
+    "JavaVersion": "java version \"17.0.12\" 2024-07-16 LTS\r\nJava(TM) SE Runtime Environment (build 17.0.12+8-LTS-286)\r\nJava HotSpot(TM) 64-Bit Server VM (build 17.0.12+8-LTS-286, mixed mode, sharing)",
+    "ProcessorCount": 12,
+    "DockerEngine": "29.8.0",
+    "MySqlImage": "mysql:8.4",
+    "RedisImage": "redis:7.4-alpine",
+    "Broker": "Disposable single-node Kafka 3.9.1",
+    "FulfillmentMode": "SIMULATED"
+  },
+  "PortAssignments": {
+    "CampaignApi": 65199,
+    "CampaignMySql": 65196,
+    "WorkerMySql": 65197,
+    "Kafka": 65198,
+    "Redis": 65200
+  },
+  "Configuration": {
+    "RequestCount": 250,
+    "Concurrency": 50,
+    "PrizeStock": 125,
+    "UserDailyLimit": 250,
+    "RedisQueueAdmissionEnabled": true,
+    "RedisUserCampaignGlobalLimits": 255,
+    "QueueBacklogLimit": 300,
+    "DbPoolHighWatermark": 1.0,
+    "ConsumerInstances": 1,
+    "ConsumerConcurrency": 1,
+    "TopicPartitions": 12,
+    "PeriodicRecoveryScanDelayed": true,
+    "ConsumerStartedAfterQueueOutboxPublished": true,
+    "PersistentVolumes": false
+  },
+  "Metrics": {
+    "RequestsAttempted": 250,
+    "QueueAdmissions": 250,
+    "ServiceUnavailableResponses": 0,
+    "QueueAdmissionElapsedMs": 2675.69,
+    "QueueAdmissionsPerSecond": 93.43,
+    "AdmissionP50Ms": 76.32,
+    "AdmissionP95Ms": 147.64,
+    "AdmissionP99Ms": 186.93,
+    "QueueOutboxPublishWaitMs": 24161.04,
+    "BacklogAtConsumerStart": 250,
+    "ConsumerDrainAndWorkerCompletionMs": 29388.3,
+    "EndToEndFromIngressStartMs": 56283.25,
+    "UnexpectedHttpResponses": 0
+  },
+  "Correctness": {
+    "QueueRows": 250,
+    "CompletedQueueRows": 250,
+    "PendingQueueRows": 0,
+    "DrawRows": 250,
+    "InventoryRemaining": 0,
+    "SentDrawQueuedOutboxRows": 250,
+    "SentPrizeFulfillmentOutboxRows": 125,
+    "WorkerLedgerRows": 125,
+    "WorkerSucceededRows": 125,
+    "WorkerAttemptCountTotal": 125,
+    "ManualReviewTasks": 0,
+    "DuplicateDrawFulfillments": 0
+  },
+  "Samples": [
+    {
+      "Index": 1,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "1",
+      "LatencyMs": 132.0119,
+      "ErrorType": ""
+    },
+    {
+      "Index": 2,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "2",
+      "LatencyMs": 118.2929,
+      "ErrorType": ""
+    },
+    {
+      "Index": 3,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "3",
+      "LatencyMs": 70.9536,
+      "ErrorType": ""
+    },
+    {
+      "Index": 4,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "4",
+      "LatencyMs": 55.3638,
+      "ErrorType": ""
+    },
+    {
+      "Index": 5,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "5",
+      "LatencyMs": 70.2944,
+      "ErrorType": ""
+    },
+    {
+      "Index": 6,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "6",
+      "LatencyMs": 45.205,
+      "ErrorType": ""
+    },
+    {
+      "Index": 7,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "7",
+      "LatencyMs": 60.5572,
+      "ErrorType": ""
+    },
+    {
+      "Index": 8,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "10",
+      "LatencyMs": 114.9177,
+      "ErrorType": ""
+    },
+    {
+      "Index": 9,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "8",
+      "LatencyMs": 121.1073,
+      "ErrorType": ""
+    },
+    {
+      "Index": 10,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "9",
+      "LatencyMs": 92.0736,
+      "ErrorType": ""
+    },
+    {
+      "Index": 11,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "11",
+      "LatencyMs": 88.9718,
+      "ErrorType": ""
+    },
+    {
+      "Index": 12,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "12",
+      "LatencyMs": 67.8879,
+      "ErrorType": ""
+    },
+    {
+      "Index": 13,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "13",
+      "LatencyMs": 68.2482,
+      "ErrorType": ""
+    },
+    {
+      "Index": 14,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "14",
+      "LatencyMs": 106.2409,
+      "ErrorType": ""
+    },
+    {
+      "Index": 15,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "15",
+      "LatencyMs": 61.6703,
+      "ErrorType": ""
+    },
+    {
+      "Index": 16,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "16",
+      "LatencyMs": 104.2591,
+      "ErrorType": ""
+    },
+    {
+      "Index": 17,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "17",
+      "LatencyMs": 94.8884,
+      "ErrorType": ""
+    },
+    {
+      "Index": 18,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "18",
+      "LatencyMs": 90.0601,
+      "ErrorType": ""
+    },
+    {
+      "Index": 19,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "19",
+      "LatencyMs": 83.2457,
+      "ErrorType": ""
+    },
+    {
+      "Index": 20,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "20",
+      "LatencyMs": 82.0317,
+      "ErrorType": ""
+    },
+    {
+      "Index": 21,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "21",
+      "LatencyMs": 76.0547,
+      "ErrorType": ""
+    },
+    {
+      "Index": 22,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "22",
+      "LatencyMs": 66.3844,
+      "ErrorType": ""
+    },
+    {
+      "Index": 23,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "23",
+      "LatencyMs": 101.6008,
+      "ErrorType": ""
+    },
+    {
+      "Index": 24,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "25",
+      "LatencyMs": 69.7635,
+      "ErrorType": ""
+    },
+    {
+      "Index": 25,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "24",
+      "LatencyMs": 58.4514,
+      "ErrorType": ""
+    },
+    {
+      "Index": 26,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "27",
+      "LatencyMs": 64.1675,
+      "ErrorType": ""
+    },
+    {
+      "Index": 27,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "26",
+      "LatencyMs": 61.7972,
+      "ErrorType": ""
+    },
+    {
+      "Index": 28,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "28",
+      "LatencyMs": 71.7219,
+      "ErrorType": ""
+    },
+    {
+      "Index": 29,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "31",
+      "LatencyMs": 73.4852,
+      "ErrorType": ""
+    },
+    {
+      "Index": 30,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "29",
+      "LatencyMs": 55.4251,
+      "ErrorType": ""
+    },
+    {
+      "Index": 31,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "30",
+      "LatencyMs": 67.9248,
+      "ErrorType": ""
+    },
+    {
+      "Index": 32,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "32",
+      "LatencyMs": 46.6597,
+      "ErrorType": ""
+    },
+    {
+      "Index": 33,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "40",
+      "LatencyMs": 92.7019,
+      "ErrorType": ""
+    },
+    {
+      "Index": 34,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "33",
+      "LatencyMs": 59.4047,
+      "ErrorType": ""
+    },
+    {
+      "Index": 35,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "34",
+      "LatencyMs": 80.1373,
+      "ErrorType": ""
+    },
+    {
+      "Index": 36,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "36",
+      "LatencyMs": 80.7608,
+      "ErrorType": ""
+    },
+    {
+      "Index": 37,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "39",
+      "LatencyMs": 71.3366,
+      "ErrorType": ""
+    },
+    {
+      "Index": 38,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "35",
+      "LatencyMs": 58.133,
+      "ErrorType": ""
+    },
+    {
+      "Index": 39,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "37",
+      "LatencyMs": 66.9384,
+      "ErrorType": ""
+    },
+    {
+      "Index": 40,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "41",
+      "LatencyMs": 122.3446,
+      "ErrorType": ""
+    },
+    {
+      "Index": 41,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "42",
+      "LatencyMs": 128.0744,
+      "ErrorType": ""
+    },
+    {
+      "Index": 42,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "38",
+      "LatencyMs": 67.8541,
+      "ErrorType": ""
+    },
+    {
+      "Index": 43,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "43",
+      "LatencyMs": 89.0643,
+      "ErrorType": ""
+    },
+    {
+      "Index": 44,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "45",
+      "LatencyMs": 70.7042,
+      "ErrorType": ""
+    },
+    {
+      "Index": 45,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "44",
+      "LatencyMs": 80.616,
+      "ErrorType": ""
+    },
+    {
+      "Index": 46,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "46",
+      "LatencyMs": 66.242,
+      "ErrorType": ""
+    },
+    {
+      "Index": 47,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "52",
+      "LatencyMs": 129.7535,
+      "ErrorType": ""
+    },
+    {
+      "Index": 48,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "50",
+      "LatencyMs": 120.9424,
+      "ErrorType": ""
+    },
+    {
+      "Index": 49,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "49",
+      "LatencyMs": 115.763,
+      "ErrorType": ""
+    },
+    {
+      "Index": 50,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "53",
+      "LatencyMs": 90.0838,
+      "ErrorType": ""
+    },
+    {
+      "Index": 51,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "48",
+      "LatencyMs": 111.9481,
+      "ErrorType": ""
+    },
+    {
+      "Index": 52,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "54",
+      "LatencyMs": 77.7244,
+      "ErrorType": ""
+    },
+    {
+      "Index": 53,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "47",
+      "LatencyMs": 86.0016,
+      "ErrorType": ""
+    },
+    {
+      "Index": 54,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "51",
+      "LatencyMs": 83.2664,
+      "ErrorType": ""
+    },
+    {
+      "Index": 55,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "55",
+      "LatencyMs": 75.0131,
+      "ErrorType": ""
+    },
+    {
+      "Index": 56,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "56",
+      "LatencyMs": 83.8469,
+      "ErrorType": ""
+    },
+    {
+      "Index": 57,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "58",
+      "LatencyMs": 123.6729,
+      "ErrorType": ""
+    },
+    {
+      "Index": 58,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "60",
+      "LatencyMs": 79.8029,
+      "ErrorType": ""
+    },
+    {
+      "Index": 59,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "57",
+      "LatencyMs": 81.3364,
+      "ErrorType": ""
+    },
+    {
+      "Index": 60,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "59",
+      "LatencyMs": 79.395,
+      "ErrorType": ""
+    },
+    {
+      "Index": 61,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "61",
+      "LatencyMs": 124.0268,
+      "ErrorType": ""
+    },
+    {
+      "Index": 62,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "63",
+      "LatencyMs": 118.9173,
+      "ErrorType": ""
+    },
+    {
+      "Index": 63,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "65",
+      "LatencyMs": 105.1803,
+      "ErrorType": ""
+    },
+    {
+      "Index": 64,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "66",
+      "LatencyMs": 92.0431,
+      "ErrorType": ""
+    },
+    {
+      "Index": 65,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "64",
+      "LatencyMs": 86.3065,
+      "ErrorType": ""
+    },
+    {
+      "Index": 66,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "67",
+      "LatencyMs": 80.205,
+      "ErrorType": ""
+    },
+    {
+      "Index": 67,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "62",
+      "LatencyMs": 87.7987,
+      "ErrorType": ""
+    },
+    {
+      "Index": 68,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "71",
+      "LatencyMs": 168.2264,
+      "ErrorType": ""
+    },
+    {
+      "Index": 69,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "75",
+      "LatencyMs": 106.7693,
+      "ErrorType": ""
+    },
+    {
+      "Index": 70,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "69",
+      "LatencyMs": 62.1021,
+      "ErrorType": ""
+    },
+    {
+      "Index": 71,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "68",
+      "LatencyMs": 71.7339,
+      "ErrorType": ""
+    },
+    {
+      "Index": 72,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "70",
+      "LatencyMs": 122.5998,
+      "ErrorType": ""
+    },
+    {
+      "Index": 73,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "73",
+      "LatencyMs": 100.3635,
+      "ErrorType": ""
+    },
+    {
+      "Index": 74,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "78",
+      "LatencyMs": 144.8327,
+      "ErrorType": ""
+    },
+    {
+      "Index": 75,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "76",
+      "LatencyMs": 107.7614,
+      "ErrorType": ""
+    },
+    {
+      "Index": 76,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "72",
+      "LatencyMs": 100.0717,
+      "ErrorType": ""
+    },
+    {
+      "Index": 77,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "74",
+      "LatencyMs": 74.0394,
+      "ErrorType": ""
+    },
+    {
+      "Index": 78,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "77",
+      "LatencyMs": 118.9295,
+      "ErrorType": ""
+    },
+    {
+      "Index": 79,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "79",
+      "LatencyMs": 113.8833,
+      "ErrorType": ""
+    },
+    {
+      "Index": 80,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "82",
+      "LatencyMs": 94.456,
+      "ErrorType": ""
+    },
+    {
+      "Index": 81,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "80",
+      "LatencyMs": 95.9665,
+      "ErrorType": ""
+    },
+    {
+      "Index": 82,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "81",
+      "LatencyMs": 125.4516,
+      "ErrorType": ""
+    },
+    {
+      "Index": 83,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "83",
+      "LatencyMs": 88.4478,
+      "ErrorType": ""
+    },
+    {
+      "Index": 84,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "84",
+      "LatencyMs": 101.2012,
+      "ErrorType": ""
+    },
+    {
+      "Index": 85,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "85",
+      "LatencyMs": 97.1465,
+      "ErrorType": ""
+    },
+    {
+      "Index": 86,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "89",
+      "LatencyMs": 190.0562,
+      "ErrorType": ""
+    },
+    {
+      "Index": 87,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "90",
+      "LatencyMs": 171.5037,
+      "ErrorType": ""
+    },
+    {
+      "Index": 88,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "92",
+      "LatencyMs": 170.2327,
+      "ErrorType": ""
+    },
+    {
+      "Index": 89,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "88",
+      "LatencyMs": 158.5562,
+      "ErrorType": ""
+    },
+    {
+      "Index": 90,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "95",
+      "LatencyMs": 221.961,
+      "ErrorType": ""
+    },
+    {
+      "Index": 91,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "86",
+      "LatencyMs": 157.7813,
+      "ErrorType": ""
+    },
+    {
+      "Index": 92,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "87",
+      "LatencyMs": 153.5294,
+      "ErrorType": ""
+    },
+    {
+      "Index": 93,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "93",
+      "LatencyMs": 110.3054,
+      "ErrorType": ""
+    },
+    {
+      "Index": 94,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "91",
+      "LatencyMs": 105.873,
+      "ErrorType": ""
+    },
+    {
+      "Index": 95,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "94",
+      "LatencyMs": 147.643,
+      "ErrorType": ""
+    },
+    {
+      "Index": 96,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "96",
+      "LatencyMs": 177.305,
+      "ErrorType": ""
+    },
+    {
+      "Index": 97,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "97",
+      "LatencyMs": 179.7467,
+      "ErrorType": ""
+    },
+    {
+      "Index": 98,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "100",
+      "LatencyMs": 111.1584,
+      "ErrorType": ""
+    },
+    {
+      "Index": 99,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "99",
+      "LatencyMs": 105.1345,
+      "ErrorType": ""
+    },
+    {
+      "Index": 100,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "98",
+      "LatencyMs": 125.1059,
+      "ErrorType": ""
+    },
+    {
+      "Index": 101,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "101",
+      "LatencyMs": 110.5284,
+      "ErrorType": ""
+    },
+    {
+      "Index": 102,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "102",
+      "LatencyMs": 186.9271,
+      "ErrorType": ""
+    },
+    {
+      "Index": 103,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "105",
+      "LatencyMs": 169.9746,
+      "ErrorType": ""
+    },
+    {
+      "Index": 104,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "103",
+      "LatencyMs": 127.7529,
+      "ErrorType": ""
+    },
+    {
+      "Index": 105,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "104",
+      "LatencyMs": 104.3142,
+      "ErrorType": ""
+    },
+    {
+      "Index": 106,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "107",
+      "LatencyMs": 106.1235,
+      "ErrorType": ""
+    },
+    {
+      "Index": 107,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "110",
+      "LatencyMs": 140.8251,
+      "ErrorType": ""
+    },
+    {
+      "Index": 108,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "106",
+      "LatencyMs": 111.8347,
+      "ErrorType": ""
+    },
+    {
+      "Index": 109,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "109",
+      "LatencyMs": 140.8607,
+      "ErrorType": ""
+    },
+    {
+      "Index": 110,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "111",
+      "LatencyMs": 133.2337,
+      "ErrorType": ""
+    },
+    {
+      "Index": 111,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "108",
+      "LatencyMs": 131.683,
+      "ErrorType": ""
+    },
+    {
+      "Index": 112,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "112",
+      "LatencyMs": 96.4192,
+      "ErrorType": ""
+    },
+    {
+      "Index": 113,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "116",
+      "LatencyMs": 128.054,
+      "ErrorType": ""
+    },
+    {
+      "Index": 114,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "117",
+      "LatencyMs": 115.6312,
+      "ErrorType": ""
+    },
+    {
+      "Index": 115,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "113",
+      "LatencyMs": 70.2724,
+      "ErrorType": ""
+    },
+    {
+      "Index": 116,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "114",
+      "LatencyMs": 109.8943,
+      "ErrorType": ""
+    },
+    {
+      "Index": 117,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "118",
+      "LatencyMs": 115.1856,
+      "ErrorType": ""
+    },
+    {
+      "Index": 118,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "115",
+      "LatencyMs": 79.6024,
+      "ErrorType": ""
+    },
+    {
+      "Index": 119,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "119",
+      "LatencyMs": 77.1929,
+      "ErrorType": ""
+    },
+    {
+      "Index": 120,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "120",
+      "LatencyMs": 80.9713,
+      "ErrorType": ""
+    },
+    {
+      "Index": 121,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "121",
+      "LatencyMs": 121.1448,
+      "ErrorType": ""
+    },
+    {
+      "Index": 122,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "124",
+      "LatencyMs": 120.593,
+      "ErrorType": ""
+    },
+    {
+      "Index": 123,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "123",
+      "LatencyMs": 124.0703,
+      "ErrorType": ""
+    },
+    {
+      "Index": 124,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "122",
+      "LatencyMs": 95.6886,
+      "ErrorType": ""
+    },
+    {
+      "Index": 125,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "126",
+      "LatencyMs": 92.315,
+      "ErrorType": ""
+    },
+    {
+      "Index": 126,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "125",
+      "LatencyMs": 95.0035,
+      "ErrorType": ""
+    },
+    {
+      "Index": 127,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "127",
+      "LatencyMs": 104.894,
+      "ErrorType": ""
+    },
+    {
+      "Index": 128,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "128",
+      "LatencyMs": 67.7304,
+      "ErrorType": ""
+    },
+    {
+      "Index": 129,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "129",
+      "LatencyMs": 63.0825,
+      "ErrorType": ""
+    },
+    {
+      "Index": 130,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "130",
+      "LatencyMs": 55.4135,
+      "ErrorType": ""
+    },
+    {
+      "Index": 131,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "133",
+      "LatencyMs": 92.5771,
+      "ErrorType": ""
+    },
+    {
+      "Index": 132,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "131",
+      "LatencyMs": 86.6211,
+      "ErrorType": ""
+    },
+    {
+      "Index": 133,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "132",
+      "LatencyMs": 83.4155,
+      "ErrorType": ""
+    },
+    {
+      "Index": 134,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "134",
+      "LatencyMs": 101.8666,
+      "ErrorType": ""
+    },
+    {
+      "Index": 135,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "135",
+      "LatencyMs": 77.0316,
+      "ErrorType": ""
+    },
+    {
+      "Index": 136,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "136",
+      "LatencyMs": 85.2393,
+      "ErrorType": ""
+    },
+    {
+      "Index": 137,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "137",
+      "LatencyMs": 84.797,
+      "ErrorType": ""
+    },
+    {
+      "Index": 138,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "138",
+      "LatencyMs": 81.0918,
+      "ErrorType": ""
+    },
+    {
+      "Index": 139,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "142",
+      "LatencyMs": 87.1374,
+      "ErrorType": ""
+    },
+    {
+      "Index": 140,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "139",
+      "LatencyMs": 82.3874,
+      "ErrorType": ""
+    },
+    {
+      "Index": 141,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "141",
+      "LatencyMs": 57.6861,
+      "ErrorType": ""
+    },
+    {
+      "Index": 142,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "143",
+      "LatencyMs": 56.5089,
+      "ErrorType": ""
+    },
+    {
+      "Index": 143,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "140",
+      "LatencyMs": 50.3805,
+      "ErrorType": ""
+    },
+    {
+      "Index": 144,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "144",
+      "LatencyMs": 60.2482,
+      "ErrorType": ""
+    },
+    {
+      "Index": 145,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "147",
+      "LatencyMs": 57.1335,
+      "ErrorType": ""
+    },
+    {
+      "Index": 146,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "146",
+      "LatencyMs": 73.0429,
+      "ErrorType": ""
+    },
+    {
+      "Index": 147,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "145",
+      "LatencyMs": 53.3408,
+      "ErrorType": ""
+    },
+    {
+      "Index": 148,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "148",
+      "LatencyMs": 52.1077,
+      "ErrorType": ""
+    },
+    {
+      "Index": 149,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "152",
+      "LatencyMs": 106.06,
+      "ErrorType": ""
+    },
+    {
+      "Index": 150,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "153",
+      "LatencyMs": 86.5289,
+      "ErrorType": ""
+    },
+    {
+      "Index": 151,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "149",
+      "LatencyMs": 54.6742,
+      "ErrorType": ""
+    },
+    {
+      "Index": 152,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "154",
+      "LatencyMs": 82.732,
+      "ErrorType": ""
+    },
+    {
+      "Index": 153,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "151",
+      "LatencyMs": 99.968,
+      "ErrorType": ""
+    },
+    {
+      "Index": 154,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "155",
+      "LatencyMs": 78.2517,
+      "ErrorType": ""
+    },
+    {
+      "Index": 155,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "150",
+      "LatencyMs": 79.9057,
+      "ErrorType": ""
+    },
+    {
+      "Index": 156,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "156",
+      "LatencyMs": 73.4174,
+      "ErrorType": ""
+    },
+    {
+      "Index": 157,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "157",
+      "LatencyMs": 59.2122,
+      "ErrorType": ""
+    },
+    {
+      "Index": 158,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "159",
+      "LatencyMs": 75.2989,
+      "ErrorType": ""
+    },
+    {
+      "Index": 159,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "158",
+      "LatencyMs": 80.3588,
+      "ErrorType": ""
+    },
+    {
+      "Index": 160,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "161",
+      "LatencyMs": 64.7191,
+      "ErrorType": ""
+    },
+    {
+      "Index": 161,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "160",
+      "LatencyMs": 58.1745,
+      "ErrorType": ""
+    },
+    {
+      "Index": 162,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "163",
+      "LatencyMs": 71.6798,
+      "ErrorType": ""
+    },
+    {
+      "Index": 163,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "162",
+      "LatencyMs": 67.8389,
+      "ErrorType": ""
+    },
+    {
+      "Index": 164,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "164",
+      "LatencyMs": 67.7381,
+      "ErrorType": ""
+    },
+    {
+      "Index": 165,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "167",
+      "LatencyMs": 73.5853,
+      "ErrorType": ""
+    },
+    {
+      "Index": 166,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "166",
+      "LatencyMs": 85.1283,
+      "ErrorType": ""
+    },
+    {
+      "Index": 167,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "165",
+      "LatencyMs": 65.6727,
+      "ErrorType": ""
+    },
+    {
+      "Index": 168,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "169",
+      "LatencyMs": 72.2152,
+      "ErrorType": ""
+    },
+    {
+      "Index": 169,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "170",
+      "LatencyMs": 64.7202,
+      "ErrorType": ""
+    },
+    {
+      "Index": 170,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "168",
+      "LatencyMs": 89.3753,
+      "ErrorType": ""
+    },
+    {
+      "Index": 171,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "173",
+      "LatencyMs": 58.108,
+      "ErrorType": ""
+    },
+    {
+      "Index": 172,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "171",
+      "LatencyMs": 54.5087,
+      "ErrorType": ""
+    },
+    {
+      "Index": 173,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "172",
+      "LatencyMs": 55.7155,
+      "ErrorType": ""
+    },
+    {
+      "Index": 174,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "175",
+      "LatencyMs": 34.2448,
+      "ErrorType": ""
+    },
+    {
+      "Index": 175,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "174",
+      "LatencyMs": 55.9486,
+      "ErrorType": ""
+    },
+    {
+      "Index": 176,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "176",
+      "LatencyMs": 74.5386,
+      "ErrorType": ""
+    },
+    {
+      "Index": 177,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "177",
+      "LatencyMs": 50.3039,
+      "ErrorType": ""
+    },
+    {
+      "Index": 178,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "180",
+      "LatencyMs": 91.2225,
+      "ErrorType": ""
+    },
+    {
+      "Index": 179,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "178",
+      "LatencyMs": 50.1119,
+      "ErrorType": ""
+    },
+    {
+      "Index": 180,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "179",
+      "LatencyMs": 83.905,
+      "ErrorType": ""
+    },
+    {
+      "Index": 181,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "181",
+      "LatencyMs": 78.5887,
+      "ErrorType": ""
+    },
+    {
+      "Index": 182,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "182",
+      "LatencyMs": 79.1485,
+      "ErrorType": ""
+    },
+    {
+      "Index": 183,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "185",
+      "LatencyMs": 67.5481,
+      "ErrorType": ""
+    },
+    {
+      "Index": 184,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "183",
+      "LatencyMs": 64.3863,
+      "ErrorType": ""
+    },
+    {
+      "Index": 185,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "184",
+      "LatencyMs": 71.3069,
+      "ErrorType": ""
+    },
+    {
+      "Index": 186,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "186",
+      "LatencyMs": 67.6113,
+      "ErrorType": ""
+    },
+    {
+      "Index": 187,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "190",
+      "LatencyMs": 104.7564,
+      "ErrorType": ""
+    },
+    {
+      "Index": 188,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "188",
+      "LatencyMs": 120.7334,
+      "ErrorType": ""
+    },
+    {
+      "Index": 189,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "189",
+      "LatencyMs": 105.8322,
+      "ErrorType": ""
+    },
+    {
+      "Index": 190,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "187",
+      "LatencyMs": 55.7571,
+      "ErrorType": ""
+    },
+    {
+      "Index": 191,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "192",
+      "LatencyMs": 84.6845,
+      "ErrorType": ""
+    },
+    {
+      "Index": 192,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "191",
+      "LatencyMs": 56.4107,
+      "ErrorType": ""
+    },
+    {
+      "Index": 193,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "194",
+      "LatencyMs": 68.2283,
+      "ErrorType": ""
+    },
+    {
+      "Index": 194,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "193",
+      "LatencyMs": 65.1556,
+      "ErrorType": ""
+    },
+    {
+      "Index": 195,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "195",
+      "LatencyMs": 52.2667,
+      "ErrorType": ""
+    },
+    {
+      "Index": 196,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "196",
+      "LatencyMs": 54.4756,
+      "ErrorType": ""
+    },
+    {
+      "Index": 197,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "197",
+      "LatencyMs": 68.9095,
+      "ErrorType": ""
+    },
+    {
+      "Index": 198,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "198",
+      "LatencyMs": 72.5423,
+      "ErrorType": ""
+    },
+    {
+      "Index": 199,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "199",
+      "LatencyMs": 72.2654,
+      "ErrorType": ""
+    },
+    {
+      "Index": 200,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "200",
+      "LatencyMs": 78.9793,
+      "ErrorType": ""
+    },
+    {
+      "Index": 201,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "202",
+      "LatencyMs": 63.2748,
+      "ErrorType": ""
+    },
+    {
+      "Index": 202,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "203",
+      "LatencyMs": 50.7914,
+      "ErrorType": ""
+    },
+    {
+      "Index": 203,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "201",
+      "LatencyMs": 58.0541,
+      "ErrorType": ""
+    },
+    {
+      "Index": 204,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "204",
+      "LatencyMs": 46.1141,
+      "ErrorType": ""
+    },
+    {
+      "Index": 205,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "205",
+      "LatencyMs": 62.6431,
+      "ErrorType": ""
+    },
+    {
+      "Index": 206,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "206",
+      "LatencyMs": 73.5076,
+      "ErrorType": ""
+    },
+    {
+      "Index": 207,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "208",
+      "LatencyMs": 56.9371,
+      "ErrorType": ""
+    },
+    {
+      "Index": 208,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "210",
+      "LatencyMs": 48.3642,
+      "ErrorType": ""
+    },
+    {
+      "Index": 209,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "209",
+      "LatencyMs": 46.5923,
+      "ErrorType": ""
+    },
+    {
+      "Index": 210,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "207",
+      "LatencyMs": 48.8441,
+      "ErrorType": ""
+    },
+    {
+      "Index": 211,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "211",
+      "LatencyMs": 42.5675,
+      "ErrorType": ""
+    },
+    {
+      "Index": 212,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "212",
+      "LatencyMs": 40.107,
+      "ErrorType": ""
+    },
+    {
+      "Index": 213,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "215",
+      "LatencyMs": 49.2165,
+      "ErrorType": ""
+    },
+    {
+      "Index": 214,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "214",
+      "LatencyMs": 47.5247,
+      "ErrorType": ""
+    },
+    {
+      "Index": 215,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "213",
+      "LatencyMs": 45.1763,
+      "ErrorType": ""
+    },
+    {
+      "Index": 216,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "216",
+      "LatencyMs": 56.3311,
+      "ErrorType": ""
+    },
+    {
+      "Index": 217,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "220",
+      "LatencyMs": 77.7459,
+      "ErrorType": ""
+    },
+    {
+      "Index": 218,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "219",
+      "LatencyMs": 58.7867,
+      "ErrorType": ""
+    },
+    {
+      "Index": 219,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "218",
+      "LatencyMs": 47.4229,
+      "ErrorType": ""
+    },
+    {
+      "Index": 220,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "217",
+      "LatencyMs": 76.3226,
+      "ErrorType": ""
+    },
+    {
+      "Index": 221,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "221",
+      "LatencyMs": 67.2739,
+      "ErrorType": ""
+    },
+    {
+      "Index": 222,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "222",
+      "LatencyMs": 61.1938,
+      "ErrorType": ""
+    },
+    {
+      "Index": 223,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "224",
+      "LatencyMs": 66.9896,
+      "ErrorType": ""
+    },
+    {
+      "Index": 224,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "223",
+      "LatencyMs": 45.1882,
+      "ErrorType": ""
+    },
+    {
+      "Index": 225,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "226",
+      "LatencyMs": 70.8728,
+      "ErrorType": ""
+    },
+    {
+      "Index": 226,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "225",
+      "LatencyMs": 73.7083,
+      "ErrorType": ""
+    },
+    {
+      "Index": 227,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "227",
+      "LatencyMs": 76.2836,
+      "ErrorType": ""
+    },
+    {
+      "Index": 228,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "228",
+      "LatencyMs": 67.3328,
+      "ErrorType": ""
+    },
+    {
+      "Index": 229,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "231",
+      "LatencyMs": 62.8777,
+      "ErrorType": ""
+    },
+    {
+      "Index": 230,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "229",
+      "LatencyMs": 65.4748,
+      "ErrorType": ""
+    },
+    {
+      "Index": 231,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "232",
+      "LatencyMs": 58.7258,
+      "ErrorType": ""
+    },
+    {
+      "Index": 232,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "230",
+      "LatencyMs": 64.947,
+      "ErrorType": ""
+    },
+    {
+      "Index": 233,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "233",
+      "LatencyMs": 55.477,
+      "ErrorType": ""
+    },
+    {
+      "Index": 234,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "234",
+      "LatencyMs": 59.9341,
+      "ErrorType": ""
+    },
+    {
+      "Index": 235,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "235",
+      "LatencyMs": 55.8817,
+      "ErrorType": ""
+    },
+    {
+      "Index": 236,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "236",
+      "LatencyMs": 44.8287,
+      "ErrorType": ""
+    },
+    {
+      "Index": 237,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "238",
+      "LatencyMs": 60.6082,
+      "ErrorType": ""
+    },
+    {
+      "Index": 238,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "237",
+      "LatencyMs": 52.1673,
+      "ErrorType": ""
+    },
+    {
+      "Index": 239,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "239",
+      "LatencyMs": 58.1715,
+      "ErrorType": ""
+    },
+    {
+      "Index": 240,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "242",
+      "LatencyMs": 63.8523,
+      "ErrorType": ""
+    },
+    {
+      "Index": 241,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "240",
+      "LatencyMs": 56.7235,
+      "ErrorType": ""
+    },
+    {
+      "Index": 242,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "243",
+      "LatencyMs": 53.9678,
+      "ErrorType": ""
+    },
+    {
+      "Index": 243,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "241",
+      "LatencyMs": 51.3833,
+      "ErrorType": ""
+    },
+    {
+      "Index": 244,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "246",
+      "LatencyMs": 58.7088,
+      "ErrorType": ""
+    },
+    {
+      "Index": 245,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "245",
+      "LatencyMs": 57.9958,
+      "ErrorType": ""
+    },
+    {
+      "Index": 246,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "244",
+      "LatencyMs": 49.6986,
+      "ErrorType": ""
+    },
+    {
+      "Index": 247,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "247",
+      "LatencyMs": 48.7356,
+      "ErrorType": ""
+    },
+    {
+      "Index": 248,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "248",
+      "LatencyMs": 48.9093,
+      "ErrorType": ""
+    },
+    {
+      "Index": 249,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "249",
+      "LatencyMs": 47.2505,
+      "ErrorType": ""
+    },
+    {
+      "Index": 250,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "250",
+      "LatencyMs": 42.8798,
+      "ErrorType": ""
+    }
+  ],
+  "CredentialsOrTokensPrinted": false,
+  "Note": "Single host, single activity/user, one Campaign queue consumer, single-node Kafka, Redis/MySQL temporary containers, simulated fulfillment; this historical run did not capture internal causes for any 503/PFX-9001, all other non-202 responses fail; controlled local result, not production capacity evidence."
+}

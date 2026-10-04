@@ -1,7 +1,14 @@
 # 本地真实进程使用 Compose MySQL；测试仍由 Testcontainers 注入独立数据库。
 spring:
+  config:
+    # Optional Compose secret files become properties by filename; absent for normal local runs.
+    import: optional:configtree:/run/secrets/
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+    consumer:
+      enable-auto-commit: false
   datasource:
-    url: ${PFX_DB_URL:jdbc:mysql://127.0.0.1:3306/prizeflux}
+    url: ${PFX_DB_URL:jdbc:mysql://127.0.0.1:3307/prizeflux}
     username: ${PFX_DB_USER:prizeflux}
     password: ${PFX_DB_PASSWORD}
     hikari:
@@ -9,12 +16,34 @@ spring:
       connection-timeout: ${PFX_DB_CONNECTION_TIMEOUT_MS:3000}
   flyway:
     enabled: true
+    # Flyway may use a schema-scoped DDL account while the application datasource
+    # remains a least-privilege DML account. Defaults preserve older local setups.
+    url: ${PFX_CAMPAIGN_MIGRATION_DB_URL:${PFX_DB_URL:jdbc:mysql://127.0.0.1:3307/prizeflux}}
+    user: ${PFX_CAMPAIGN_MIGRATION_DB_USER:${PFX_DB_USER:prizeflux}}
+    password: ${PFX_CAMPAIGN_MIGRATION_DB_PASSWORD:${PFX_DB_PASSWORD}}
   data:
     redis:
       host: ${PFX_REDIS_HOST:127.0.0.1}
       port: ${PFX_REDIS_PORT:6379}
       connect-timeout: ${PFX_REDIS_CONNECT_TIMEOUT:1s}
       timeout: ${PFX_REDIS_COMMAND_TIMEOUT:1s}
+
+# The scrape endpoint is exposed only by local-full, stays on Campaign's private
+# product network; the default path is restricted to OPERATOR JWTs by SecurityConfiguration.
+# The optional Compose monitoring overlay adds its separate Basic scrape identity.
+# No Prometheus/Grafana process is required for the product to start.
+management:
+  prometheus:
+    metrics:
+      export:
+        enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: prometheus
+  endpoint:
+    prometheus:
+      access: read-only
 
 mybatis:
   mapper-locations: classpath*:com/prizeflux/campaign/infrastructure/persistence/*Mapper.xml
@@ -29,11 +58,66 @@ prizeflux:
       max-requests: ${PFX_DRAW_RATE_LIMIT_MAX_REQUESTS:30}
       window-seconds: ${PFX_DRAW_RATE_LIMIT_WINDOW_SECONDS:60}
       key-prefix: 'pfx:draw:rate:v1:'
+    registration-rate-limit:
+      enabled: ${PFX_REGISTRATION_RATE_LIMIT_ENABLED:true}
+      max-requests: ${PFX_REGISTRATION_RATE_LIMIT_MAX_REQUESTS:5}
+      window-seconds: ${PFX_REGISTRATION_RATE_LIMIT_WINDOW_SECONDS:600}
+      key-prefix: 'pfx:auth:register:ip:v1:'
+    draw-queue:
+      enabled: ${PFX_DRAW_QUEUE_PROTECTION_ENABLED:true}
+      key-prefix: 'pfx:draw:queue:admission:v1:'
+      window-seconds: ${PFX_DRAW_QUEUE_RATE_WINDOW_SECONDS:60}
+      user-max-requests: ${PFX_DRAW_QUEUE_USER_MAX_REQUESTS:5}
+      campaign-max-requests: ${PFX_DRAW_QUEUE_CAMPAIGN_MAX_REQUESTS:300}
+      global-max-requests: ${PFX_DRAW_QUEUE_GLOBAL_MAX_REQUESTS:1000}
+      status-max-requests: ${PFX_DRAW_QUEUE_STATUS_MAX_REQUESTS:60}
+      max-backlog: ${PFX_DRAW_QUEUE_MAX_BACKLOG:10000}
+      max-oldest-age-seconds: ${PFX_DRAW_QUEUE_MAX_OLDEST_AGE_SECONDS:300}
+      database-pool-high-watermark: ${PFX_DRAW_QUEUE_DB_POOL_HIGH_WATERMARK:0.9}
   kafka:
     # D7-03：local-full 走 Kafka 投递发奖事件；bootstrap 可由环境变量覆盖。
     enabled: true
+    manage-topics: ${PFX_KAFKA_MANAGE_TOPICS:true}
+    draw-queue-enabled: ${PFX_DRAW_QUEUE_ENABLED:true}
+    draw-queue-consumer-enabled: ${PFX_DRAW_QUEUE_CONSUMER_ENABLED:false}
     bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+    topic-draw-queue: ${PFX_KAFKA_TOPIC_DRAW_QUEUE:prizeflux.draw.queued}
+    topic-draw-queue-dlt: ${PFX_KAFKA_TOPIC_DRAW_QUEUE_DLT:prizeflux.draw.queued.dlt}
+    draw-queue-partitions: ${PFX_KAFKA_DRAW_QUEUE_PARTITIONS:12}
+    draw-queue-replication-factor: ${PFX_KAFKA_DRAW_QUEUE_REPLICATION_FACTOR:1}
+    group-draw-queue: ${PFX_KAFKA_GROUP_DRAW_QUEUE:prizeflux-campaign-draw-queue}
+    draw-queue-concurrency: ${PFX_DRAW_QUEUE_CONCURRENCY:1}
+    draw-queue-lease: ${PFX_DRAW_QUEUE_LEASE:PT1M}
+    draw-queue-max-attempts: ${PFX_DRAW_QUEUE_MAX_ATTEMPTS:5}
+    draw-queue-retry-base: ${PFX_DRAW_QUEUE_RETRY_BASE:PT2S}
+    draw-queue-retry-max: ${PFX_DRAW_QUEUE_RETRY_MAX:PT1M}
+    draw-queue-scan-initial-delay-ms: ${PFX_DRAW_QUEUE_SCAN_INITIAL_DELAY_MS:1000}
+    draw-queue-scan-delay-ms: ${PFX_DRAW_QUEUE_SCAN_DELAY_MS:1000}
+    draw-queue-scan-batch-size: ${PFX_DRAW_QUEUE_SCAN_BATCH_SIZE:100}
+    draw-queue-kafka-retry-delay-ms: ${PFX_DRAW_QUEUE_KAFKA_RETRY_DELAY_MS:500}
+    draw-queue-kafka-retries: ${PFX_DRAW_QUEUE_KAFKA_RETRIES:2}
+    draw-queue-dlt-replication-factor: ${PFX_DRAW_QUEUE_DLT_REPLICATION_FACTOR:1}
   outbox:
     relay:
       # 启用 Outbox Relay 的周期领取与投递（KafkaEventPublisher 作为 DomainEventPublisher）。
       enabled: true
+      max-attempts: ${PFX_OUTBOX_MAX_ATTEMPTS:3}
+      retry-base-delay: ${PFX_OUTBOX_RETRY_BASE_DELAY:PT2S}
+      retry-max-delay: ${PFX_OUTBOX_RETRY_MAX_DELAY:PT30S}
+  observability:
+    mysql-lock-waits:
+      # Dedicated table-level SELECT account is provisioned only by the optional monitoring overlay.
+      enabled: ${PFX_MYSQL_LOCK_METRICS_ENABLED:false}
+      # This identity has no business-schema grants, so connect without a default schema.
+      jdbc-url: ${PFX_MYSQL_LOCK_METRICS_JDBC_URL:jdbc:mysql://${MYSQL_HOST:127.0.0.1}:${MYSQL_PORT:3307}/}
+      username: ${PFX_MYSQL_LOCK_METRICS_USERNAME:pfx_observability}
+      password: ${PFX_MYSQL_LOCK_METRICS_PASSWORD:${pfx.observability.mysql-lock-waits.password:}}
+      sample-delay-ms: ${PFX_MYSQL_LOCK_METRICS_SAMPLE_DELAY_MS:10000}
+    draw-queue:
+      # 低频采样为内部 backlog gauge 提供快照；不依赖 Prometheus/Grafana 进程。
+      enabled: ${PFX_DRAW_QUEUE_PRESSURE_METRICS_ENABLED:true}
+      sample-delay-ms: ${PFX_DRAW_QUEUE_PRESSURE_METRICS_DELAY_MS:10000}
+    outbox:
+      # Keep scrape-time work in-memory; DB aggregation runs on a low-frequency schedule.
+      enabled: ${PFX_OUTBOX_PRESSURE_METRICS_ENABLED:true}
+      sample-delay-ms: ${PFX_OUTBOX_PRESSURE_METRICS_DELAY_MS:10000}

@@ -3,12 +3,12 @@ services:
   mysql:
     image: mysql:8.4
     environment:
-      MYSQL_ROOT_PASSWORD: ${PFX_DB_ROOT_PASSWORD:?Set PFX_DB_ROOT_PASSWORD}
-      MYSQL_DATABASE: prizeflux
-      MYSQL_USER: prizeflux
-      MYSQL_PASSWORD: ${PFX_DB_PASSWORD:?Set PFX_DB_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${PFX_DB_ROOT_PASSWORD:-${MYSQL_ROOT_PASSWORD:?Set PFX_DB_ROOT_PASSWORD or MYSQL_ROOT_PASSWORD}}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-prizeflux}
+      MYSQL_USER: ${PFX_DB_USER:-${MYSQL_USERNAME:-prizeflux}}
+      MYSQL_PASSWORD: ${PFX_DB_PASSWORD:-${MYSQL_PASSWORD:?Set PFX_DB_PASSWORD or MYSQL_PASSWORD}}
     ports:
-      - "127.0.0.1:3306:3306"
+      - "127.0.0.1:${PFX_DB_PORT:-3306}:3306"
     volumes:
       - prizeflux_mysql_data:/var/lib/mysql
     healthcheck:
@@ -21,7 +21,7 @@ services:
     image: redis:7.4-alpine
     command: ["redis-server", "--save", "", "--appendonly", "no"]
     ports:
-      - "127.0.0.1:6379:6379"
+      - "127.0.0.1:${PFX_REDIS_PORT:-6379}:6379"
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 5s

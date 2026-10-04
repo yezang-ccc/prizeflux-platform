@@ -1,0 +1,38 @@
+# Opt-in local knowledge stack. Use with compose.product.yml; no host ports.
+# Qdrant and BM25 artifacts are separate from the product MySQL volume.
+services:
+  qdrant:
+    image: qdrant/qdrant:v1.19.1
+    profiles: [local-full]
+    volumes:
+      - prizeflux_knowledge_qdrant_data:/qdrant/storage
+    networks: [product]
+    healthcheck:
+      test: ["CMD-SHELL", "bash -c '</dev/tcp/127.0.0.1/6333'"]
+      interval: 5s
+      timeout: 3s
+      retries: 30
+      start_period: 20s
+
+  agent:
+    build:
+      args:
+        PFX_WITH_LOCAL_EMBEDDING: "true"
+    environment:
+      PFX_AGENT_EMBEDDING_PROVIDER: local-fastembed
+      PFX_AGENT_EMBEDDING_MODEL_PATH: /models/bge-small-zh-v1.5
+      PFX_AGENT_QDRANT_URL: http://qdrant:6333
+      PFX_AGENT_QDRANT_INTERNAL_HTTP_ORIGIN: http://qdrant:6333
+      PFX_AGENT_KNOWLEDGE_RETRIEVAL_ENABLED: ${PFX_AGENT_KNOWLEDGE_RETRIEVAL_ENABLED:-false}
+    volumes:
+      - ../agent-service/.data/models/bge-small-zh-v1.5-46fbe35:/models/bge-small-zh-v1.5:ro
+      - prizeflux_knowledge_bm25_data:/app/.data/knowledge
+    depends_on:
+      qdrant:
+        condition: service_healthy
+
+volumes:
+  prizeflux_knowledge_qdrant_data:
+    name: prizeflux_knowledge_qdrant_data
+  prizeflux_knowledge_bm25_data:
+    name: prizeflux_knowledge_bm25_data

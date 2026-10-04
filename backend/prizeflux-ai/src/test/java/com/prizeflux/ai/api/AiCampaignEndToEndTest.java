@@ -31,7 +31,9 @@ import org.springframework.test.context.DynamicPropertySource;
 class AiCampaignEndToEndTest {
     private static final AtomicInteger identityRequests = new AtomicInteger();
     private static final AtomicInteger campaignReads = new AtomicInteger();
+    private static final AtomicInteger draftValidationRequests = new AtomicInteger();
     private static final AtomicReference<String> campaignBearer = new AtomicReference<>();
+    private static final AtomicReference<String> draftValidationBearer = new AtomicReference<>();
     private static final HttpServer campaignServer = startCampaignStub();
 
     @Autowired
@@ -46,7 +48,9 @@ class AiCampaignEndToEndTest {
     void resetCounters() {
         identityRequests.set(0);
         campaignReads.set(0);
+        draftValidationRequests.set(0);
         campaignBearer.set(null);
+        draftValidationBearer.set(null);
     }
 
     @AfterAll
@@ -95,6 +99,29 @@ class AiCampaignEndToEndTest {
         assertEquals(0, campaignReads.get());
     }
 
+    @Test
+    void userCopilotCallsOnlyTheAuthenticatedReadOnlyCampaignValidator() throws Exception {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setBearerAuth("user-token");
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        String proposal = """
+                {"name":"Draft","startsAt":"2026-10-01T00:00:00Z","endsAt":"2026-10-08T00:00:00Z",
+                 "dailyLimit":3,"prizes":[{"id":1,"name":"Gift","totalStock":2,"probability":0.25}]}
+                """;
+        ResponseEntity<String> response = http.exchange("/api/ai/creator/validate", HttpMethod.POST,
+                new HttpEntity<>(proposal, headers), String.class);
+        JsonNode body = new ObjectMapper().readTree(response.getBody());
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertTrue(body.path("data").path("valid").asBoolean());
+        assertTrue(body.path("data").path("simulated").asBoolean());
+        assertEquals("campaign.draft.validate", body.path("data").path("trace").get(1).path("toolName").asText());
+        assertEquals(1, identityRequests.get());
+        assertEquals(1, draftValidationRequests.get());
+        assertEquals("user-token", draftValidationBearer.get());
+        assertEquals(0, campaignReads.get());
+    }
+
     private static HttpServer startCampaignStub() {
         try {
             HttpServer server = HttpServer.create(new InetSocketAddress("127.0.0.1", 0), 0);
@@ -119,6 +146,19 @@ class AiCampaignEndToEndTest {
                         + "{\"id\":1005,\"name\":\"Autumn Campaign\",\"startsAt\":null,"
                         + "\"endsAt\":null,\"status\":\"PUBLISHED\"}}")
                         .getBytes(StandardCharsets.UTF_8);
+                exchange.getResponseHeaders().set("Content-Type", "application/json");
+                exchange.sendResponseHeaders(200, body.length);
+                try (var output = exchange.getResponseBody()) {
+                    output.write(body);
+                }
+            });
+            server.createContext("/api/me/campaigns/validate", exchange -> {
+                draftValidationRequests.incrementAndGet();
+                draftValidationBearer.set(exchange.getRequestHeaders().getFirst("Authorization")
+                        .replace("Bearer ", ""));
+                byte[] body = """
+                        {"code":"PFX-0000","message":"ok","data":{"valid":true,"issues":[]}}
+                        """.getBytes(StandardCharsets.UTF_8);
                 exchange.getResponseHeaders().set("Content-Type", "application/json");
                 exchange.sendResponseHeaders(200, body.length);
                 try (var output = exchange.getResponseBody()) {

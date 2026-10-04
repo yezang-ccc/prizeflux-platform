@@ -1,0 +1,84 @@
+groups:
+  - name: prizeflux-runtime
+    interval: 30s
+    rules:
+      - alert: PrizeFluxCampaignScrapeUnavailable
+        expr: up{job="prizeflux-campaign"} == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: Campaign metrics endpoint is unavailable
+          description: Prometheus has failed to scrape the Campaign metrics endpoint for more than one minute.
+
+      - alert: PrizeFluxWorkerScrapeUnavailable
+        expr: up{job="prizeflux-worker"} == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: Worker metrics endpoint is unavailable
+          description: Prometheus has failed to scrape the Worker metrics endpoint for more than one minute.
+
+      - alert: PrizeFluxDrawQueueOldestRequestOverGuard
+        expr: prizeflux_draw_queue_oldest_age_milliseconds > 300000
+        for: 1m
+        labels:
+          severity: warning
+        annotations:
+          summary: Oldest queued draw has exceeded five minutes
+          description: The local-full default admission guard is 300 seconds; align this alert if the configured guard changes.
+
+      - alert: PrizeFluxOutboxDeadLettersPresent
+        expr: prizeflux_outbox_dead > 0
+        for: 1m
+        labels:
+          severity: warning
+        annotations:
+          summary: Outbox contains dead-lettered events
+          description: Inspect the sanitized event logs and recovery workflow; do not replay blindly.
+
+      - alert: PrizeFluxOutboxOldestEventOverFiveMinutes
+        expr: prizeflux_outbox_oldest_age_milliseconds > 300000
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: An active Outbox event has remained pending for over five minutes
+          description: Check Kafka availability, Relay health, and the MySQL Outbox pressure sample.
+
+      - alert: PrizeFluxHikariConnectionsWaiting
+        expr: hikaricp_connections_pending{job="prizeflux-campaign"} > 0
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: Requests are waiting for a Campaign database connection
+          description: Check active/max connections, database latency, and request load before changing pool size.
+
+      - alert: PrizeFluxCampaignPressureSampleStale
+        expr: (time() - prizeflux_draw_queue_pressure_last_success_epoch_seconds > 60) or (time() - prizeflux_outbox_pressure_last_success_epoch_seconds > 60)
+        for: 1m
+        labels:
+          severity: warning
+        annotations:
+          summary: A Campaign database pressure sample is stale
+          description: Queue or Outbox backlog gauges have not been refreshed; scrape success alone does not guarantee fresh DB samples.
+
+      - alert: PrizeFluxWorkerKafkaLagSampleStale
+        expr: time() - prizeflux_worker_kafka_consumer_lag_last_success_epoch_seconds > 60
+        for: 1m
+        labels:
+          severity: warning
+        annotations:
+          summary: Worker Kafka lag sample is stale
+          description: The cached consumer-lag value is stale; inspect the sampler failure counter and Kafka Admin connectivity.
+
+      - alert: PrizeFluxMysqlLockWaitSampleStale
+        expr: time() - prizeflux_mysql_lock_wait_sample_last_success_epoch_seconds > 60
+        for: 1m
+        labels:
+          severity: warning
+        annotations:
+          summary: MySQL InnoDB lock-wait sample is stale
+          description: The observer has not refreshed the sampled blocking-relationship count; inspect its failure counter and dedicated Performance Schema grant.

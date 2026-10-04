@@ -2,11 +2,15 @@ package com.prizeflux.campaign.infrastructure.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.prizeflux.campaign.application.DrawRateLimiter;
+import com.prizeflux.campaign.application.RegistrationRateLimiter;
 import com.prizeflux.campaign.infrastructure.traffic.DrawRateLimitFilter;
 import com.prizeflux.campaign.infrastructure.traffic.DrawRateLimitProperties;
+import com.prizeflux.campaign.infrastructure.traffic.RegistrationRateLimitFilter;
+import com.prizeflux.campaign.infrastructure.traffic.RegistrationRateLimitProperties;
 import com.prizeflux.contract.api.ApiResponse;
 import com.prizeflux.contract.error.ErrorCode;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.actuate.autoconfigure.security.servlet.EndpointRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -43,12 +47,18 @@ public class SecurityConfiguration {
             AccessDeniedHandler accessDeniedHandler,
             DrawRateLimiter drawRateLimiter,
             DrawRateLimitProperties drawRateLimitProperties,
+            RegistrationRateLimiter registrationRateLimiter,
+            RegistrationRateLimitProperties registrationRateLimitProperties,
             ObjectMapper objectMapper) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/login", "/api/health").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/auth/register").permitAll()
+                        .requestMatchers("/api/me/campaigns", "/api/me/campaigns/**").hasRole("USER")
+                        .requestMatchers("/api/ops/reviews/campaigns", "/api/ops/reviews/campaigns/**")
+                        .hasRole("OPERATOR")
                         // I5：运营写入口仅 OPERATOR；USER 越权得 403，匿名缺令牌得 401。
                         // PathPattern 下 "/**" 不匹配基路径，故创建用精确路径。
                         .requestMatchers(HttpMethod.POST, "/api/campaigns").hasRole("OPERATOR")
@@ -57,16 +67,26 @@ public class SecurityConfiguration {
                         // I6：奖品配置写仅 OPERATOR，抽奖仅 USER。
                         .requestMatchers(HttpMethod.POST, "/api/campaigns/*/configuration").hasRole("OPERATOR")
                         .requestMatchers(HttpMethod.POST, "/api/draws").hasRole("USER")
-                        // 活动查询对已认证用户开放；角色越权的具体数据过滤留到后续个人查询任务。
+                        .requestMatchers(HttpMethod.POST, "/api/draw-queue").hasRole("USER")
+                        .requestMatchers(HttpMethod.GET, "/api/me/draw-queue/*").hasRole("USER")
+                        .requestMatchers(HttpMethod.GET, "/api/available-campaigns").hasRole("USER")
+                        .requestMatchers(HttpMethod.GET, "/api/ops/campaigns", "/api/ops/campaigns/**")
+                        .hasRole("OPERATOR")
+                        // 活动详情/奖品要求认证；草稿状态及角色相关过滤由应用查询用例执行。
                         .requestMatchers(HttpMethod.GET, "/api/campaigns/**").authenticated()
                         // D9：个人抽奖历史仅本人可查；身份过滤在用例层取安全上下文，非路径/参数。
                         .requestMatchers(HttpMethod.GET, "/api/me/draws", "/api/me/draws/*").authenticated()
+                        // Default local-full behavior requires an operator JWT. When the optional
+                        // scraper-identity chain is enabled, it matches this endpoint first.
+                        .requestMatchers(EndpointRequest.to("prometheus")).hasRole("OPERATOR")
                         .anyRequest().authenticated())
                 .oauth2ResourceServer(oauth2 -> oauth2
                         .jwt(jwt -> jwt.jwtAuthenticationConverter(jwtConverter))
                         .authenticationEntryPoint(authenticationEntryPoint))
                 .addFilterAfter(new DrawRateLimitFilter(drawRateLimiter,
                         drawRateLimitProperties, objectMapper), BearerTokenAuthenticationFilter.class)
+                .addFilterAfter(new RegistrationRateLimitFilter(registrationRateLimiter,
+                        registrationRateLimitProperties, objectMapper), BearerTokenAuthenticationFilter.class)
                 .exceptionHandling(exceptions -> exceptions.accessDeniedHandler(accessDeniedHandler));
         return http.build();
     }

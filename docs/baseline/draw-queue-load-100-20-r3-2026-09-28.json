@@ -1,0 +1,869 @@
+{
+  "Result": "PASS",
+  "Scenario": "Concurrent async draw-queue admission with Kafka backlog drain and fulfillment reconciliation",
+  "Environment": {
+    "OS": "Microsoft Windows NT 10.0.26200.0",
+    "PowerShell": "7.6.5",
+    "JavaHome": "D:\\java\\jdk-17",
+    "JavaVersion": "java version \"17.0.12\" 2024-07-16 LTS\r\nJava(TM) SE Runtime Environment (build 17.0.12+8-LTS-286)\r\nJava HotSpot(TM) 64-Bit Server VM (build 17.0.12+8-LTS-286, mixed mode, sharing)",
+    "ProcessorCount": 12,
+    "DockerEngine": "29.8.0",
+    "MySqlImage": "mysql:8.4",
+    "RedisImage": "redis:7.4-alpine",
+    "Broker": "Disposable single-node Kafka 3.9.1",
+    "FulfillmentMode": "SIMULATED"
+  },
+  "PortAssignments": {
+    "CampaignApi": 56451,
+    "CampaignMySql": 56448,
+    "WorkerMySql": 56449,
+    "Kafka": 56450,
+    "Redis": 56452
+  },
+  "Configuration": {
+    "RequestCount": 100,
+    "Concurrency": 20,
+    "PrizeStock": 50,
+    "UserDailyLimit": 100,
+    "RedisQueueAdmissionEnabled": true,
+    "RedisUserCampaignGlobalLimits": 105,
+    "QueueBacklogLimit": 150,
+    "DbPoolHighWatermark": 1.0,
+    "ConsumerInstances": 1,
+    "ConsumerConcurrency": 1,
+    "TopicPartitions": 12,
+    "PeriodicRecoveryScanDelayed": true,
+    "ConsumerStartedAfterQueueOutboxPublished": true,
+    "PersistentVolumes": false
+  },
+  "Metrics": {
+    "QueueAdmissionElapsedMs": 1570.3,
+    "QueueAdmissionsPerSecond": 63.68,
+    "AdmissionP50Ms": 100.81,
+    "AdmissionP95Ms": 168.78,
+    "AdmissionP99Ms": 187.94,
+    "QueueOutboxPublishWaitMs": 8977.45,
+    "BacklogAtConsumerStart": 100,
+    "ConsumerDrainAndWorkerCompletionMs": 18692.82,
+    "EndToEndFromIngressStartMs": 29282.75,
+    "HttpFailures": 0
+  },
+  "Correctness": {
+    "QueueRows": 100,
+    "CompletedQueueRows": 100,
+    "PendingQueueRows": 0,
+    "DrawRows": 100,
+    "InventoryRemaining": 0,
+    "SentDrawQueuedOutboxRows": 100,
+    "SentPrizeFulfillmentOutboxRows": 50,
+    "WorkerLedgerRows": 50,
+    "WorkerSucceededRows": 50,
+    "WorkerAttemptCountTotal": 50,
+    "ManualReviewTasks": 0,
+    "DuplicateDrawFulfillments": 0
+  },
+  "Samples": [
+    {
+      "Index": 1,
+      "HttpStatus": 202,
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "1",
+      "LatencyMs": 100.8064,
+      "ErrorType": ""
+    },
+    {
+      "Index": 2,
+      "HttpStatus": 202,
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "2",
+      "LatencyMs": 75.004,
+      "ErrorType": ""
+    },
+    {
+      "Index": 3,
+      "HttpStatus": 202,
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "3",
+      "LatencyMs": 113.0822,
+      "ErrorType": ""
+    },
+    {
+      "Index": 4,
+      "HttpStatus": 202,
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "4",
+      "LatencyMs": 63.6325,
+      "ErrorType": ""
+    },
+    {
+      "Index": 5,
+      "HttpStatus": 202,
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "5",
+      "LatencyMs": 88.7668,
+      "ErrorType": ""
+    },
+    {
+      "Index": 6,
+      "HttpStatus": 202,
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "7",
+      "LatencyMs": 82.1823,
+      "ErrorType": ""
+    },
+    {
+      "Index": 7,
+      "HttpStatus": 202,
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "6",
+      "LatencyMs": 81.8839,
+      "ErrorType": ""
+    },
+    {
+      "Index": 8,
+      "HttpStatus": 202,
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "8",
+      "LatencyMs": 109.2503,
+      "ErrorType": ""
+    },
+    {
+      "Index": 9,
+      "HttpStatus": 202,
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "10",
+      "LatencyMs": 87.1162,
+      "ErrorType": ""
+    },
+    {
+      "Index": 10,
+      "HttpStatus": 202,
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "9",
+      "LatencyMs": 84.2803,
+      "ErrorType": ""
+    },
+    {
+      "Index": 11,
+      "HttpStatus": 202,
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "11",
+      "LatencyMs": 80.486,
+      "ErrorType": ""
+    },
+    {
+      "Index": 12,
+      "HttpStatus": 202,
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "12",
+      "LatencyMs": 76.1965,
+      "ErrorType": ""
+    },
+    {
+      "Index": 13,
+      "HttpStatus": 202,
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "15",
+      "LatencyMs": 177.3091,
+      "ErrorType": ""
+    },
+    {
+      "Index": 14,
+      "HttpStatus": 202,
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "13",
+      "LatencyMs": 105.5303,
+      "ErrorType": ""
+    },
+    {
+      "Index": 15,
+      "HttpStatus": 202,
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "16",
+      "LatencyMs": 125.6089,
+      "ErrorType": ""
+    },
+    {
+      "Index": 16,
+      "HttpStatus": 202,
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "14",
+      "LatencyMs": 84.8584,
+      "ErrorType": ""
+    },
+    {
+      "Index": 17,
+      "HttpStatus": 202,
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "18",
+      "LatencyMs": 129.4834,
+      "ErrorType": ""
+    },
+    {
+      "Index": 18,
+      "HttpStatus": 202,
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "17",
+      "LatencyMs": 107.3286,
+      "ErrorType": ""
+    },
+    {
+      "Index": 19,
+      "HttpStatus": 202,
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "19",
+      "LatencyMs": 101.6445,
+      "ErrorType": ""
+    },
+    {
+      "Index": 20,
+      "HttpStatus": 202,
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "21",
+      "LatencyMs": 96.0386,
+      "ErrorType": ""
+    },
+    {
+      "Index": 21,
+      "HttpStatus": 202,
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "20",
+      "LatencyMs": 88.0188,
+      "ErrorType": ""
+    },
+    {
+      "Index": 22,
+      "HttpStatus": 202,
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "22",
+      "LatencyMs": 68.3885,
+      "ErrorType": ""
+    },
+    {
+      "Index": 23,
+      "HttpStatus": 202,
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "25",
+      "LatencyMs": 168.7773,
+      "ErrorType": ""
+    },
+    {
+      "Index": 24,
+      "HttpStatus": 202,
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "26",
+      "LatencyMs": 157.1475,
+      "ErrorType": ""
+    },
+    {
+      "Index": 25,
+      "HttpStatus": 202,
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "23",
+      "LatencyMs": 164.3271,
+      "ErrorType": ""
+    },
+    {
+      "Index": 26,
+      "HttpStatus": 202,
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "24",
+      "LatencyMs": 161.535,
+      "ErrorType": ""
+    },
+    {
+      "Index": 27,
+      "HttpStatus": 202,
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "27",
+      "LatencyMs": 142.2899,
+      "ErrorType": ""
+    },
+    {
+      "Index": 28,
+      "HttpStatus": 202,
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "29",
+      "LatencyMs": 138.4768,
+      "ErrorType": ""
+    },
+    {
+      "Index": 29,
+      "HttpStatus": 202,
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "28",
+      "LatencyMs": 137.4494,
+      "ErrorType": ""
+    },
+    {
+      "Index": 30,
+      "HttpStatus": 202,
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "31",
+      "LatencyMs": 130.5289,
+      "ErrorType": ""
+    },
+    {
+      "Index": 31,
+      "HttpStatus": 202,
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "30",
+      "LatencyMs": 116.851,
+      "ErrorType": ""
+    },
+    {
+      "Index": 32,
+      "HttpStatus": 202,
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "32",
+      "LatencyMs": 80.1342,
+      "ErrorType": ""
+    },
+    {
+      "Index": 33,
+      "HttpStatus": 202,
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "33",
+      "LatencyMs": 120.917,
+      "ErrorType": ""
+    },
+    {
+      "Index": 34,
+      "HttpStatus": 202,
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "34",
+      "LatencyMs": 83.3851,
+      "ErrorType": ""
+    },
+    {
+      "Index": 35,
+      "HttpStatus": 202,
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "36",
+      "LatencyMs": 76.7051,
+      "ErrorType": ""
+    },
+    {
+      "Index": 36,
+      "HttpStatus": 202,
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "35",
+      "LatencyMs": 72.8655,
+      "ErrorType": ""
+    },
+    {
+      "Index": 37,
+      "HttpStatus": 202,
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "37",
+      "LatencyMs": 70.1002,
+      "ErrorType": ""
+    },
+    {
+      "Index": 38,
+      "HttpStatus": 202,
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "39",
+      "LatencyMs": 78.3848,
+      "ErrorType": ""
+    },
+    {
+      "Index": 39,
+      "HttpStatus": 202,
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "41",
+      "LatencyMs": 82.557,
+      "ErrorType": ""
+    },
+    {
+      "Index": 40,
+      "HttpStatus": 202,
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "38",
+      "LatencyMs": 69.551,
+      "ErrorType": ""
+    },
+    {
+      "Index": 41,
+      "HttpStatus": 202,
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "40",
+      "LatencyMs": 73.4796,
+      "ErrorType": ""
+    },
+    {
+      "Index": 42,
+      "HttpStatus": 202,
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "43",
+      "LatencyMs": 57.7714,
+      "ErrorType": ""
+    },
+    {
+      "Index": 43,
+      "HttpStatus": 202,
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "42",
+      "LatencyMs": 59.4914,
+      "ErrorType": ""
+    },
+    {
+      "Index": 44,
+      "HttpStatus": 202,
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "44",
+      "LatencyMs": 98.7011,
+      "ErrorType": ""
+    },
+    {
+      "Index": 45,
+      "HttpStatus": 202,
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "45",
+      "LatencyMs": 102.6009,
+      "ErrorType": ""
+    },
+    {
+      "Index": 46,
+      "HttpStatus": 202,
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "46",
+      "LatencyMs": 82.739,
+      "ErrorType": ""
+    },
+    {
+      "Index": 47,
+      "HttpStatus": 202,
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "47",
+      "LatencyMs": 72.9118,
+      "ErrorType": ""
+    },
+    {
+      "Index": 48,
+      "HttpStatus": 202,
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "48",
+      "LatencyMs": 78.9554,
+      "ErrorType": ""
+    },
+    {
+      "Index": 49,
+      "HttpStatus": 202,
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "50",
+      "LatencyMs": 77.0158,
+      "ErrorType": ""
+    },
+    {
+      "Index": 50,
+      "HttpStatus": 202,
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "49",
+      "LatencyMs": 62.8947,
+      "ErrorType": ""
+    },
+    {
+      "Index": 51,
+      "HttpStatus": 202,
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "52",
+      "LatencyMs": 93.4684,
+      "ErrorType": ""
+    },
+    {
+      "Index": 52,
+      "HttpStatus": 202,
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "53",
+      "LatencyMs": 75.7412,
+      "ErrorType": ""
+    },
+    {
+      "Index": 53,
+      "HttpStatus": 202,
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "51",
+      "LatencyMs": 88.1387,
+      "ErrorType": ""
+    },
+    {
+      "Index": 54,
+      "HttpStatus": 202,
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "54",
+      "LatencyMs": 150.3029,
+      "ErrorType": ""
+    },
+    {
+      "Index": 55,
+      "HttpStatus": 202,
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "56",
+      "LatencyMs": 112.7741,
+      "ErrorType": ""
+    },
+    {
+      "Index": 56,
+      "HttpStatus": 202,
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "55",
+      "LatencyMs": 111.786,
+      "ErrorType": ""
+    },
+    {
+      "Index": 57,
+      "HttpStatus": 202,
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "57",
+      "LatencyMs": 112.7628,
+      "ErrorType": ""
+    },
+    {
+      "Index": 58,
+      "HttpStatus": 202,
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "58",
+      "LatencyMs": 92.8962,
+      "ErrorType": ""
+    },
+    {
+      "Index": 59,
+      "HttpStatus": 202,
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "60",
+      "LatencyMs": 76.8969,
+      "ErrorType": ""
+    },
+    {
+      "Index": 60,
+      "HttpStatus": 202,
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "59",
+      "LatencyMs": 81.5934,
+      "ErrorType": ""
+    },
+    {
+      "Index": 61,
+      "HttpStatus": 202,
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "63",
+      "LatencyMs": 104.5034,
+      "ErrorType": ""
+    },
+    {
+      "Index": 62,
+      "HttpStatus": 202,
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "62",
+      "LatencyMs": 110.2272,
+      "ErrorType": ""
+    },
+    {
+      "Index": 63,
+      "HttpStatus": 202,
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "61",
+      "LatencyMs": 78.9473,
+      "ErrorType": ""
+    },
+    {
+      "Index": 64,
+      "HttpStatus": 202,
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "64",
+      "LatencyMs": 106.3593,
+      "ErrorType": ""
+    },
+    {
+      "Index": 65,
+      "HttpStatus": 202,
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "66",
+      "LatencyMs": 169.1852,
+      "ErrorType": ""
+    },
+    {
+      "Index": 66,
+      "HttpStatus": 202,
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "65",
+      "LatencyMs": 163.0907,
+      "ErrorType": ""
+    },
+    {
+      "Index": 67,
+      "HttpStatus": 202,
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "67",
+      "LatencyMs": 59.5515,
+      "ErrorType": ""
+    },
+    {
+      "Index": 68,
+      "HttpStatus": 202,
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "69",
+      "LatencyMs": 85.5734,
+      "ErrorType": ""
+    },
+    {
+      "Index": 69,
+      "HttpStatus": 202,
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "70",
+      "LatencyMs": 70.5159,
+      "ErrorType": ""
+    },
+    {
+      "Index": 70,
+      "HttpStatus": 202,
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "72",
+      "LatencyMs": 119.9021,
+      "ErrorType": ""
+    },
+    {
+      "Index": 71,
+      "HttpStatus": 202,
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "68",
+      "LatencyMs": 80.9567,
+      "ErrorType": ""
+    },
+    {
+      "Index": 72,
+      "HttpStatus": 202,
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "71",
+      "LatencyMs": 117.8652,
+      "ErrorType": ""
+    },
+    {
+      "Index": 73,
+      "HttpStatus": 202,
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "80",
+      "LatencyMs": 160.3871,
+      "ErrorType": ""
+    },
+    {
+      "Index": 74,
+      "HttpStatus": 202,
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "74",
+      "LatencyMs": 159.8725,
+      "ErrorType": ""
+    },
+    {
+      "Index": 75,
+      "HttpStatus": 202,
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "77",
+      "LatencyMs": 169.1501,
+      "ErrorType": ""
+    },
+    {
+      "Index": 76,
+      "HttpStatus": 202,
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "73",
+      "LatencyMs": 166.837,
+      "ErrorType": ""
+    },
+    {
+      "Index": 77,
+      "HttpStatus": 202,
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "75",
+      "LatencyMs": 154.3793,
+      "ErrorType": ""
+    },
+    {
+      "Index": 78,
+      "HttpStatus": 202,
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "76",
+      "LatencyMs": 158.404,
+      "ErrorType": ""
+    },
+    {
+      "Index": 79,
+      "HttpStatus": 202,
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "81",
+      "LatencyMs": 159.9067,
+      "ErrorType": ""
+    },
+    {
+      "Index": 80,
+      "HttpStatus": 202,
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "79",
+      "LatencyMs": 143.3904,
+      "ErrorType": ""
+    },
+    {
+      "Index": 81,
+      "HttpStatus": 202,
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "84",
+      "LatencyMs": 191.0403,
+      "ErrorType": ""
+    },
+    {
+      "Index": 82,
+      "HttpStatus": 202,
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "78",
+      "LatencyMs": 130.0011,
+      "ErrorType": ""
+    },
+    {
+      "Index": 83,
+      "HttpStatus": 202,
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "85",
+      "LatencyMs": 187.9386,
+      "ErrorType": ""
+    },
+    {
+      "Index": 84,
+      "HttpStatus": 202,
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "82",
+      "LatencyMs": 100.2731,
+      "ErrorType": ""
+    },
+    {
+      "Index": 85,
+      "HttpStatus": 202,
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "83",
+      "LatencyMs": 128.2736,
+      "ErrorType": ""
+    },
+    {
+      "Index": 86,
+      "HttpStatus": 202,
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "86",
+      "LatencyMs": 162.8654,
+      "ErrorType": ""
+    },
+    {
+      "Index": 87,
+      "HttpStatus": 202,
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "87",
+      "LatencyMs": 109.4816,
+      "ErrorType": ""
+    },
+    {
+      "Index": 88,
+      "HttpStatus": 202,
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "88",
+      "LatencyMs": 114.2596,
+      "ErrorType": ""
+    },
+    {
+      "Index": 89,
+      "HttpStatus": 202,
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "89",
+      "LatencyMs": 123.6047,
+      "ErrorType": ""
+    },
+    {
+      "Index": 90,
+      "HttpStatus": 202,
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "90",
+      "LatencyMs": 99.6851,
+      "ErrorType": ""
+    },
+    {
+      "Index": 91,
+      "HttpStatus": 202,
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "92",
+      "LatencyMs": 80.6469,
+      "ErrorType": ""
+    },
+    {
+      "Index": 92,
+      "HttpStatus": 202,
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "91",
+      "LatencyMs": 71.5629,
+      "ErrorType": ""
+    },
+    {
+      "Index": 93,
+      "HttpStatus": 202,
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "96",
+      "LatencyMs": 133.5818,
+      "ErrorType": ""
+    },
+    {
+      "Index": 94,
+      "HttpStatus": 202,
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "93",
+      "LatencyMs": 132.1654,
+      "ErrorType": ""
+    },
+    {
+      "Index": 95,
+      "HttpStatus": 202,
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "94",
+      "LatencyMs": 129.0096,
+      "ErrorType": ""
+    },
+    {
+      "Index": 96,
+      "HttpStatus": 202,
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "97",
+      "LatencyMs": 131.3136,
+      "ErrorType": ""
+    },
+    {
+      "Index": 97,
+      "HttpStatus": 202,
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "100",
+      "LatencyMs": 76.1065,
+      "ErrorType": ""
+    },
+    {
+      "Index": 98,
+      "HttpStatus": 202,
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "95",
+      "LatencyMs": 85.4494,
+      "ErrorType": ""
+    },
+    {
+      "Index": 99,
+      "HttpStatus": 202,
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "99",
+      "LatencyMs": 57.9691,
+      "ErrorType": ""
+    },
+    {
+      "Index": 100,
+      "HttpStatus": 202,
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "98",
+      "LatencyMs": 60.9125,
+      "ErrorType": ""
+    }
+  ],
+  "CredentialsOrTokensPrinted": false,
+  "Note": "Single host, single activity/user, one Campaign queue consumer, single-node Kafka, Redis/MySQL temporary containers, simulated fulfillment; controlled local result, not production capacity evidence."
+}

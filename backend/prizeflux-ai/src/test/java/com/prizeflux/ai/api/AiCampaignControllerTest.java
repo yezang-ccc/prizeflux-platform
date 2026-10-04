@@ -13,6 +13,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.prizeflux.ai.harness.campaign.CampaignSummary;
 import com.prizeflux.ai.harness.campaign.CampaignReadClient;
+import com.prizeflux.ai.infrastructure.campaign.CampaignDraftValidationClient;
 import com.prizeflux.ai.harness.safety.Actor;
 import com.prizeflux.ai.harness.safety.Role;
 import com.prizeflux.ai.infrastructure.campaign.CampaignIdentityClient;
@@ -36,6 +37,9 @@ class AiCampaignControllerTest {
 
     @MockitoBean
     private CampaignReadClient campaigns;
+
+    @MockitoBean
+    private CampaignDraftValidationClient draftValidation;
 
     @Test
     void healthIsPublicAndReportsUp() throws Exception {
@@ -94,5 +98,58 @@ class AiCampaignControllerTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.code").value("PFX-1001"));
         verify(identities, never()).verify(any());
+    }
+
+    @Test
+    void creatorCopilotRejectsOperatorAndNeverCallsValidationTool() throws Exception {
+        when(identities.verify("operator-token")).thenReturn(new Actor(7, Role.OPERATOR));
+        mvc.perform(post("/api/ai/creator/validate")
+                        .header("Authorization", "Bearer operator-token")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(validDraft()))
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.code").value("PFX-1003"));
+        verify(draftValidation, never()).validate(any(), any(), any());
+    }
+
+    @Test
+    void creatorCopilotRunsOnlyReadOnlyValidationToolAndReturnsSimulatedTrace() throws Exception {
+        when(identities.verify("user-token")).thenReturn(new Actor(22, Role.USER));
+        when(draftValidation.validate(any(), eq("user-token"), any(Duration.class)))
+                .thenReturn(new CampaignDraftValidationClient.Result(true, java.util.List.of()));
+        mvc.perform(post("/api/ai/creator/validate")
+                        .header("Authorization", "Bearer user-token")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(validDraft()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data.valid").value(true))
+                .andExpect(jsonPath("$.data.simulated").value(true))
+                .andExpect(jsonPath("$.data.trace[1].toolName").value("campaign.draft.validate"))
+                .andExpect(jsonPath("$.data.trace[2].toolName").value("campaign.draft.validate"))
+                .andExpect(jsonPath("$.data.trace[2].toolSucceeded").value(true))
+                .andExpect(jsonPath("$.data.answer").value(org.hamcrest.Matchers.containsString("不会替你保存")));
+        verify(draftValidation).validate(any(), eq("user-token"), any(Duration.class));
+    }
+
+    @Test
+    void creatorCopilotReturnsServerValidationIssuesWithoutSaving() throws Exception {
+        when(identities.verify("user-token")).thenReturn(new Actor(22, Role.USER));
+        when(draftValidation.validate(any(), eq("user-token"), any(Duration.class)))
+                .thenReturn(new CampaignDraftValidationClient.Result(false,
+                        java.util.List.of("奖品概率总和不能超过 1。")));
+        mvc.perform(post("/api/ai/creator/validate")
+                        .header("Authorization", "Bearer user-token")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(validDraft()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data.valid").value(false))
+                .andExpect(jsonPath("$.data.issues[0]").value("奖品概率总和不能超过 1。"));
+    }
+
+    private String validDraft() {
+        return """
+                {"name":"活动草稿","startsAt":"2026-10-01T00:00:00Z","endsAt":"2026-10-08T00:00:00Z",
+                 "dailyLimit":3,"prizes":[{"id":1,"name":"礼盒","totalStock":2,"probability":0.25}]}
+                """;
     }
 }

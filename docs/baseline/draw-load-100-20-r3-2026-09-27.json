@@ -1,0 +1,863 @@
+{
+  "Result": "PASS",
+  "Scenario": "Authenticated concurrent draw HTTP benchmark with isolated Campaign/Worker MySQL and Kafka",
+  "Environment": {
+    "OS": "Microsoft Windows NT 10.0.26200.0",
+    "PowerShell": "7.6.5",
+    "JavaHome": "D:\\java\\jdk-17",
+    "JavaVersion": "java version \"17.0.12\" 2024-07-16 LTS\r\nJava(TM) SE Runtime Environment (build 17.0.12+8-LTS-286)\r\nJava HotSpot(TM) 64-Bit Server VM (build 17.0.12+8-LTS-286, mixed mode, sharing)",
+    "ProcessorCount": 12,
+    "DockerEngine": "29.8.0",
+    "MySqlImage": "mysql:8.4",
+    "RedisImage": "disabled",
+    "Broker": "Disposable single-node Kafka 3.9.1",
+    "FulfillmentMode": "SIMULATED"
+  },
+  "PortAssignments": {
+    "CampaignApi": 50510,
+    "CampaignMySql": 50507,
+    "WorkerMySql": 50508,
+    "Kafka": 50509,
+    "Redis": null
+  },
+  "Configuration": {
+    "RedisLimiterEnabled": false,
+    "RequestCount": 100,
+    "Concurrency": 20,
+    "PrizeStock": 50,
+    "UserDailyLimit": 100,
+    "SimulatedFailFirstFulfillmentAttempt": false,
+    "RateLimitMaxRequests": 105,
+    "RateLimitWindowSeconds": 3600,
+    "RedisConnectTimeout": "1s",
+    "RedisCommandTimeout": "1s",
+    "CampaignDbConnectionTimeoutMs": 3000,
+    "Warmup": "Health GET, authenticated Campaign GET, and one authenticated invalid draw stopped by validation before timed batch (warms Redis/Lettuce when enabled)"
+  },
+  "Metrics": {
+    "TotalElapsedMs": 2004.97,
+    "RequestsPerSecond": 49.88,
+    "P50Ms": 327.98,
+    "P95Ms": 404.92,
+    "P99Ms": 409.77,
+    "HttpFailures": 0,
+    "Won": 50,
+    "SoldOut": 50,
+    "NoPrize": 0
+  },
+  "Correctness": {
+    "DrawRows": 100,
+    "InventoryRemaining": 0,
+    "SentOutboxRows": 50,
+    "WorkerLedgerRows": 50,
+    "WorkerSucceededRows": 50,
+    "WorkerAttemptCountTotal": 50,
+    "ManualReviewTasks": 0,
+    "DuplicateDrawFulfillments": 0
+  },
+  "FaultInjection": null,
+  "Samples": [
+    {
+      "Index": 1,
+      "HttpStatus": 200,
+      "Outcome": "WON",
+      "DrawId": 1,
+      "LatencyMs": 87.4879,
+      "ErrorType": ""
+    },
+    {
+      "Index": 2,
+      "HttpStatus": 200,
+      "Outcome": "WON",
+      "DrawId": 2,
+      "LatencyMs": 85.7762,
+      "ErrorType": ""
+    },
+    {
+      "Index": 3,
+      "HttpStatus": 200,
+      "Outcome": "WON",
+      "DrawId": 3,
+      "LatencyMs": 120.1708,
+      "ErrorType": ""
+    },
+    {
+      "Index": 4,
+      "HttpStatus": 200,
+      "Outcome": "WON",
+      "DrawId": 4,
+      "LatencyMs": 141.9033,
+      "ErrorType": ""
+    },
+    {
+      "Index": 5,
+      "HttpStatus": 200,
+      "Outcome": "WON",
+      "DrawId": 5,
+      "LatencyMs": 128.3261,
+      "ErrorType": ""
+    },
+    {
+      "Index": 6,
+      "HttpStatus": 200,
+      "Outcome": "WON",
+      "DrawId": 6,
+      "LatencyMs": 137.1391,
+      "ErrorType": ""
+    },
+    {
+      "Index": 7,
+      "HttpStatus": 200,
+      "Outcome": "WON",
+      "DrawId": 8,
+      "LatencyMs": 178.7057,
+      "ErrorType": ""
+    },
+    {
+      "Index": 8,
+      "HttpStatus": 200,
+      "Outcome": "WON",
+      "DrawId": 7,
+      "LatencyMs": 171.068,
+      "ErrorType": ""
+    },
+    {
+      "Index": 9,
+      "HttpStatus": 200,
+      "Outcome": "WON",
+      "DrawId": 9,
+      "LatencyMs": 211.132,
+      "ErrorType": ""
+    },
+    {
+      "Index": 10,
+      "HttpStatus": 200,
+      "Outcome": "WON",
+      "DrawId": 10,
+      "LatencyMs": 230.1778,
+      "ErrorType": ""
+    },
+    {
+      "Index": 11,
+      "HttpStatus": 200,
+      "Outcome": "WON",
+      "DrawId": 11,
+      "LatencyMs": 211.2607,
+      "ErrorType": ""
+    },
+    {
+      "Index": 12,
+      "HttpStatus": 200,
+      "Outcome": "WON",
+      "DrawId": 12,
+      "LatencyMs": 232.0381,
+      "ErrorType": ""
+    },
+    {
+      "Index": 13,
+      "HttpStatus": 200,
+      "Outcome": "WON",
+      "DrawId": 14,
+      "LatencyMs": 266.1458,
+      "ErrorType": ""
+    },
+    {
+      "Index": 14,
+      "HttpStatus": 200,
+      "Outcome": "WON",
+      "DrawId": 13,
+      "LatencyMs": 243.5042,
+      "ErrorType": ""
+    },
+    {
+      "Index": 15,
+      "HttpStatus": 200,
+      "Outcome": "WON",
+      "DrawId": 15,
+      "LatencyMs": 259.8995,
+      "ErrorType": ""
+    },
+    {
+      "Index": 16,
+      "HttpStatus": 200,
+      "Outcome": "WON",
+      "DrawId": 17,
+      "LatencyMs": 302.3713,
+      "ErrorType": ""
+    },
+    {
+      "Index": 17,
+      "HttpStatus": 200,
+      "Outcome": "WON",
+      "DrawId": 16,
+      "LatencyMs": 278.9884,
+      "ErrorType": ""
+    },
+    {
+      "Index": 18,
+      "HttpStatus": 200,
+      "Outcome": "WON",
+      "DrawId": 19,
+      "LatencyMs": 337.2394,
+      "ErrorType": ""
+    },
+    {
+      "Index": 19,
+      "HttpStatus": 200,
+      "Outcome": "WON",
+      "DrawId": 18,
+      "LatencyMs": 293.8874,
+      "ErrorType": ""
+    },
+    {
+      "Index": 20,
+      "HttpStatus": 200,
+      "Outcome": "WON",
+      "DrawId": 21,
+      "LatencyMs": 347.3623,
+      "ErrorType": ""
+    },
+    {
+      "Index": 21,
+      "HttpStatus": 200,
+      "Outcome": "WON",
+      "DrawId": 20,
+      "LatencyMs": 321.8065,
+      "ErrorType": ""
+    },
+    {
+      "Index": 22,
+      "HttpStatus": 200,
+      "Outcome": "WON",
+      "DrawId": 22,
+      "LatencyMs": 316.4265,
+      "ErrorType": ""
+    },
+    {
+      "Index": 23,
+      "HttpStatus": 200,
+      "Outcome": "WON",
+      "DrawId": 23,
+      "LatencyMs": 335.8536,
+      "ErrorType": ""
+    },
+    {
+      "Index": 24,
+      "HttpStatus": 200,
+      "Outcome": "WON",
+      "DrawId": 24,
+      "LatencyMs": 352.9536,
+      "ErrorType": ""
+    },
+    {
+      "Index": 25,
+      "HttpStatus": 200,
+      "Outcome": "WON",
+      "DrawId": 25,
+      "LatencyMs": 366.8345,
+      "ErrorType": ""
+    },
+    {
+      "Index": 26,
+      "HttpStatus": 200,
+      "Outcome": "WON",
+      "DrawId": 26,
+      "LatencyMs": 362.3464,
+      "ErrorType": ""
+    },
+    {
+      "Index": 27,
+      "HttpStatus": 200,
+      "Outcome": "WON",
+      "DrawId": 28,
+      "LatencyMs": 392.719,
+      "ErrorType": ""
+    },
+    {
+      "Index": 28,
+      "HttpStatus": 200,
+      "Outcome": "WON",
+      "DrawId": 27,
+      "LatencyMs": 374.1356,
+      "ErrorType": ""
+    },
+    {
+      "Index": 29,
+      "HttpStatus": 200,
+      "Outcome": "WON",
+      "DrawId": 29,
+      "LatencyMs": 404.9157,
+      "ErrorType": ""
+    },
+    {
+      "Index": 30,
+      "HttpStatus": 200,
+      "Outcome": "WON",
+      "DrawId": 30,
+      "LatencyMs": 400.5384,
+      "ErrorType": ""
+    },
+    {
+      "Index": 31,
+      "HttpStatus": 200,
+      "Outcome": "WON",
+      "DrawId": 31,
+      "LatencyMs": 412.0956,
+      "ErrorType": ""
+    },
+    {
+      "Index": 32,
+      "HttpStatus": 200,
+      "Outcome": "WON",
+      "DrawId": 32,
+      "LatencyMs": 408.0011,
+      "ErrorType": ""
+    },
+    {
+      "Index": 33,
+      "HttpStatus": 200,
+      "Outcome": "WON",
+      "DrawId": 33,
+      "LatencyMs": 407.5743,
+      "ErrorType": ""
+    },
+    {
+      "Index": 34,
+      "HttpStatus": 200,
+      "Outcome": "WON",
+      "DrawId": 34,
+      "LatencyMs": 407.5674,
+      "ErrorType": ""
+    },
+    {
+      "Index": 35,
+      "HttpStatus": 200,
+      "Outcome": "WON",
+      "DrawId": 35,
+      "LatencyMs": 402.7015,
+      "ErrorType": ""
+    },
+    {
+      "Index": 36,
+      "HttpStatus": 200,
+      "Outcome": "WON",
+      "DrawId": 36,
+      "LatencyMs": 394.9855,
+      "ErrorType": ""
+    },
+    {
+      "Index": 37,
+      "HttpStatus": 200,
+      "Outcome": "WON",
+      "DrawId": 37,
+      "LatencyMs": 392.9574,
+      "ErrorType": ""
+    },
+    {
+      "Index": 38,
+      "HttpStatus": 200,
+      "Outcome": "WON",
+      "DrawId": 38,
+      "LatencyMs": 390.5166,
+      "ErrorType": ""
+    },
+    {
+      "Index": 39,
+      "HttpStatus": 200,
+      "Outcome": "WON",
+      "DrawId": 39,
+      "LatencyMs": 387.5512,
+      "ErrorType": ""
+    },
+    {
+      "Index": 40,
+      "HttpStatus": 200,
+      "Outcome": "WON",
+      "DrawId": 40,
+      "LatencyMs": 390.3974,
+      "ErrorType": ""
+    },
+    {
+      "Index": 41,
+      "HttpStatus": 200,
+      "Outcome": "WON",
+      "DrawId": 41,
+      "LatencyMs": 390.1336,
+      "ErrorType": ""
+    },
+    {
+      "Index": 42,
+      "HttpStatus": 200,
+      "Outcome": "WON",
+      "DrawId": 42,
+      "LatencyMs": 387.9741,
+      "ErrorType": ""
+    },
+    {
+      "Index": 43,
+      "HttpStatus": 200,
+      "Outcome": "WON",
+      "DrawId": 43,
+      "LatencyMs": 358.9582,
+      "ErrorType": ""
+    },
+    {
+      "Index": 44,
+      "HttpStatus": 200,
+      "Outcome": "WON",
+      "DrawId": 44,
+      "LatencyMs": 371.8319,
+      "ErrorType": ""
+    },
+    {
+      "Index": 45,
+      "HttpStatus": 200,
+      "Outcome": "WON",
+      "DrawId": 45,
+      "LatencyMs": 371.9393,
+      "ErrorType": ""
+    },
+    {
+      "Index": 46,
+      "HttpStatus": 200,
+      "Outcome": "WON",
+      "DrawId": 46,
+      "LatencyMs": 371.3071,
+      "ErrorType": ""
+    },
+    {
+      "Index": 47,
+      "HttpStatus": 200,
+      "Outcome": "WON",
+      "DrawId": 47,
+      "LatencyMs": 367.7063,
+      "ErrorType": ""
+    },
+    {
+      "Index": 48,
+      "HttpStatus": 200,
+      "Outcome": "WON",
+      "DrawId": 48,
+      "LatencyMs": 373.7141,
+      "ErrorType": ""
+    },
+    {
+      "Index": 49,
+      "HttpStatus": 200,
+      "Outcome": "WON",
+      "DrawId": 49,
+      "LatencyMs": 374.4477,
+      "ErrorType": ""
+    },
+    {
+      "Index": 50,
+      "HttpStatus": 200,
+      "Outcome": "WON",
+      "DrawId": 50,
+      "LatencyMs": 373.7996,
+      "ErrorType": ""
+    },
+    {
+      "Index": 51,
+      "HttpStatus": 200,
+      "Outcome": "SOLD_OUT",
+      "DrawId": 51,
+      "LatencyMs": 369.6644,
+      "ErrorType": ""
+    },
+    {
+      "Index": 52,
+      "HttpStatus": 200,
+      "Outcome": "SOLD_OUT",
+      "DrawId": 52,
+      "LatencyMs": 363.2391,
+      "ErrorType": ""
+    },
+    {
+      "Index": 53,
+      "HttpStatus": 200,
+      "Outcome": "SOLD_OUT",
+      "DrawId": 53,
+      "LatencyMs": 357.7224,
+      "ErrorType": ""
+    },
+    {
+      "Index": 54,
+      "HttpStatus": 200,
+      "Outcome": "SOLD_OUT",
+      "DrawId": 54,
+      "LatencyMs": 352.9297,
+      "ErrorType": ""
+    },
+    {
+      "Index": 55,
+      "HttpStatus": 200,
+      "Outcome": "SOLD_OUT",
+      "DrawId": 55,
+      "LatencyMs": 345.7182,
+      "ErrorType": ""
+    },
+    {
+      "Index": 56,
+      "HttpStatus": 200,
+      "Outcome": "SOLD_OUT",
+      "DrawId": 56,
+      "LatencyMs": 340.6997,
+      "ErrorType": ""
+    },
+    {
+      "Index": 57,
+      "HttpStatus": 200,
+      "Outcome": "SOLD_OUT",
+      "DrawId": 57,
+      "LatencyMs": 337.7788,
+      "ErrorType": ""
+    },
+    {
+      "Index": 58,
+      "HttpStatus": 200,
+      "Outcome": "SOLD_OUT",
+      "DrawId": 58,
+      "LatencyMs": 335.1648,
+      "ErrorType": ""
+    },
+    {
+      "Index": 59,
+      "HttpStatus": 200,
+      "Outcome": "SOLD_OUT",
+      "DrawId": 59,
+      "LatencyMs": 333.3394,
+      "ErrorType": ""
+    },
+    {
+      "Index": 60,
+      "HttpStatus": 200,
+      "Outcome": "SOLD_OUT",
+      "DrawId": 60,
+      "LatencyMs": 330.0036,
+      "ErrorType": ""
+    },
+    {
+      "Index": 61,
+      "HttpStatus": 200,
+      "Outcome": "SOLD_OUT",
+      "DrawId": 62,
+      "LatencyMs": 344.3221,
+      "ErrorType": ""
+    },
+    {
+      "Index": 62,
+      "HttpStatus": 200,
+      "Outcome": "SOLD_OUT",
+      "DrawId": 68,
+      "LatencyMs": 409.7729,
+      "ErrorType": ""
+    },
+    {
+      "Index": 63,
+      "HttpStatus": 200,
+      "Outcome": "SOLD_OUT",
+      "DrawId": 64,
+      "LatencyMs": 343.2745,
+      "ErrorType": ""
+    },
+    {
+      "Index": 64,
+      "HttpStatus": 200,
+      "Outcome": "SOLD_OUT",
+      "DrawId": 65,
+      "LatencyMs": 342.2606,
+      "ErrorType": ""
+    },
+    {
+      "Index": 65,
+      "HttpStatus": 200,
+      "Outcome": "SOLD_OUT",
+      "DrawId": 61,
+      "LatencyMs": 261.0984,
+      "ErrorType": ""
+    },
+    {
+      "Index": 66,
+      "HttpStatus": 200,
+      "Outcome": "SOLD_OUT",
+      "DrawId": 70,
+      "LatencyMs": 392.7867,
+      "ErrorType": ""
+    },
+    {
+      "Index": 67,
+      "HttpStatus": 200,
+      "Outcome": "SOLD_OUT",
+      "DrawId": 66,
+      "LatencyMs": 308.9647,
+      "ErrorType": ""
+    },
+    {
+      "Index": 68,
+      "HttpStatus": 200,
+      "Outcome": "SOLD_OUT",
+      "DrawId": 67,
+      "LatencyMs": 301.949,
+      "ErrorType": ""
+    },
+    {
+      "Index": 69,
+      "HttpStatus": 200,
+      "Outcome": "SOLD_OUT",
+      "DrawId": 63,
+      "LatencyMs": 220.3115,
+      "ErrorType": ""
+    },
+    {
+      "Index": 70,
+      "HttpStatus": 200,
+      "Outcome": "SOLD_OUT",
+      "DrawId": 69,
+      "LatencyMs": 300.7362,
+      "ErrorType": ""
+    },
+    {
+      "Index": 71,
+      "HttpStatus": 200,
+      "Outcome": "SOLD_OUT",
+      "DrawId": 71,
+      "LatencyMs": 320.7533,
+      "ErrorType": ""
+    },
+    {
+      "Index": 72,
+      "HttpStatus": 200,
+      "Outcome": "SOLD_OUT",
+      "DrawId": 72,
+      "LatencyMs": 323.5529,
+      "ErrorType": ""
+    },
+    {
+      "Index": 73,
+      "HttpStatus": 200,
+      "Outcome": "SOLD_OUT",
+      "DrawId": 73,
+      "LatencyMs": 327.5176,
+      "ErrorType": ""
+    },
+    {
+      "Index": 74,
+      "HttpStatus": 200,
+      "Outcome": "SOLD_OUT",
+      "DrawId": 74,
+      "LatencyMs": 327.9769,
+      "ErrorType": ""
+    },
+    {
+      "Index": 75,
+      "HttpStatus": 200,
+      "Outcome": "SOLD_OUT",
+      "DrawId": 75,
+      "LatencyMs": 328.5053,
+      "ErrorType": ""
+    },
+    {
+      "Index": 76,
+      "HttpStatus": 200,
+      "Outcome": "SOLD_OUT",
+      "DrawId": 76,
+      "LatencyMs": 328.9529,
+      "ErrorType": ""
+    },
+    {
+      "Index": 77,
+      "HttpStatus": 200,
+      "Outcome": "SOLD_OUT",
+      "DrawId": 77,
+      "LatencyMs": 331.3003,
+      "ErrorType": ""
+    },
+    {
+      "Index": 78,
+      "HttpStatus": 200,
+      "Outcome": "SOLD_OUT",
+      "DrawId": 78,
+      "LatencyMs": 330.9301,
+      "ErrorType": ""
+    },
+    {
+      "Index": 79,
+      "HttpStatus": 200,
+      "Outcome": "SOLD_OUT",
+      "DrawId": 79,
+      "LatencyMs": 328.1093,
+      "ErrorType": ""
+    },
+    {
+      "Index": 80,
+      "HttpStatus": 200,
+      "Outcome": "SOLD_OUT",
+      "DrawId": 80,
+      "LatencyMs": 325.7692,
+      "ErrorType": ""
+    },
+    {
+      "Index": 81,
+      "HttpStatus": 200,
+      "Outcome": "SOLD_OUT",
+      "DrawId": 81,
+      "LatencyMs": 324.8189,
+      "ErrorType": ""
+    },
+    {
+      "Index": 82,
+      "HttpStatus": 200,
+      "Outcome": "SOLD_OUT",
+      "DrawId": 82,
+      "LatencyMs": 307.8623,
+      "ErrorType": ""
+    },
+    {
+      "Index": 83,
+      "HttpStatus": 200,
+      "Outcome": "SOLD_OUT",
+      "DrawId": 83,
+      "LatencyMs": 318.8703,
+      "ErrorType": ""
+    },
+    {
+      "Index": 84,
+      "HttpStatus": 200,
+      "Outcome": "SOLD_OUT",
+      "DrawId": 84,
+      "LatencyMs": 316.5953,
+      "ErrorType": ""
+    },
+    {
+      "Index": 85,
+      "HttpStatus": 200,
+      "Outcome": "SOLD_OUT",
+      "DrawId": 85,
+      "LatencyMs": 317.4621,
+      "ErrorType": ""
+    },
+    {
+      "Index": 86,
+      "HttpStatus": 200,
+      "Outcome": "SOLD_OUT",
+      "DrawId": 86,
+      "LatencyMs": 314.7351,
+      "ErrorType": ""
+    },
+    {
+      "Index": 87,
+      "HttpStatus": 200,
+      "Outcome": "SOLD_OUT",
+      "DrawId": 87,
+      "LatencyMs": 313.3643,
+      "ErrorType": ""
+    },
+    {
+      "Index": 88,
+      "HttpStatus": 200,
+      "Outcome": "SOLD_OUT",
+      "DrawId": 88,
+      "LatencyMs": 324.1528,
+      "ErrorType": ""
+    },
+    {
+      "Index": 89,
+      "HttpStatus": 200,
+      "Outcome": "SOLD_OUT",
+      "DrawId": 89,
+      "LatencyMs": 327.8632,
+      "ErrorType": ""
+    },
+    {
+      "Index": 90,
+      "HttpStatus": 200,
+      "Outcome": "SOLD_OUT",
+      "DrawId": 90,
+      "LatencyMs": 322.5533,
+      "ErrorType": ""
+    },
+    {
+      "Index": 91,
+      "HttpStatus": 200,
+      "Outcome": "SOLD_OUT",
+      "DrawId": 91,
+      "LatencyMs": 319.2425,
+      "ErrorType": ""
+    },
+    {
+      "Index": 92,
+      "HttpStatus": 200,
+      "Outcome": "SOLD_OUT",
+      "DrawId": 92,
+      "LatencyMs": 316.2667,
+      "ErrorType": ""
+    },
+    {
+      "Index": 93,
+      "HttpStatus": 200,
+      "Outcome": "SOLD_OUT",
+      "DrawId": 93,
+      "LatencyMs": 314.0822,
+      "ErrorType": ""
+    },
+    {
+      "Index": 94,
+      "HttpStatus": 200,
+      "Outcome": "SOLD_OUT",
+      "DrawId": 94,
+      "LatencyMs": 310.5524,
+      "ErrorType": ""
+    },
+    {
+      "Index": 95,
+      "HttpStatus": 200,
+      "Outcome": "SOLD_OUT",
+      "DrawId": 95,
+      "LatencyMs": 309.4797,
+      "ErrorType": ""
+    },
+    {
+      "Index": 96,
+      "HttpStatus": 200,
+      "Outcome": "SOLD_OUT",
+      "DrawId": 96,
+      "LatencyMs": 305.4979,
+      "ErrorType": ""
+    },
+    {
+      "Index": 97,
+      "HttpStatus": 200,
+      "Outcome": "SOLD_OUT",
+      "DrawId": 97,
+      "LatencyMs": 300.6877,
+      "ErrorType": ""
+    },
+    {
+      "Index": 98,
+      "HttpStatus": 200,
+      "Outcome": "SOLD_OUT",
+      "DrawId": 98,
+      "LatencyMs": 299.3893,
+      "ErrorType": ""
+    },
+    {
+      "Index": 99,
+      "HttpStatus": 200,
+      "Outcome": "SOLD_OUT",
+      "DrawId": 99,
+      "LatencyMs": 299.2639,
+      "ErrorType": ""
+    },
+    {
+      "Index": 100,
+      "HttpStatus": 200,
+      "Outcome": "SOLD_OUT",
+      "DrawId": 100,
+      "LatencyMs": 299.8448,
+      "ErrorType": ""
+    }
+  ],
+  "CredentialsOrTokensPrinted": false,
+  "Note": "Local benchmark only; not production capacity evidence and not evidence that Redis makes MySQL faster."
+}

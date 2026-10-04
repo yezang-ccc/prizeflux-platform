@@ -38,6 +38,16 @@ public class CampaignApplicationService implements CampaignUseCase {
         return campaign;
     }
 
+    /** 创建者活动使用服务端 ID registry 发号；owner 始终由调用方从 ActorProvider 取得。 */
+    @Override
+    public Campaign createOwned(String name, Instant startsAt, Instant endsAt, long ownerUserId) {
+        if (ownerUserId <= 0) {
+            throw new BusinessException(ErrorCode.INVALID_ARGUMENT);
+        }
+        new Campaign(1, name, startsAt, endsAt);
+        return campaignRepository.createOwned(name, startsAt, endsAt, ownerUserId);
+    }
+
     /** 查询合法业务id；缺失资源使用稳定业务错误码表达。 */
     @Override
     public Campaign get(long id) {

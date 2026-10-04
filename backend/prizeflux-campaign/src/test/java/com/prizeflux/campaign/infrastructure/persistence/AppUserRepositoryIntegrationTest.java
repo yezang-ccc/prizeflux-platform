@@ -3,6 +3,7 @@ package com.prizeflux.campaign.infrastructure.persistence;
 import com.prizeflux.campaign.PrizeFluxCampaignApplication;
 import com.prizeflux.campaign.application.AppUser;
 import com.prizeflux.campaign.application.AppUserRepository;
+import com.prizeflux.campaign.application.UsernameAlreadyRegisteredException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -70,5 +71,17 @@ class AppUserRepositoryIntegrationTest {
                 "INSERT INTO app_user (username, password_hash, role, state) VALUES (?, ?, ?, ?)",
                 "plain-user", "plaintext", "USER", "ACTIVE"))
                 .isInstanceOf(DataAccessException.class);
+    }
+
+    @Test
+    void selfRegistrationAlwaysCreatesUserAndMapsUniqueConstraintConflict() {
+        long userId = users.registerUser("self.signup", FAKE_BCRYPT);
+        AppUser created = users.findByUsername("self.signup").orElseThrow();
+
+        assertThat(created.id()).isEqualTo(userId);
+        assertThat(created.role()).isEqualTo(AppUser.Role.USER);
+        assertThat(created.state()).isEqualTo(AppUser.State.ACTIVE);
+        assertThatThrownBy(() -> users.registerUser("self.signup", FAKE_BCRYPT))
+                .isInstanceOf(UsernameAlreadyRegisteredException.class);
     }
 }

@@ -1,0 +1,972 @@
+{
+  "Result": "PASS",
+  "Scenario": "Concurrent async draw-queue admission with Kafka backlog drain and fulfillment reconciliation",
+  "Environment": {
+    "OS": "Microsoft Windows NT 10.0.26200.0",
+    "PowerShell": "7.6.5",
+    "JavaHome": "D:\\java\\jdk-17",
+    "JavaVersion": "java version \"17.0.12\" 2024-07-16 LTS\r\nJava(TM) SE Runtime Environment (build 17.0.12+8-LTS-286)\r\nJava HotSpot(TM) 64-Bit Server VM (build 17.0.12+8-LTS-286, mixed mode, sharing)",
+    "ProcessorCount": 12,
+    "DockerEngine": "29.8.0",
+    "MySqlImage": "mysql:8.4",
+    "RedisImage": "redis:7.4-alpine",
+    "Broker": "Disposable single-node Kafka 3.9.1",
+    "FulfillmentMode": "SIMULATED"
+  },
+  "PortAssignments": {
+    "CampaignApi": 55483,
+    "CampaignMySql": 55480,
+    "WorkerMySql": 55481,
+    "Kafka": 55482,
+    "Redis": 55484
+  },
+  "Configuration": {
+    "RequestCount": 100,
+    "Concurrency": 20,
+    "PrizeStock": 1,
+    "UserDailyLimit": 100,
+    "RedisQueueAdmissionEnabled": true,
+    "RedisUserCampaignGlobalLimits": 105,
+    "QueueBacklogLimit": 5,
+    "DbPoolHighWatermark": 1.0,
+    "ConsumerInstances": 1,
+    "ConsumerConcurrency": 1,
+    "TopicPartitions": 12,
+    "PeriodicRecoveryScanDelayed": true,
+    "ConsumerStartedAfterQueueOutboxPublished": true,
+    "PersistentVolumes": false
+  },
+  "Metrics": {
+    "RequestsAttempted": 100,
+    "QueueAdmissions": 5,
+    "ServiceUnavailableResponses": 95,
+    "QueueAdmissionElapsedMs": 1081.35,
+    "QueueAdmissionsPerSecond": 4.62,
+    "AdmissionP50Ms": 43.38,
+    "AdmissionP95Ms": 74.99,
+    "AdmissionP99Ms": 102.53,
+    "QueueOutboxPublishWaitMs": 2632.76,
+    "BacklogAtConsumerStart": 5,
+    "ConsumerDrainAndWorkerCompletionMs": 17318.6,
+    "EndToEndFromIngressStartMs": 21069.27,
+    "UnexpectedHttpResponses": 0
+  },
+  "Correctness": {
+    "QueueRows": 5,
+    "CompletedQueueRows": 5,
+    "PendingQueueRows": 0,
+    "DrawRows": 5,
+    "InventoryRemaining": 0,
+    "SentDrawQueuedOutboxRows": 5,
+    "SentPrizeFulfillmentOutboxRows": 1,
+    "WorkerLedgerRows": 1,
+    "WorkerSucceededRows": 1,
+    "WorkerAttemptCountTotal": 1,
+    "ManualReviewTasks": 0,
+    "DuplicateDrawFulfillments": 0
+  },
+  "Samples": [
+    {
+      "Index": 1,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "1",
+      "LatencyMs": 112.7655,
+      "ErrorType": ""
+    },
+    {
+      "Index": 2,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "2",
+      "LatencyMs": 102.5342,
+      "ErrorType": ""
+    },
+    {
+      "Index": 3,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "3",
+      "LatencyMs": 83.1547,
+      "ErrorType": ""
+    },
+    {
+      "Index": 4,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "4",
+      "LatencyMs": 75.1057,
+      "ErrorType": ""
+    },
+    {
+      "Index": 5,
+      "HttpStatus": 202,
+      "ErrorCode": "PFX-0000",
+      "QueueStatus": "QUEUED",
+      "QueueRequestId": "5",
+      "LatencyMs": 65.1728,
+      "ErrorType": ""
+    },
+    {
+      "Index": 6,
+      "HttpStatus": 503,
+      "ErrorCode": "PFX-9001",
+      "QueueStatus": "REJECTED",
+      "QueueRequestId": "",
+      "LatencyMs": 37.9115,
+      "ErrorType": ""
+    },
+    {
+      "Index": 7,
+      "HttpStatus": 503,
+      "ErrorCode": "PFX-9001",
+      "QueueStatus": "REJECTED",
+      "QueueRequestId": "",
+      "LatencyMs": 68.0955,
+      "ErrorType": ""
+    },
+    {
+      "Index": 8,
+      "HttpStatus": 503,
+      "ErrorCode": "PFX-9001",
+      "QueueStatus": "REJECTED",
+      "QueueRequestId": "",
+      "LatencyMs": 70.6305,
+      "ErrorType": ""
+    },
+    {
+      "Index": 9,
+      "HttpStatus": 503,
+      "ErrorCode": "PFX-9001",
+      "QueueStatus": "REJECTED",
+      "QueueRequestId": "",
+      "LatencyMs": 59.6531,
+      "ErrorType": ""
+    },
+    {
+      "Index": 10,
+      "HttpStatus": 503,
+      "ErrorCode": "PFX-9001",
+      "QueueStatus": "REJECTED",
+      "QueueRequestId": "",
+      "LatencyMs": 56.9093,
+      "ErrorType": ""
+    },
+    {
+      "Index": 11,
+      "HttpStatus": 503,
+      "ErrorCode": "PFX-9001",
+      "QueueStatus": "REJECTED",
+      "QueueRequestId": "",
+      "LatencyMs": 42.9426,
+      "ErrorType": ""
+    },
+    {
+      "Index": 12,
+      "HttpStatus": 503,
+      "ErrorCode": "PFX-9001",
+      "QueueStatus": "REJECTED",
+      "QueueRequestId": "",
+      "LatencyMs": 37.9924,
+      "ErrorType": ""
+    },
+    {
+      "Index": 13,
+      "HttpStatus": 503,
+      "ErrorCode": "PFX-9001",
+      "QueueStatus": "REJECTED",
+      "QueueRequestId": "",
+      "LatencyMs": 45.2177,
+      "ErrorType": ""
+    },
+    {
+      "Index": 14,
+      "HttpStatus": 503,
+      "ErrorCode": "PFX-9001",
+      "QueueStatus": "REJECTED",
+      "QueueRequestId": "",
+      "LatencyMs": 41.6682,
+      "ErrorType": ""
+    },
+    {
+      "Index": 15,
+      "HttpStatus": 503,
+      "ErrorCode": "PFX-9001",
+      "QueueStatus": "REJECTED",
+      "QueueRequestId": "",
+      "LatencyMs": 43.6453,
+      "ErrorType": ""
+    },
+    {
+      "Index": 16,
+      "HttpStatus": 503,
+      "ErrorCode": "PFX-9001",
+      "QueueStatus": "REJECTED",
+      "QueueRequestId": "",
+      "LatencyMs": 26.3838,
+      "ErrorType": ""
+    },
+    {
+      "Index": 17,
+      "HttpStatus": 503,
+      "ErrorCode": "PFX-9001",
+      "QueueStatus": "REJECTED",
+      "QueueRequestId": "",
+      "LatencyMs": 53.8468,
+      "ErrorType": ""
+    },
+    {
+      "Index": 18,
+      "HttpStatus": 503,
+      "ErrorCode": "PFX-9001",
+      "QueueStatus": "REJECTED",
+      "QueueRequestId": "",
+      "LatencyMs": 53.2723,
+      "ErrorType": ""
+    },
+    {
+      "Index": 19,
+      "HttpStatus": 503,
+      "ErrorCode": "PFX-9001",
+      "QueueStatus": "REJECTED",
+      "QueueRequestId": "",
+      "LatencyMs": 43.2653,
+      "ErrorType": ""
+    },
+    {
+      "Index": 20,
+      "HttpStatus": 503,
+      "ErrorCode": "PFX-9001",
+      "QueueStatus": "REJECTED",
+      "QueueRequestId": "",
+      "LatencyMs": 42.7598,
+      "ErrorType": ""
+    },
+    {
+      "Index": 21,
+      "HttpStatus": 503,
+      "ErrorCode": "PFX-9001",
+      "QueueStatus": "REJECTED",
+      "QueueRequestId": "",
+      "LatencyMs": 35.097,
+      "ErrorType": ""
+    },
+    {
+      "Index": 22,
+      "HttpStatus": 503,
+      "ErrorCode": "PFX-9001",
+      "QueueStatus": "REJECTED",
+      "QueueRequestId": "",
+      "LatencyMs": 36.5309,
+      "ErrorType": ""
+    },
+    {
+      "Index": 23,
+      "HttpStatus": 503,
+      "ErrorCode": "PFX-9001",
+      "QueueStatus": "REJECTED",
+      "QueueRequestId": "",
+      "LatencyMs": 32.9865,
+      "ErrorType": ""
+    },
+    {
+      "Index": 24,
+      "HttpStatus": 503,
+      "ErrorCode": "PFX-9001",
+      "QueueStatus": "REJECTED",
+      "QueueRequestId": "",
+      "LatencyMs": 47.4104,
+      "ErrorType": ""
+    },
+    {
+      "Index": 25,
+      "HttpStatus": 503,
+      "ErrorCode": "PFX-9001",
+      "QueueStatus": "REJECTED",
+      "QueueRequestId": "",
+      "LatencyMs": 35.3025,
+      "ErrorType": ""
+    },
+    {
+      "Index": 26,
+      "HttpStatus": 503,
+      "ErrorCode": "PFX-9001",
+      "QueueStatus": "REJECTED",
+      "QueueRequestId": "",
+      "LatencyMs": 55.9607,
+      "ErrorType": ""
+    },
+    {
+      "Index": 27,
+      "HttpStatus": 503,
+      "ErrorCode": "PFX-9001",
+      "QueueStatus": "REJECTED",
+      "QueueRequestId": "",
+      "LatencyMs": 56.2119,
+      "ErrorType": ""
+    },
+    {
+      "Index": 28,
+      "HttpStatus": 503,
+      "ErrorCode": "PFX-9001",
+      "QueueStatus": "REJECTED",
+      "QueueRequestId": "",
+      "LatencyMs": 50.5143,
+      "ErrorType": ""
+    },
+    {
+      "Index": 29,
+      "HttpStatus": 503,
+      "ErrorCode": "PFX-9001",
+      "QueueStatus": "REJECTED",
+      "QueueRequestId": "",
+      "LatencyMs": 53.6606,
+      "ErrorType": ""
+    },
+    {
+      "Index": 30,
+      "HttpStatus": 503,
+      "ErrorCode": "PFX-9001",
+      "QueueStatus": "REJECTED",
+      "QueueRequestId": "",
+      "LatencyMs": 52.6728,
+      "ErrorType": ""
+    },
+    {
+      "Index": 31,
+      "HttpStatus": 503,
+      "ErrorCode": "PFX-9001",
+      "QueueStatus": "REJECTED",
+      "QueueRequestId": "",
+      "LatencyMs": 50.8261,
+      "ErrorType": ""
+    },
+    {
+      "Index": 32,
+      "HttpStatus": 503,
+      "ErrorCode": "PFX-9001",
+      "QueueStatus": "REJECTED",
+      "QueueRequestId": "",
+      "LatencyMs": 43.3803,
+      "ErrorType": ""
+    },
+    {
+      "Index": 33,
+      "HttpStatus": 503,
+      "ErrorCode": "PFX-9001",
+      "QueueStatus": "REJECTED",
+      "QueueRequestId": "",
+      "LatencyMs": 59.4476,
+      "ErrorType": ""
+    },
+    {
+      "Index": 34,
+      "HttpStatus": 503,
+      "ErrorCode": "PFX-9001",
+      "QueueStatus": "REJECTED",
+      "QueueRequestId": "",
+      "LatencyMs": 52.8035,
+      "ErrorType": ""
+    },
+    {
+      "Index": 35,
+      "HttpStatus": 503,
+      "ErrorCode": "PFX-9001",
+      "QueueStatus": "REJECTED",
+      "QueueRequestId": "",
+      "LatencyMs": 62.2232,
+      "ErrorType": ""
+    },
+    {
+      "Index": 36,
+      "HttpStatus": 503,
+      "ErrorCode": "PFX-9001",
+      "QueueStatus": "REJECTED",
+      "QueueRequestId": "",
+      "LatencyMs": 79.6699,
+      "ErrorType": ""
+    },
+    {
+      "Index": 37,
+      "HttpStatus": 503,
+      "ErrorCode": "PFX-9001",
+      "QueueStatus": "REJECTED",
+      "QueueRequestId": "",
+      "LatencyMs": 72.5691,
+      "ErrorType": ""
+    },
+    {
+      "Index": 38,
+      "HttpStatus": 503,
+      "ErrorCode": "PFX-9001",
+      "QueueStatus": "REJECTED",
+      "QueueRequestId": "",
+      "LatencyMs": 74.994,
+      "ErrorType": ""
+    },
+    {
+      "Index": 39,
+      "HttpStatus": 503,
+      "ErrorCode": "PFX-9001",
+      "QueueStatus": "REJECTED",
+      "QueueRequestId": "",
+      "LatencyMs": 63.316,
+      "ErrorType": ""
+    },
+    {
+      "Index": 40,
+      "HttpStatus": 503,
+      "ErrorCode": "PFX-9001",
+      "QueueStatus": "REJECTED",
+      "QueueRequestId": "",
+      "LatencyMs": 50.1506,
+      "ErrorType": ""
+    },
+    {
+      "Index": 41,
+      "HttpStatus": 503,
+      "ErrorCode": "PFX-9001",
+      "QueueStatus": "REJECTED",
+      "QueueRequestId": "",
+      "LatencyMs": 38.0594,
+      "ErrorType": ""
+    },
+    {
+      "Index": 42,
+      "HttpStatus": 503,
+      "ErrorCode": "PFX-9001",
+      "QueueStatus": "REJECTED",
+      "QueueRequestId": "",
+      "LatencyMs": 33.0956,
+      "ErrorType": ""
+    },
+    {
+      "Index": 43,
+      "HttpStatus": 503,
+      "ErrorCode": "PFX-9001",
+      "QueueStatus": "REJECTED",
+      "QueueRequestId": "",
+      "LatencyMs": 30.3344,
+      "ErrorType": ""
+    },
+    {
+      "Index": 44,
+      "HttpStatus": 503,
+      "ErrorCode": "PFX-9001",
+      "QueueStatus": "REJECTED",
+      "QueueRequestId": "",
+      "LatencyMs": 59.2716,
+      "ErrorType": ""
+    },
+    {
+      "Index": 45,
+      "HttpStatus": 503,
+      "ErrorCode": "PFX-9001",
+      "QueueStatus": "REJECTED",
+      "QueueRequestId": "",
+      "LatencyMs": 36.8421,
+      "ErrorType": ""
+    },
+    {
+      "Index": 46,
+      "HttpStatus": 503,
+      "ErrorCode": "PFX-9001",
+      "QueueStatus": "REJECTED",
+      "QueueRequestId": "",
+      "LatencyMs": 44.7182,
+      "ErrorType": ""
+    },
+    {
+      "Index": 47,
+      "HttpStatus": 503,
+      "ErrorCode": "PFX-9001",
+      "QueueStatus": "REJECTED",
+      "QueueRequestId": "",
+      "LatencyMs": 48.1013,
+      "ErrorType": ""
+    },
+    {
+      "Index": 48,
+      "HttpStatus": 503,
+      "ErrorCode": "PFX-9001",
+      "QueueStatus": "REJECTED",
+      "QueueRequestId": "",
+      "LatencyMs": 31.9197,
+      "ErrorType": ""
+    },
+    {
+      "Index": 49,
+      "HttpStatus": 503,
+      "ErrorCode": "PFX-9001",
+      "QueueStatus": "REJECTED",
+      "QueueRequestId": "",
+      "LatencyMs": 44.6336,
+      "ErrorType": ""
+    },
+    {
+      "Index": 50,
+      "HttpStatus": 503,
+      "ErrorCode": "PFX-9001",
+      "QueueStatus": "REJECTED",
+      "QueueRequestId": "",
+      "LatencyMs": 25.0559,
+      "ErrorType": ""
+    },
+    {
+      "Index": 51,
+      "HttpStatus": 503,
+      "ErrorCode": "PFX-9001",
+      "QueueStatus": "REJECTED",
+      "QueueRequestId": "",
+      "LatencyMs": 49.1056,
+      "ErrorType": ""
+    },
+    {
+      "Index": 52,
+      "HttpStatus": 503,
+      "ErrorCode": "PFX-9001",
+      "QueueStatus": "REJECTED",
+      "QueueRequestId": "",
+      "LatencyMs": 34.6033,
+      "ErrorType": ""
+    },
+    {
+      "Index": 53,
+      "HttpStatus": 503,
+      "ErrorCode": "PFX-9001",
+      "QueueStatus": "REJECTED",
+      "QueueRequestId": "",
+      "LatencyMs": 49.6764,
+      "ErrorType": ""
+    },
+    {
+      "Index": 54,
+      "HttpStatus": 503,
+      "ErrorCode": "PFX-9001",
+      "QueueStatus": "REJECTED",
+      "QueueRequestId": "",
+      "LatencyMs": 41.2821,
+      "ErrorType": ""
+    },
+    {
+      "Index": 55,
+      "HttpStatus": 503,
+      "ErrorCode": "PFX-9001",
+      "QueueStatus": "REJECTED",
+      "QueueRequestId": "",
+      "LatencyMs": 49.2765,
+      "ErrorType": ""
+    },
+    {
+      "Index": 56,
+      "HttpStatus": 503,
+      "ErrorCode": "PFX-9001",
+      "QueueStatus": "REJECTED",
+      "QueueRequestId": "",
+      "LatencyMs": 44.6926,
+      "ErrorType": ""
+    },
+    {
+      "Index": 57,
+      "HttpStatus": 503,
+      "ErrorCode": "PFX-9001",
+      "QueueStatus": "REJECTED",
+      "QueueRequestId": "",
+      "LatencyMs": 48.9423,
+      "ErrorType": ""
+    },
+    {
+      "Index": 58,
+      "HttpStatus": 503,
+      "ErrorCode": "PFX-9001",
+      "QueueStatus": "REJECTED",
+      "QueueRequestId": "",
+      "LatencyMs": 44.1549,
+      "ErrorType": ""
+    },
+    {
+      "Index": 59,
+      "HttpStatus": 503,
+      "ErrorCode": "PFX-9001",
+      "QueueStatus": "REJECTED",
+      "QueueRequestId": "",
+      "LatencyMs": 44.751,
+      "ErrorType": ""
+    },
+    {
+      "Index": 60,
+      "HttpStatus": 503,
+      "ErrorCode": "PFX-9001",
+      "QueueStatus": "REJECTED",
+      "QueueRequestId": "",
+      "LatencyMs": 40.2362,
+      "ErrorType": ""
+    },
+    {
+      "Index": 61,
+      "HttpStatus": 503,
+      "ErrorCode": "PFX-9001",
+      "QueueStatus": "REJECTED",
+      "QueueRequestId": "",
+      "LatencyMs": 27.4726,
+      "ErrorType": ""
+    },
+    {
+      "Index": 62,
+      "HttpStatus": 503,
+      "ErrorCode": "PFX-9001",
+      "QueueStatus": "REJECTED",
+      "QueueRequestId": "",
+      "LatencyMs": 27.3588,
+      "ErrorType": ""
+    },
+    {
+      "Index": 63,
+      "HttpStatus": 503,
+      "ErrorCode": "PFX-9001",
+      "QueueStatus": "REJECTED",
+      "QueueRequestId": "",
+      "LatencyMs": 27.2041,
+      "ErrorType": ""
+    },
+    {
+      "Index": 64,
+      "HttpStatus": 503,
+      "ErrorCode": "PFX-9001",
+      "QueueStatus": "REJECTED",
+      "QueueRequestId": "",
+      "LatencyMs": 57.1373,
+      "ErrorType": ""
+    },
+    {
+      "Index": 65,
+      "HttpStatus": 503,
+      "ErrorCode": "PFX-9001",
+      "QueueStatus": "REJECTED",
+      "QueueRequestId": "",
+      "LatencyMs": 54.5986,
+      "ErrorType": ""
+    },
+    {
+      "Index": 66,
+      "HttpStatus": 503,
+      "ErrorCode": "PFX-9001",
+      "QueueStatus": "REJECTED",
+      "QueueRequestId": "",
+      "LatencyMs": 54.1227,
+      "ErrorType": ""
+    },
+    {
+      "Index": 67,
+      "HttpStatus": 503,
+      "ErrorCode": "PFX-9001",
+      "QueueStatus": "REJECTED",
+      "QueueRequestId": "",
+      "LatencyMs": 46.7339,
+      "ErrorType": ""
+    },
+    {
+      "Index": 68,
+      "HttpStatus": 503,
+      "ErrorCode": "PFX-9001",
+      "QueueStatus": "REJECTED",
+      "QueueRequestId": "",
+      "LatencyMs": 50.8065,
+      "ErrorType": ""
+    },
+    {
+      "Index": 69,
+      "HttpStatus": 503,
+      "ErrorCode": "PFX-9001",
+      "QueueStatus": "REJECTED",
+      "QueueRequestId": "",
+      "LatencyMs": 41.2035,
+      "ErrorType": ""
+    },
+    {
+      "Index": 70,
+      "HttpStatus": 503,
+      "ErrorCode": "PFX-9001",
+      "QueueStatus": "REJECTED",
+      "QueueRequestId": "",
+      "LatencyMs": 40.4405,
+      "ErrorType": ""
+    },
+    {
+      "Index": 71,
+      "HttpStatus": 503,
+      "ErrorCode": "PFX-9001",
+      "QueueStatus": "REJECTED",
+      "QueueRequestId": "",
+      "LatencyMs": 38.4561,
+      "ErrorType": ""
+    },
+    {
+      "Index": 72,
+      "HttpStatus": 503,
+      "ErrorCode": "PFX-9001",
+      "QueueStatus": "REJECTED",
+      "QueueRequestId": "",
+      "LatencyMs": 22.5221,
+      "ErrorType": ""
+    },
+    {
+      "Index": 73,
+      "HttpStatus": 503,
+      "ErrorCode": "PFX-9001",
+      "QueueStatus": "REJECTED",
+      "QueueRequestId": "",
+      "LatencyMs": 47.6716,
+      "ErrorType": ""
+    },
+    {
+      "Index": 74,
+      "HttpStatus": 503,
+      "ErrorCode": "PFX-9001",
+      "QueueStatus": "REJECTED",
+      "QueueRequestId": "",
+      "LatencyMs": 54.0452,
+      "ErrorType": ""
+    },
+    {
+      "Index": 75,
+      "HttpStatus": 503,
+      "ErrorCode": "PFX-9001",
+      "QueueStatus": "REJECTED",
+      "QueueRequestId": "",
+      "LatencyMs": 35.583,
+      "ErrorType": ""
+    },
+    {
+      "Index": 76,
+      "HttpStatus": 503,
+      "ErrorCode": "PFX-9001",
+      "QueueStatus": "REJECTED",
+      "QueueRequestId": "",
+      "LatencyMs": 39.5808,
+      "ErrorType": ""
+    },
+    {
+      "Index": 77,
+      "HttpStatus": 503,
+      "ErrorCode": "PFX-9001",
+      "QueueStatus": "REJECTED",
+      "QueueRequestId": "",
+      "LatencyMs": 29.8893,
+      "ErrorType": ""
+    },
+    {
+      "Index": 78,
+      "HttpStatus": 503,
+      "ErrorCode": "PFX-9001",
+      "QueueStatus": "REJECTED",
+      "QueueRequestId": "",
+      "LatencyMs": 33.3453,
+      "ErrorType": ""
+    },
+    {
+      "Index": 79,
+      "HttpStatus": 503,
+      "ErrorCode": "PFX-9001",
+      "QueueStatus": "REJECTED",
+      "QueueRequestId": "",
+      "LatencyMs": 38.8724,
+      "ErrorType": ""
+    },
+    {
+      "Index": 80,
+      "HttpStatus": 503,
+      "ErrorCode": "PFX-9001",
+      "QueueStatus": "REJECTED",
+      "QueueRequestId": "",
+      "LatencyMs": 47.2814,
+      "ErrorType": ""
+    },
+    {
+      "Index": 81,
+      "HttpStatus": 503,
+      "ErrorCode": "PFX-9001",
+      "QueueStatus": "REJECTED",
+      "QueueRequestId": "",
+      "LatencyMs": 32.8651,
+      "ErrorType": ""
+    },
+    {
+      "Index": 82,
+      "HttpStatus": 503,
+      "ErrorCode": "PFX-9001",
+      "QueueStatus": "REJECTED",
+      "QueueRequestId": "",
+      "LatencyMs": 50.5665,
+      "ErrorType": ""
+    },
+    {
+      "Index": 83,
+      "HttpStatus": 503,
+      "ErrorCode": "PFX-9001",
+      "QueueStatus": "REJECTED",
+      "QueueRequestId": "",
+      "LatencyMs": 53.6321,
+      "ErrorType": ""
+    },
+    {
+      "Index": 84,
+      "HttpStatus": 503,
+      "ErrorCode": "PFX-9001",
+      "QueueStatus": "REJECTED",
+      "QueueRequestId": "",
+      "LatencyMs": 52.1397,
+      "ErrorType": ""
+    },
+    {
+      "Index": 85,
+      "HttpStatus": 503,
+      "ErrorCode": "PFX-9001",
+      "QueueStatus": "REJECTED",
+      "QueueRequestId": "",
+      "LatencyMs": 18.182,
+      "ErrorType": ""
+    },
+    {
+      "Index": 86,
+      "HttpStatus": 503,
+      "ErrorCode": "PFX-9001",
+      "QueueStatus": "REJECTED",
+      "QueueRequestId": "",
+      "LatencyMs": 19.7588,
+      "ErrorType": ""
+    },
+    {
+      "Index": 87,
+      "HttpStatus": 503,
+      "ErrorCode": "PFX-9001",
+      "QueueStatus": "REJECTED",
+      "QueueRequestId": "",
+      "LatencyMs": 26.9697,
+      "ErrorType": ""
+    },
+    {
+      "Index": 88,
+      "HttpStatus": 503,
+      "ErrorCode": "PFX-9001",
+      "QueueStatus": "REJECTED",
+      "QueueRequestId": "",
+      "LatencyMs": 32.9211,
+      "ErrorType": ""
+    },
+    {
+      "Index": 89,
+      "HttpStatus": 503,
+      "ErrorCode": "PFX-9001",
+      "QueueStatus": "REJECTED",
+      "QueueRequestId": "",
+      "LatencyMs": 25.0436,
+      "ErrorType": ""
+    },
+    {
+      "Index": 90,
+      "HttpStatus": 503,
+      "ErrorCode": "PFX-9001",
+      "QueueStatus": "REJECTED",
+      "QueueRequestId": "",
+      "LatencyMs": 20.4178,
+      "ErrorType": ""
+    },
+    {
+      "Index": 91,
+      "HttpStatus": 503,
+      "ErrorCode": "PFX-9001",
+      "QueueStatus": "REJECTED",
+      "QueueRequestId": "",
+      "LatencyMs": 27.4564,
+      "ErrorType": ""
+    },
+    {
+      "Index": 92,
+      "HttpStatus": 503,
+      "ErrorCode": "PFX-9001",
+      "QueueStatus": "REJECTED",
+      "QueueRequestId": "",
+      "LatencyMs": 27.1629,
+      "ErrorType": ""
+    },
+    {
+      "Index": 93,
+      "HttpStatus": 503,
+      "ErrorCode": "PFX-9001",
+      "QueueStatus": "REJECTED",
+      "QueueRequestId": "",
+      "LatencyMs": 29.0475,
+      "ErrorType": ""
+    },
+    {
+      "Index": 94,
+      "HttpStatus": 503,
+      "ErrorCode": "PFX-9001",
+      "QueueStatus": "REJECTED",
+      "QueueRequestId": "",
+      "LatencyMs": 22.798,
+      "ErrorType": ""
+    },
+    {
+      "Index": 95,
+      "HttpStatus": 503,
+      "ErrorCode": "PFX-9001",
+      "QueueStatus": "REJECTED",
+      "QueueRequestId": "",
+      "LatencyMs": 27.9035,
+      "ErrorType": ""
+    },
+    {
+      "Index": 96,
+      "HttpStatus": 503,
+      "ErrorCode": "PFX-9001",
+      "QueueStatus": "REJECTED",
+      "QueueRequestId": "",
+      "LatencyMs": 39.7799,
+      "ErrorType": ""
+    },
+    {
+      "Index": 97,
+      "HttpStatus": 503,
+      "ErrorCode": "PFX-9001",
+      "QueueStatus": "REJECTED",
+      "QueueRequestId": "",
+      "LatencyMs": 32.9116,
+      "ErrorType": ""
+    },
+    {
+      "Index": 98,
+      "HttpStatus": 503,
+      "ErrorCode": "PFX-9001",
+      "QueueStatus": "REJECTED",
+      "QueueRequestId": "",
+      "LatencyMs": 31.1189,
+      "ErrorType": ""
+    },
+    {
+      "Index": 99,
+      "HttpStatus": 503,
+      "ErrorCode": "PFX-9001",
+      "QueueStatus": "REJECTED",
+      "QueueRequestId": "",
+      "LatencyMs": 22.2536,
+      "ErrorType": ""
+    },
+    {
+      "Index": 100,
+      "HttpStatus": 503,
+      "ErrorCode": "PFX-9001",
+      "QueueStatus": "REJECTED",
+      "QueueRequestId": "",
+      "LatencyMs": 24.4946,
+      "ErrorType": ""
+    }
+  ],
+  "CredentialsOrTokensPrinted": false,
+  "Note": "Single host, single activity/user, one Campaign queue consumer, single-node Kafka, Redis/MySQL temporary containers, simulated fulfillment; this historical run did not capture internal causes for its 503/PFX-9001 responses, all other non-202 responses fail; controlled local result, not production capacity evidence."
+}

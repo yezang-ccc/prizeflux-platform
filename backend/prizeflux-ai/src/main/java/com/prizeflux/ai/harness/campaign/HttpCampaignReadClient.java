@@ -32,7 +32,7 @@ public final class HttpCampaignReadClient implements CampaignReadClient {
         if (!("http".equalsIgnoreCase(scheme) || "https".equalsIgnoreCase(scheme))
                 || baseUri.getHost() == null
                 || "http".equalsIgnoreCase(scheme)
-                    && !java.util.Set.of("localhost", "127.0.0.1", "::1").contains(host)
+                    && !java.util.Set.of("localhost", "127.0.0.1", "::1", "campaign").contains(host)
                 || baseUri.getUserInfo() != null
                 || baseUri.getQuery() != null || baseUri.getFragment() != null
                 || !(baseUri.getPath().isEmpty() || "/".equals(baseUri.getPath()))) {

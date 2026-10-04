@@ -2,6 +2,8 @@ package com.prizeflux.campaign.infrastructure.traffic;
 
 import com.prizeflux.campaign.application.DrawRateLimitDecision;
 import com.prizeflux.campaign.application.DrawRateLimiter;
+import com.prizeflux.campaign.application.DrawQueueTrafficDecision;
+import com.prizeflux.campaign.application.DrawQueueTrafficGuard;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -97,6 +99,62 @@ class RedisDrawRateLimiterIntegrationTest {
         assertThat(limiter.consume(101).allowed()).isTrue();
         Thread.sleep(1500);
         assertThat(limiter.consume(100).allowed()).isTrue();
+    }
+
+    @Test
+    void queueAdmissionSharesAtomicUserCampaignAndGlobalWindowsAcrossInstances() throws Exception {
+        DrawQueueProtectionProperties properties = queueProperties();
+        properties.setUserMaxRequests(5);
+        properties.setCampaignMaxRequests(100);
+        properties.setGlobalMaxRequests(100);
+        DrawQueueTrafficGuard firstInstance = new RedisDrawQueueTrafficGuard(redis, properties);
+        DrawQueueTrafficGuard secondInstance = new RedisDrawQueueTrafficGuard(redis, properties);
+        int attempts = 40;
+        ExecutorService executor = Executors.newFixedThreadPool(16);
+        CountDownLatch ready = new CountDownLatch(16);
+        CountDownLatch start = new CountDownLatch(1);
+        List<Future<DrawQueueTrafficDecision>> results = new ArrayList<>();
+        try {
+            for (int index = 0; index < attempts; index++) {
+                DrawQueueTrafficGuard instance = index % 2 == 0 ? firstInstance : secondInstance;
+                results.add(executor.submit(() -> {
+                    ready.countDown();
+                    start.await();
+                    return instance.checkSubmission(8400, 9400);
+                }));
+            }
+            ready.await();
+            start.countDown();
+            List<DrawQueueTrafficDecision> decisions = new ArrayList<>();
+            for (Future<DrawQueueTrafficDecision> result : results) decisions.add(result.get());
+            assertThat(decisions).filteredOn(DrawQueueTrafficDecision::allowed).hasSize(5);
+            assertThat(decisions).filteredOn(decision -> !decision.allowed())
+                    .allMatch(decision -> decision.retryAfterSeconds() > 0);
+        } finally {
+            executor.shutdownNow();
+        }
+    }
+
+    @Test
+    void queueCampaignAndStatusLimitsAreIndependent() {
+        DrawQueueProtectionProperties properties = queueProperties();
+        properties.setUserMaxRequests(10);
+        properties.setCampaignMaxRequests(1);
+        properties.setGlobalMaxRequests(10);
+        properties.setStatusMaxRequests(1);
+        DrawQueueTrafficGuard guard = new RedisDrawQueueTrafficGuard(redis, properties);
+
+        assertThat(guard.checkSubmission(8501, 9501).allowed()).isTrue();
+        assertThat(guard.checkSubmission(8502, 9501).allowed()).isFalse();
+        assertThat(guard.checkStatusQuery(8501).allowed()).isTrue();
+        assertThat(guard.checkStatusQuery(8501).allowed()).isFalse();
+    }
+
+    private static DrawQueueProtectionProperties queueProperties() {
+        DrawQueueProtectionProperties properties = new DrawQueueProtectionProperties();
+        properties.setWindowSeconds(60);
+        properties.setKeyPrefix("test:" + UUID.randomUUID() + ":");
+        return properties;
     }
 
     private static DrawRateLimitProperties properties(int maxRequests) {

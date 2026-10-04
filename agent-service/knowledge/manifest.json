@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "documents": [
+    {
+      "documentId": "campaign-help-v1",
+      "title": "PrizeFlux 活动参与帮助",
+      "path": "public/campaign-help.md",
+      "scope": "PUBLIC"
+    },
+    {
+      "documentId": "operator-guide-v1",
+      "title": "PrizeFlux 运营操作指南",
+      "path": "operator/operations-guide.md",
+      "scope": "OPERATOR"
+    }
+  ]
+}

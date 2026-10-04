@@ -1,0 +1,88 @@
+{
+  "annotations": { "list": [] },
+  "editable": false,
+  "graphTooltip": 1,
+  "id": null,
+  "panels": [
+    {
+      "datasource": { "type": "prometheus", "uid": "prizeflux-prometheus" },
+      "fieldConfig": { "defaults": { "unit": "short" }, "overrides": [] },
+      "gridPos": { "h": 8, "w": 8, "x": 0, "y": 0 },
+      "id": 1,
+      "options": { "colorMode": "value", "graphMode": "area", "justifyMode": "auto", "orientation": "auto", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "showPercentChange": false, "textMode": "auto" },
+      "targets": [{ "editorMode": "code", "expr": "prizeflux_draw_queue_pending", "legendFormat": "pending", "refId": "A" }],
+      "title": "Queued draws",
+      "type": "stat"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "prizeflux-prometheus" },
+      "fieldConfig": { "defaults": { "unit": "ms" }, "overrides": [] },
+      "gridPos": { "h": 8, "w": 8, "x": 8, "y": 0 },
+      "id": 2,
+      "options": { "colorMode": "value", "graphMode": "area", "justifyMode": "auto", "orientation": "auto", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "showPercentChange": false, "textMode": "auto" },
+      "targets": [{ "editorMode": "code", "expr": "prizeflux_draw_queue_oldest_age_milliseconds", "legendFormat": "oldest age", "refId": "A" }],
+      "title": "Oldest queued draw age",
+      "type": "stat"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "prizeflux-prometheus" },
+      "fieldConfig": { "defaults": { "unit": "short" }, "overrides": [] },
+      "gridPos": { "h": 8, "w": 8, "x": 16, "y": 0 },
+      "id": 3,
+      "options": { "colorMode": "value", "graphMode": "area", "justifyMode": "auto", "orientation": "auto", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "showPercentChange": false, "textMode": "auto" },
+      "targets": [{ "editorMode": "code", "expr": "prizeflux_outbox_pending", "legendFormat": "pending", "refId": "A" }],
+      "title": "Pending Outbox events",
+      "type": "stat"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "prizeflux-prometheus" },
+      "fieldConfig": { "defaults": { "unit": "ms" }, "overrides": [] },
+      "gridPos": { "h": 8, "w": 8, "x": 0, "y": 8 },
+      "id": 4,
+      "options": { "colorMode": "value", "graphMode": "area", "justifyMode": "auto", "orientation": "auto", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "showPercentChange": false, "textMode": "auto" },
+      "targets": [{ "editorMode": "code", "expr": "prizeflux_outbox_oldest_age_milliseconds", "legendFormat": "oldest age", "refId": "A" }],
+      "title": "Oldest active Outbox age",
+      "type": "stat"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "prizeflux-prometheus" },
+      "fieldConfig": { "defaults": { "unit": "short" }, "overrides": [] },
+      "gridPos": { "h": 8, "w": 8, "x": 8, "y": 8 },
+      "id": 5,
+      "options": { "colorMode": "value", "graphMode": "area", "justifyMode": "auto", "orientation": "auto", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "showPercentChange": false, "textMode": "auto" },
+      "targets": [{ "editorMode": "code", "expr": "prizeflux_worker_kafka_consumer_lag", "legendFormat": "consumer lag", "refId": "A" }],
+      "title": "Worker Kafka consumer lag",
+      "type": "stat"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "prizeflux-prometheus" },
+      "fieldConfig": { "defaults": { "unit": "short" }, "overrides": [] },
+      "gridPos": { "h": 8, "w": 8, "x": 16, "y": 8 },
+      "id": 6,
+      "options": { "colorMode": "value", "graphMode": "area", "justifyMode": "auto", "orientation": "auto", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "showPercentChange": false, "textMode": "auto" },
+      "targets": [{ "editorMode": "code", "expr": "hikaricp_connections_pending{job=\"prizeflux-campaign\"}", "legendFormat": "waiting", "refId": "A" }],
+      "title": "Campaign DB connections waiting",
+      "type": "stat"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "prizeflux-prometheus" },
+      "fieldConfig": { "defaults": { "unit": "short" }, "overrides": [] },
+      "gridPos": { "h": 8, "w": 8, "x": 0, "y": 16 },
+      "id": 7,
+      "options": { "colorMode": "value", "graphMode": "area", "justifyMode": "auto", "orientation": "auto", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "showPercentChange": false, "textMode": "auto" },
+      "targets": [{ "editorMode": "code", "expr": "prizeflux_mysql_innodb_lock_wait_relationships", "legendFormat": "blocking relationships", "refId": "A" }],
+      "title": "Current MySQL InnoDB lock-wait relationships",
+      "type": "stat"
+    }
+  ],
+  "refresh": "15s",
+  "schemaVersion": 40,
+  "tags": ["prizeflux", "local"],
+  "templating": { "list": [] },
+  "time": { "from": "now-1h", "to": "now" },
+  "timepicker": {},
+  "timezone": "browser",
+  "title": "PrizeFlux Runtime",
+  "uid": "prizeflux-runtime",
+  "version": 1
+}

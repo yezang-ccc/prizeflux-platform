@@ -1,0 +1,48 @@
+{
+  "Result": "PASS",
+  "Scenario": "Draw-queue Kafka outage with durable Outbox notification and consumer recovery",
+  "Environment": {
+    "OS": "Microsoft Windows NT 10.0.26200.0",
+    "PowerShell": "7.6.5",
+    "JavaHome": "D:\\java\\jdk-17",
+    "JavaVersion": "java version \"17.0.12\" 2024-07-16 LTS\r\nJava(TM) SE Runtime Environment (build 17.0.12+8-LTS-286)\r\nJava HotSpot(TM) 64-Bit Server VM (build 17.0.12+8-LTS-286, mixed mode, sharing)",
+    "DockerEngine": "29.8.0",
+    "MySqlImage": "mysql:8.4",
+    "Broker": "Disposable single-node Kafka 3.9.1"
+  },
+  "PortAssignments": {
+    "CampaignApi": 51173,
+    "CampaignMySql": 51170,
+    "WorkerMySql": 51171,
+    "Kafka": 51172
+  },
+  "Configuration": {
+    "QueueRequests": 1,
+    "ConsumerEnabled": true,
+    "PeriodicRecoveryScanDelayed": true,
+    "ConsumerStartedAfterKafkaPublish": true,
+    "QueueKey": "redacted",
+    "PersistentVolumes": false
+  },
+  "Correctness": {
+    "QueueStateBeforeRecovery": "QUEUED:0",
+    "QueueStateAfterRecovery": "COMPLETED",
+    "DrawRows": 1,
+    "InventoryRemaining": 0,
+    "SentDrawQueuedOutboxRows": 1
+  },
+  "FaultInjection": {
+    "Dependency": "Kafka draw-queue topic",
+    "QueueOutboxStateBeforeRecovery": "PENDING",
+    "PublishAttemptsBeforeRecovery": 1,
+    "QueueStateBeforeRecovery": "QUEUED:0",
+    "OutboxStateBeforeConsumerStart": "SENT:2",
+    "QueueStateBeforeConsumerStart": "QUEUED:0",
+    "OffsetResetPolicy": "earliest",
+    "Recovery": "Broker restarted; DrawQueued was confirmed in Kafka before a fresh consumer group started; queue completed without periodic scan fallback",
+    "TimeToBrokerPortMs": 10271.88,
+    "QueueCompletionMsFromConsumerStart": 12641.21
+  },
+  "CredentialsOrTokensPrinted": false,
+  "Note": "One request, one consumer process and one disposable broker. Proves durable enqueue/notification and recovery; not consumer rebalance, multi-broker HA or capacity."
+}

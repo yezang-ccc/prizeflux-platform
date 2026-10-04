@@ -1,0 +1,2524 @@
+{
+  "Result": "FAIL",
+  "Scenario": "Open-model constant arrival rate for the asynchronous draw queue",
+  "Environment": {
+    "OS": "Microsoft Windows NT 10.0.26200.0",
+    "PowerShell": "7.6.5",
+    "JavaHome": "D:\\java\\jdk-17",
+    "JavaVersion": "java version \"17.0.12\" 2024-07-16 LTS\r\nJava(TM) SE Runtime Environment (build 17.0.12+8-LTS-286)\r\nJava HotSpot(TM) 64-Bit Server VM (build 17.0.12+8-LTS-286, mixed mode, sharing)",
+    "K6Version": "k6.exe v2.3.0 (commit/e088784614, go1.26.8, windows/amd64)",
+    "ProcessorCount": 12,
+    "DockerEngine": "29.8.0",
+    "MySqlImage": "mysql:8.4",
+    "RedisImage": "redis:7.4-alpine",
+    "Broker": "Disposable single-node Kafka 3.9.1",
+    "FulfillmentMode": "SIMULATED",
+    "LoadGeneratorAndServicesOnSameHost": true
+  },
+  "Configuration": {
+    "MeasuredRatePerSecond": 50,
+    "MeasuredDurationSeconds": 60,
+    "PlannedMeasuredRequests": 3000,
+    "WarmupRatePerSecond": 5,
+    "WarmupDurationSeconds": 30,
+    "PlannedWarmupRequests": 150,
+    "AllowedK6BoundaryIterationPerPhase": 1,
+    "AdditionalTestQuotaForBoundaryIterations": 2,
+    "Users": 20,
+    "Campaigns": 10,
+    "PrizeStock": 10,
+    "QueueConsumerInstances": 1,
+    "QueueConsumerConcurrencyPerInstance": 4,
+    "QueueConsumerGeneration": 3,
+    "CampaignHikariMaximumPoolSize": 20,
+    "QueueTopicPartitions": 12,
+    "QueueConsumerStayedOnlineDuringLoad": true,
+    "OutboxRelayBatchSize": 50,
+    "OutboxRelayFixedDelaySeconds": 1,
+    "PeriodicRecoveryScanDelayed": true,
+    "PersistentVolumes": false
+  },
+  "Metrics": {
+    "K6ExitCode": 0,
+    "MeasuredRequestsAttempted": 3001,
+    "MeasuredRequestsAccepted": 3001,
+    "WarmupRequestsAttempted": 151,
+    "WarmupRequestsAccepted": 151,
+    "ProtectedCapacityRejections": 0,
+    "UnexpectedResponses": 0,
+    "ClientErrors": 0,
+    "ServerErrors": 0,
+    "TransportErrors": 0,
+    "GeneratorDroppedIterations": 0,
+    "ActualAttemptRatePerSecond": 50.02,
+    "AcceptedRate": 1.0,
+    "UnexpectedErrorRate": 0.0,
+    "AdmissionP95Ms": 39.8837,
+    "AdmissionP99Ms": 62.3948,
+    "TerminalLatencySampleCount": 3152,
+    "AcceptedToTerminalP50Ms": 26919.88,
+    "AcceptedToTerminalP95Ms": 50693.92,
+    "DrainAfterK6ExitMs": 48861.66,
+    "OldestActiveQueueAgeSamples": [
+      {
+        "ElapsedSeconds": 5.2,
+        "PendingActiveRequests": 3,
+        "OldestActiveItemSeconds": 0
+      },
+      {
+        "ElapsedSeconds": 10.3,
+        "PendingActiveRequests": 4,
+        "OldestActiveItemSeconds": 0
+      },
+      {
+        "ElapsedSeconds": 15.2,
+        "PendingActiveRequests": 2,
+        "OldestActiveItemSeconds": 0
+      },
+      {
+        "ElapsedSeconds": 20.2,
+        "PendingActiveRequests": 5,
+        "OldestActiveItemSeconds": 0
+      },
+      {
+        "ElapsedSeconds": 25.5,
+        "PendingActiveRequests": 3,
+        "OldestActiveItemSeconds": 0
+      },
+      {
+        "ElapsedSeconds": 30.4,
+        "PendingActiveRequests": 5,
+        "OldestActiveItemSeconds": 0
+      },
+      {
+        "ElapsedSeconds": 35.5,
+        "PendingActiveRequests": 0,
+        "OldestActiveItemSeconds": 0
+      },
+      {
+        "ElapsedSeconds": 40.7,
+        "PendingActiveRequests": 131,
+        "OldestActiveItemSeconds": 2
+      },
+      {
+        "ElapsedSeconds": 46.0,
+        "PendingActiveRequests": 266,
+        "OldestActiveItemSeconds": 5
+      },
+      {
+        "ElapsedSeconds": 51.1,
+        "PendingActiveRequests": 377,
+        "OldestActiveItemSeconds": 8
+      },
+      {
+        "ElapsedSeconds": 56.1,
+        "PendingActiveRequests": 506,
+        "OldestActiveItemSeconds": 10
+      },
+      {
+        "ElapsedSeconds": 61.2,
+        "PendingActiveRequests": 626,
+        "OldestActiveItemSeconds": 12
+      },
+      {
+        "ElapsedSeconds": 66.2,
+        "PendingActiveRequests": 742,
+        "OldestActiveItemSeconds": 15
+      },
+      {
+        "ElapsedSeconds": 71.2,
+        "PendingActiveRequests": 870,
+        "OldestActiveItemSeconds": 17
+      },
+      {
+        "ElapsedSeconds": 76.2,
+        "PendingActiveRequests": 978,
+        "OldestActiveItemSeconds": 20
+      },
+      {
+        "ElapsedSeconds": 81.3,
+        "PendingActiveRequests": 1104,
+        "OldestActiveItemSeconds": 22
+      },
+      {
+        "ElapsedSeconds": 86.2,
+        "PendingActiveRequests": 1228,
+        "OldestActiveItemSeconds": 24
+      },
+      {
+        "ElapsedSeconds": 91.3,
+        "PendingActiveRequests": 1332,
+        "OldestActiveItemSeconds": 27
+      },
+      {
+        "ElapsedSeconds": 96.3,
+        "PendingActiveRequests": 1447,
+        "OldestActiveItemSeconds": 29
+      },
+      {
+        "ElapsedSeconds": 101.1,
+        "PendingActiveRequests": 1178,
+        "OldestActiveItemSeconds": 33
+      },
+      {
+        "ElapsedSeconds": 101.1,
+        "PendingActiveRequests": 1029,
+        "OldestActiveItemSeconds": 36
+      },
+      {
+        "ElapsedSeconds": 101.1,
+        "PendingActiveRequests": 918,
+        "OldestActiveItemSeconds": 38
+      },
+      {
+        "ElapsedSeconds": 101.1,
+        "PendingActiveRequests": 764,
+        "OldestActiveItemSeconds": 41
+      },
+      {
+        "ElapsedSeconds": 101.1,
+        "PendingActiveRequests": 628,
+        "OldestActiveItemSeconds": 42
+      },
+      {
+        "ElapsedSeconds": 101.1,
+        "PendingActiveRequests": 507,
+        "OldestActiveItemSeconds": 45
+      },
+      {
+        "ElapsedSeconds": 101.1,
+        "PendingActiveRequests": 348,
+        "OldestActiveItemSeconds": 48
+      },
+      {
+        "ElapsedSeconds": 101.1,
+        "PendingActiveRequests": 228,
+        "OldestActiveItemSeconds": 49
+      },
+      {
+        "ElapsedSeconds": 101.1,
+        "PendingActiveRequests": 87,
+        "OldestActiveItemSeconds": 52
+      }
+    ],
+    "ContainerResourceSamples": [
+      {
+        "ElapsedSeconds": 9.9,
+        "Containers": [
+          {
+            "Container": "pfx-campaign-3eb39a8923",
+            "CpuPercent": "8.35%",
+            "MemoryUsage": "463.7MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 5.94
+          },
+          {
+            "Container": "pfx-worker-3eb39a8923",
+            "CpuPercent": "0.73%",
+            "MemoryUsage": "448.3MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 5.74
+          },
+          {
+            "Container": "pfx-kafka-3eb39a8923",
+            "CpuPercent": "7.96%",
+            "MemoryUsage": "406.2MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 5.2
+          },
+          {
+            "Container": "pfx-redis-3eb39a8923",
+            "CpuPercent": "0.37%",
+            "MemoryUsage": "5.633MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 0.07
+          }
+        ]
+      },
+      {
+        "ElapsedSeconds": 14.3,
+        "Containers": [
+          {
+            "Container": "pfx-campaign-3eb39a8923",
+            "CpuPercent": "8.26%",
+            "MemoryUsage": "464.2MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 5.94
+          },
+          {
+            "Container": "pfx-worker-3eb39a8923",
+            "CpuPercent": "0.92%",
+            "MemoryUsage": "448.5MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 5.74
+          },
+          {
+            "Container": "pfx-kafka-3eb39a8923",
+            "CpuPercent": "4.92%",
+            "MemoryUsage": "409MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 5.24
+          },
+          {
+            "Container": "pfx-redis-3eb39a8923",
+            "CpuPercent": "0.40%",
+            "MemoryUsage": "5.855MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 0.07
+          }
+        ]
+      },
+      {
+        "ElapsedSeconds": 19.3,
+        "Containers": [
+          {
+            "Container": "pfx-campaign-3eb39a8923",
+            "CpuPercent": "5.93%",
+            "MemoryUsage": "464.4MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 5.95
+          },
+          {
+            "Container": "pfx-worker-3eb39a8923",
+            "CpuPercent": "0.76%",
+            "MemoryUsage": "448.5MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 5.74
+          },
+          {
+            "Container": "pfx-kafka-3eb39a8923",
+            "CpuPercent": "4.70%",
+            "MemoryUsage": "411.8MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 5.27
+          },
+          {
+            "Container": "pfx-redis-3eb39a8923",
+            "CpuPercent": "0.38%",
+            "MemoryUsage": "5.812MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 0.07
+          }
+        ]
+      },
+      {
+        "ElapsedSeconds": 24.2,
+        "Containers": [
+          {
+            "Container": "pfx-campaign-3eb39a8923",
+            "CpuPercent": "8.84%",
+            "MemoryUsage": "464.5MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 5.95
+          },
+          {
+            "Container": "pfx-worker-3eb39a8923",
+            "CpuPercent": "1.06%",
+            "MemoryUsage": "448.5MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 5.74
+          },
+          {
+            "Container": "pfx-kafka-3eb39a8923",
+            "CpuPercent": "4.59%",
+            "MemoryUsage": "415.2MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 5.32
+          },
+          {
+            "Container": "pfx-redis-3eb39a8923",
+            "CpuPercent": "0.41%",
+            "MemoryUsage": "5.766MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 0.07
+          }
+        ]
+      },
+      {
+        "ElapsedSeconds": 29.4,
+        "Containers": [
+          {
+            "Container": "pfx-campaign-3eb39a8923",
+            "CpuPercent": "8.21%",
+            "MemoryUsage": "464.3MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 5.94
+          },
+          {
+            "Container": "pfx-worker-3eb39a8923",
+            "CpuPercent": "1.16%",
+            "MemoryUsage": "448.5MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 5.74
+          },
+          {
+            "Container": "pfx-kafka-3eb39a8923",
+            "CpuPercent": "6.73%",
+            "MemoryUsage": "418.5MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 5.36
+          },
+          {
+            "Container": "pfx-redis-3eb39a8923",
+            "CpuPercent": "0.42%",
+            "MemoryUsage": "5.707MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 0.07
+          }
+        ]
+      },
+      {
+        "ElapsedSeconds": 35.0,
+        "Containers": [
+          {
+            "Container": "pfx-campaign-3eb39a8923",
+            "CpuPercent": "0.94%",
+            "MemoryUsage": "464.6MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 5.95
+          },
+          {
+            "Container": "pfx-worker-3eb39a8923",
+            "CpuPercent": "1.29%",
+            "MemoryUsage": "448.4MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 5.74
+          },
+          {
+            "Container": "pfx-kafka-3eb39a8923",
+            "CpuPercent": "4.24%",
+            "MemoryUsage": "421.7MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 5.4
+          },
+          {
+            "Container": "pfx-redis-3eb39a8923",
+            "CpuPercent": "0.37%",
+            "MemoryUsage": "5.688MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 0.07
+          }
+        ]
+      },
+      {
+        "ElapsedSeconds": 40.2,
+        "Containers": [
+          {
+            "Container": "pfx-campaign-3eb39a8923",
+            "CpuPercent": "37.17%",
+            "MemoryUsage": "466.6MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 5.97
+          },
+          {
+            "Container": "pfx-worker-3eb39a8923",
+            "CpuPercent": "1.04%",
+            "MemoryUsage": "448.4MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 5.74
+          },
+          {
+            "Container": "pfx-kafka-3eb39a8923",
+            "CpuPercent": "7.94%",
+            "MemoryUsage": "426.9MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 5.47
+          },
+          {
+            "Container": "pfx-redis-3eb39a8923",
+            "CpuPercent": "1.10%",
+            "MemoryUsage": "5.66MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 0.07
+          }
+        ]
+      },
+      {
+        "ElapsedSeconds": 45.5,
+        "Containers": [
+          {
+            "Container": "pfx-campaign-3eb39a8923",
+            "CpuPercent": "57.61%",
+            "MemoryUsage": "466.7MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 5.97
+          },
+          {
+            "Container": "pfx-worker-3eb39a8923",
+            "CpuPercent": "1.29%",
+            "MemoryUsage": "448.4MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 5.74
+          },
+          {
+            "Container": "pfx-kafka-3eb39a8923",
+            "CpuPercent": "11.24%",
+            "MemoryUsage": "434.6MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 5.56
+          },
+          {
+            "Container": "pfx-redis-3eb39a8923",
+            "CpuPercent": "1.18%",
+            "MemoryUsage": "5.629MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 0.07
+          }
+        ]
+      },
+      {
+        "ElapsedSeconds": 50.7,
+        "Containers": [
+          {
+            "Container": "pfx-campaign-3eb39a8923",
+            "CpuPercent": "47.38%",
+            "MemoryUsage": "468.4MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 6.0
+          },
+          {
+            "Container": "pfx-worker-3eb39a8923",
+            "CpuPercent": "0.89%",
+            "MemoryUsage": "448.4MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 5.74
+          },
+          {
+            "Container": "pfx-kafka-3eb39a8923",
+            "CpuPercent": "21.72%",
+            "MemoryUsage": "445.4MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 5.7
+          },
+          {
+            "Container": "pfx-redis-3eb39a8923",
+            "CpuPercent": "1.01%",
+            "MemoryUsage": "5.586MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 0.07
+          }
+        ]
+      },
+      {
+        "ElapsedSeconds": 55.6,
+        "Containers": [
+          {
+            "Container": "pfx-campaign-3eb39a8923",
+            "CpuPercent": "31.89%",
+            "MemoryUsage": "468.8MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 6.0
+          },
+          {
+            "Container": "pfx-worker-3eb39a8923",
+            "CpuPercent": "0.91%",
+            "MemoryUsage": "448.4MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 5.74
+          },
+          {
+            "Container": "pfx-kafka-3eb39a8923",
+            "CpuPercent": "6.96%",
+            "MemoryUsage": "452.9MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 5.8
+          },
+          {
+            "Container": "pfx-redis-3eb39a8923",
+            "CpuPercent": "0.89%",
+            "MemoryUsage": "5.559MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 0.07
+          }
+        ]
+      },
+      {
+        "ElapsedSeconds": 60.7,
+        "Containers": [
+          {
+            "Container": "pfx-campaign-3eb39a8923",
+            "CpuPercent": "53.46%",
+            "MemoryUsage": "469.9MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 6.02
+          },
+          {
+            "Container": "pfx-worker-3eb39a8923",
+            "CpuPercent": "0.98%",
+            "MemoryUsage": "448.6MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 5.74
+          },
+          {
+            "Container": "pfx-kafka-3eb39a8923",
+            "CpuPercent": "15.30%",
+            "MemoryUsage": "461.8MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 5.91
+          },
+          {
+            "Container": "pfx-redis-3eb39a8923",
+            "CpuPercent": "0.92%",
+            "MemoryUsage": "5.539MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 0.07
+          }
+        ]
+      },
+      {
+        "ElapsedSeconds": 65.8,
+        "Containers": [
+          {
+            "Container": "pfx-campaign-3eb39a8923",
+            "CpuPercent": "47.13%",
+            "MemoryUsage": "469.9MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 6.02
+          },
+          {
+            "Container": "pfx-worker-3eb39a8923",
+            "CpuPercent": "0.86%",
+            "MemoryUsage": "448.6MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 5.74
+          },
+          {
+            "Container": "pfx-kafka-3eb39a8923",
+            "CpuPercent": "13.97%",
+            "MemoryUsage": "470.4MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 6.02
+          },
+          {
+            "Container": "pfx-redis-3eb39a8923",
+            "CpuPercent": "0.91%",
+            "MemoryUsage": "5.52MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 0.07
+          }
+        ]
+      },
+      {
+        "ElapsedSeconds": 70.8,
+        "Containers": [
+          {
+            "Container": "pfx-campaign-3eb39a8923",
+            "CpuPercent": "42.97%",
+            "MemoryUsage": "470.8MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 6.03
+          },
+          {
+            "Container": "pfx-worker-3eb39a8923",
+            "CpuPercent": "0.88%",
+            "MemoryUsage": "448.8MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 5.75
+          },
+          {
+            "Container": "pfx-kafka-3eb39a8923",
+            "CpuPercent": "6.37%",
+            "MemoryUsage": "478MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 6.12
+          },
+          {
+            "Container": "pfx-redis-3eb39a8923",
+            "CpuPercent": "0.93%",
+            "MemoryUsage": "5.5MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 0.07
+          }
+        ]
+      },
+      {
+        "ElapsedSeconds": 75.7,
+        "Containers": [
+          {
+            "Container": "pfx-campaign-3eb39a8923",
+            "CpuPercent": "29.47%",
+            "MemoryUsage": "506.5MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 6.48
+          },
+          {
+            "Container": "pfx-worker-3eb39a8923",
+            "CpuPercent": "1.02%",
+            "MemoryUsage": "448.8MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 5.75
+          },
+          {
+            "Container": "pfx-kafka-3eb39a8923",
+            "CpuPercent": "3.74%",
+            "MemoryUsage": "483.7MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 6.19
+          },
+          {
+            "Container": "pfx-redis-3eb39a8923",
+            "CpuPercent": "0.97%",
+            "MemoryUsage": "5.488MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 0.07
+          }
+        ]
+      },
+      {
+        "ElapsedSeconds": 80.8,
+        "Containers": [
+          {
+            "Container": "pfx-campaign-3eb39a8923",
+            "CpuPercent": "34.50%",
+            "MemoryUsage": "510.6MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 6.54
+          },
+          {
+            "Container": "pfx-worker-3eb39a8923",
+            "CpuPercent": "1.01%",
+            "MemoryUsage": "448.8MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 5.75
+          },
+          {
+            "Container": "pfx-kafka-3eb39a8923",
+            "CpuPercent": "14.83%",
+            "MemoryUsage": "493.3MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 6.32
+          },
+          {
+            "Container": "pfx-redis-3eb39a8923",
+            "CpuPercent": "0.99%",
+            "MemoryUsage": "5.457MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 0.07
+          }
+        ]
+      },
+      {
+        "ElapsedSeconds": 85.7,
+        "Containers": [
+          {
+            "Container": "pfx-campaign-3eb39a8923",
+            "CpuPercent": "49.04%",
+            "MemoryUsage": "510.5MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 6.54
+          },
+          {
+            "Container": "pfx-worker-3eb39a8923",
+            "CpuPercent": "1.01%",
+            "MemoryUsage": "448.8MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 5.75
+          },
+          {
+            "Container": "pfx-kafka-3eb39a8923",
+            "CpuPercent": "11.70%",
+            "MemoryUsage": "499.6MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 6.4
+          },
+          {
+            "Container": "pfx-redis-3eb39a8923",
+            "CpuPercent": "0.99%",
+            "MemoryUsage": "5.434MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 0.07
+          }
+        ]
+      },
+      {
+        "ElapsedSeconds": 90.8,
+        "Containers": [
+          {
+            "Container": "pfx-campaign-3eb39a8923",
+            "CpuPercent": "51.18%",
+            "MemoryUsage": "511.6MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 6.55
+          },
+          {
+            "Container": "pfx-worker-3eb39a8923",
+            "CpuPercent": "0.93%",
+            "MemoryUsage": "448.8MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 5.75
+          },
+          {
+            "Container": "pfx-kafka-3eb39a8923",
+            "CpuPercent": "6.41%",
+            "MemoryUsage": "506.8MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 6.49
+          },
+          {
+            "Container": "pfx-redis-3eb39a8923",
+            "CpuPercent": "1.03%",
+            "MemoryUsage": "5.406MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 0.07
+          }
+        ]
+      },
+      {
+        "ElapsedSeconds": 95.9,
+        "Containers": [
+          {
+            "Container": "pfx-campaign-3eb39a8923",
+            "CpuPercent": "33.10%",
+            "MemoryUsage": "511.9MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 6.55
+          },
+          {
+            "Container": "pfx-worker-3eb39a8923",
+            "CpuPercent": "0.96%",
+            "MemoryUsage": "448.8MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 5.75
+          },
+          {
+            "Container": "pfx-kafka-3eb39a8923",
+            "CpuPercent": "6.96%",
+            "MemoryUsage": "524.1MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 6.71
+          },
+          {
+            "Container": "pfx-redis-3eb39a8923",
+            "CpuPercent": "1.04%",
+            "MemoryUsage": "5.395MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 0.07
+          }
+        ]
+      },
+      {
+        "ElapsedSeconds": 100.9,
+        "Containers": [
+          {
+            "Container": "pfx-campaign-3eb39a8923",
+            "CpuPercent": "23.49%",
+            "MemoryUsage": "512.2MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 6.56
+          },
+          {
+            "Container": "pfx-worker-3eb39a8923",
+            "CpuPercent": "1.10%",
+            "MemoryUsage": "448.8MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 5.75
+          },
+          {
+            "Container": "pfx-kafka-3eb39a8923",
+            "CpuPercent": "8.57%",
+            "MemoryUsage": "523.5MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 6.7
+          },
+          {
+            "Container": "pfx-redis-3eb39a8923",
+            "CpuPercent": "0.35%",
+            "MemoryUsage": "5.379MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 0.07
+          }
+        ]
+      }
+    ],
+    "HostProcessCpuSamples": [
+      {
+        "ElapsedSeconds": 7.7,
+        "CampaignJvmCpuPercentOfOneCore": null,
+        "WorkerJvmCpuPercentOfOneCore": null
+      },
+      {
+        "ElapsedSeconds": 12.1,
+        "CampaignJvmCpuPercentOfOneCore": 45.89,
+        "WorkerJvmCpuPercentOfOneCore": 1.76
+      },
+      {
+        "ElapsedSeconds": 17.1,
+        "CampaignJvmCpuPercentOfOneCore": 20.03,
+        "WorkerJvmCpuPercentOfOneCore": 0.94
+      },
+      {
+        "ElapsedSeconds": 22.1,
+        "CampaignJvmCpuPercentOfOneCore": 33.03,
+        "WorkerJvmCpuPercentOfOneCore": 3.78
+      },
+      {
+        "ElapsedSeconds": 27.2,
+        "CampaignJvmCpuPercentOfOneCore": 24.48,
+        "WorkerJvmCpuPercentOfOneCore": 1.51
+      },
+      {
+        "ElapsedSeconds": 32.8,
+        "CampaignJvmCpuPercentOfOneCore": 29.24,
+        "WorkerJvmCpuPercentOfOneCore": 1.12
+      },
+      {
+        "ElapsedSeconds": 38.0,
+        "CampaignJvmCpuPercentOfOneCore": 59.21,
+        "WorkerJvmCpuPercentOfOneCore": 0.9
+      },
+      {
+        "ElapsedSeconds": 43.3,
+        "CampaignJvmCpuPercentOfOneCore": 144.25,
+        "WorkerJvmCpuPercentOfOneCore": 1.17
+      },
+      {
+        "ElapsedSeconds": 48.5,
+        "CampaignJvmCpuPercentOfOneCore": 108.56,
+        "WorkerJvmCpuPercentOfOneCore": 1.21
+      },
+      {
+        "ElapsedSeconds": 53.5,
+        "CampaignJvmCpuPercentOfOneCore": 84.02,
+        "WorkerJvmCpuPercentOfOneCore": 0.31
+      },
+      {
+        "ElapsedSeconds": 58.5,
+        "CampaignJvmCpuPercentOfOneCore": 73.97,
+        "WorkerJvmCpuPercentOfOneCore": 0.92
+      },
+      {
+        "ElapsedSeconds": 63.6,
+        "CampaignJvmCpuPercentOfOneCore": 76.56,
+        "WorkerJvmCpuPercentOfOneCore": 1.85
+      },
+      {
+        "ElapsedSeconds": 68.6,
+        "CampaignJvmCpuPercentOfOneCore": 72.4,
+        "WorkerJvmCpuPercentOfOneCore": 2.51
+      },
+      {
+        "ElapsedSeconds": 73.5,
+        "CampaignJvmCpuPercentOfOneCore": 55.92,
+        "WorkerJvmCpuPercentOfOneCore": 3.77
+      },
+      {
+        "ElapsedSeconds": 78.6,
+        "CampaignJvmCpuPercentOfOneCore": 45.21,
+        "WorkerJvmCpuPercentOfOneCore": 2.79
+      },
+      {
+        "ElapsedSeconds": 83.6,
+        "CampaignJvmCpuPercentOfOneCore": 66.0,
+        "WorkerJvmCpuPercentOfOneCore": 0.0
+      },
+      {
+        "ElapsedSeconds": 88.6,
+        "CampaignJvmCpuPercentOfOneCore": 76.91,
+        "WorkerJvmCpuPercentOfOneCore": 1.85
+      },
+      {
+        "ElapsedSeconds": 93.7,
+        "CampaignJvmCpuPercentOfOneCore": 62.42,
+        "WorkerJvmCpuPercentOfOneCore": 1.85
+      },
+      {
+        "ElapsedSeconds": 98.7,
+        "CampaignJvmCpuPercentOfOneCore": 42.03,
+        "WorkerJvmCpuPercentOfOneCore": 2.8
+      }
+    ],
+    "CampaignRuntimeMetricSamples": [
+      {
+        "ElapsedSeconds": 5.2,
+        "SampleStatus": "OK",
+        "HikariActiveConnections": 5.0,
+        "HikariIdleConnections": 15.0,
+        "HikariPendingConnections": 0.0,
+        "HikariMaximumConnections": 20.0,
+        "MySqlLockWaitRelationships": 0.0,
+        "MySqlLockSampleLastSuccessEpochSeconds": 1790630391.0,
+        "MySqlLockSampleFailures": 0.0,
+        "QueueProcessingCountByOutcome": {
+          "completed": 18.0,
+          "rejected": null,
+          "retry_scheduled": null,
+          "manual_review": null,
+          "already_terminal": null,
+          "claimed_elsewhere": null,
+          "claim_lost": null,
+          "failed": null
+        },
+        "QueueProcessingTimerCountByOutcome": {
+          "completed": 18.0,
+          "rejected": null,
+          "retry_scheduled": null,
+          "manual_review": null,
+          "already_terminal": null,
+          "claimed_elsewhere": null,
+          "claim_lost": null,
+          "failed": null
+        },
+        "QueueProcessingTimerSecondsByOutcome": {
+          "completed": 1.8895108,
+          "rejected": null,
+          "retry_scheduled": null,
+          "manual_review": null,
+          "already_terminal": null,
+          "claimed_elsewhere": null,
+          "claim_lost": null,
+          "failed": null
+        },
+        "DrawTransactionCountByOutcome": {
+          "committed": 18.0,
+          "rolled_back": null
+        },
+        "DrawTransactionTimerCountByOutcome": {
+          "committed": 18.0,
+          "rolled_back": null
+        },
+        "DrawTransactionTimerSecondsByOutcome": {
+          "committed": 0.8382853,
+          "rolled_back": null
+        },
+        "DrawDatabaseSegmentTimerCount": {
+          "config_lock_and_load.success": 20.0,
+          "config_lock_and_load.failure": null,
+          "idempotency_insert.success": 20.0,
+          "idempotency_insert.failure": null,
+          "quota_update.success": 19.0,
+          "quota_update.failure": null,
+          "inventory_decrement.success": 19.0,
+          "inventory_decrement.failure": null,
+          "result_insert.success": 19.0,
+          "result_insert.failure": null,
+          "outbox_insert.success": 9.0,
+          "outbox_insert.failure": null,
+          "request_complete.success": 19.0,
+          "request_complete.failure": null
+        },
+        "DrawDatabaseSegmentTimerSeconds": {
+          "config_lock_and_load.success": 0.1263234,
+          "config_lock_and_load.failure": null,
+          "idempotency_insert.success": 0.0786421,
+          "idempotency_insert.failure": null,
+          "quota_update.success": 0.11471,
+          "quota_update.failure": null,
+          "inventory_decrement.success": 0.0912041,
+          "inventory_decrement.failure": null,
+          "result_insert.success": 0.0455119,
+          "result_insert.failure": null,
+          "outbox_insert.success": 0.0286458,
+          "outbox_insert.failure": null,
+          "request_complete.success": 0.042186,
+          "request_complete.failure": null
+        },
+        "FailureType": null
+      },
+      {
+        "ElapsedSeconds": 10.3,
+        "SampleStatus": "OK",
+        "HikariActiveConnections": 0.0,
+        "HikariIdleConnections": 20.0,
+        "HikariPendingConnections": 0.0,
+        "HikariMaximumConnections": 20.0,
+        "MySqlLockWaitRelationships": 0.0,
+        "MySqlLockSampleLastSuccessEpochSeconds": 1790630396.0,
+        "MySqlLockSampleFailures": 0.0,
+        "QueueProcessingCountByOutcome": {
+          "completed": 42.0,
+          "rejected": null,
+          "retry_scheduled": null,
+          "manual_review": null,
+          "already_terminal": null,
+          "claimed_elsewhere": null,
+          "claim_lost": null,
+          "failed": null
+        },
+        "QueueProcessingTimerCountByOutcome": {
+          "completed": 42.0,
+          "rejected": null,
+          "retry_scheduled": null,
+          "manual_review": null,
+          "already_terminal": null,
+          "claimed_elsewhere": null,
+          "claim_lost": null,
+          "failed": null
+        },
+        "QueueProcessingTimerSecondsByOutcome": {
+          "completed": 3.8514957,
+          "rejected": null,
+          "retry_scheduled": null,
+          "manual_review": null,
+          "already_terminal": null,
+          "claimed_elsewhere": null,
+          "claim_lost": null,
+          "failed": null
+        },
+        "DrawTransactionCountByOutcome": {
+          "committed": 42.0,
+          "rolled_back": null
+        },
+        "DrawTransactionTimerCountByOutcome": {
+          "committed": 42.0,
+          "rolled_back": null
+        },
+        "DrawTransactionTimerSecondsByOutcome": {
+          "committed": 1.5383413,
+          "rolled_back": null
+        },
+        "DrawDatabaseSegmentTimerCount": {
+          "config_lock_and_load.success": 42.0,
+          "config_lock_and_load.failure": null,
+          "idempotency_insert.success": 42.0,
+          "idempotency_insert.failure": null,
+          "quota_update.success": 42.0,
+          "quota_update.failure": null,
+          "inventory_decrement.success": 42.0,
+          "inventory_decrement.failure": null,
+          "result_insert.success": 42.0,
+          "result_insert.failure": null,
+          "outbox_insert.success": 10.0,
+          "outbox_insert.failure": null,
+          "request_complete.success": 42.0,
+          "request_complete.failure": null
+        },
+        "DrawDatabaseSegmentTimerSeconds": {
+          "config_lock_and_load.success": 0.1965294,
+          "config_lock_and_load.failure": null,
+          "idempotency_insert.success": 0.1152566,
+          "idempotency_insert.failure": null,
+          "quota_update.success": 0.1878415,
+          "quota_update.failure": null,
+          "inventory_decrement.success": 0.1650076,
+          "inventory_decrement.failure": null,
+          "result_insert.success": 0.0940963,
+          "result_insert.failure": null,
+          "outbox_insert.success": 0.0312383,
+          "outbox_insert.failure": null,
+          "request_complete.success": 0.0817789,
+          "request_complete.failure": null
+        },
+        "FailureType": null
+      },
+      {
+        "ElapsedSeconds": 15.2,
+        "SampleStatus": "OK",
+        "HikariActiveConnections": 1.0,
+        "HikariIdleConnections": 19.0,
+        "HikariPendingConnections": 0.0,
+        "HikariMaximumConnections": 20.0,
+        "MySqlLockWaitRelationships": 0.0,
+        "MySqlLockSampleLastSuccessEpochSeconds": 1790630401.0,
+        "MySqlLockSampleFailures": 0.0,
+        "QueueProcessingCountByOutcome": {
+          "completed": 69.0,
+          "rejected": null,
+          "retry_scheduled": null,
+          "manual_review": null,
+          "already_terminal": null,
+          "claimed_elsewhere": null,
+          "claim_lost": null,
+          "failed": null
+        },
+        "QueueProcessingTimerCountByOutcome": {
+          "completed": 69.0,
+          "rejected": null,
+          "retry_scheduled": null,
+          "manual_review": null,
+          "already_terminal": null,
+          "claimed_elsewhere": null,
+          "claim_lost": null,
+          "failed": null
+        },
+        "QueueProcessingTimerSecondsByOutcome": {
+          "completed": 5.9939647,
+          "rejected": null,
+          "retry_scheduled": null,
+          "manual_review": null,
+          "already_terminal": null,
+          "claimed_elsewhere": null,
+          "claim_lost": null,
+          "failed": null
+        },
+        "DrawTransactionCountByOutcome": {
+          "committed": 69.0,
+          "rolled_back": null
+        },
+        "DrawTransactionTimerCountByOutcome": {
+          "committed": 69.0,
+          "rolled_back": null
+        },
+        "DrawTransactionTimerSecondsByOutcome": {
+          "committed": 2.3132715,
+          "rolled_back": null
+        },
+        "DrawDatabaseSegmentTimerCount": {
+          "config_lock_and_load.success": 69.0,
+          "config_lock_and_load.failure": null,
+          "idempotency_insert.success": 69.0,
+          "idempotency_insert.failure": null,
+          "quota_update.success": 69.0,
+          "quota_update.failure": null,
+          "inventory_decrement.success": 69.0,
+          "inventory_decrement.failure": null,
+          "result_insert.success": 69.0,
+          "result_insert.failure": null,
+          "outbox_insert.success": 10.0,
+          "outbox_insert.failure": null,
+          "request_complete.success": 69.0,
+          "request_complete.failure": null
+        },
+        "DrawDatabaseSegmentTimerSeconds": {
+          "config_lock_and_load.success": 0.2920199,
+          "config_lock_and_load.failure": null,
+          "idempotency_insert.success": 0.1609067,
+          "idempotency_insert.failure": null,
+          "quota_update.success": 0.2672273,
+          "quota_update.failure": null,
+          "inventory_decrement.success": 0.2467123,
+          "inventory_decrement.failure": null,
+          "result_insert.success": 0.1371262,
+          "result_insert.failure": null,
+          "outbox_insert.success": 0.0312383,
+          "outbox_insert.failure": null,
+          "request_complete.success": 0.1190817,
+          "request_complete.failure": null
+        },
+        "FailureType": null
+      },
+      {
+        "ElapsedSeconds": 20.2,
+        "SampleStatus": "OK",
+        "HikariActiveConnections": 2.0,
+        "HikariIdleConnections": 18.0,
+        "HikariPendingConnections": 0.0,
+        "HikariMaximumConnections": 20.0,
+        "MySqlLockWaitRelationships": 0.0,
+        "MySqlLockSampleLastSuccessEpochSeconds": 1790630406.0,
+        "MySqlLockSampleFailures": 0.0,
+        "QueueProcessingCountByOutcome": {
+          "completed": 91.0,
+          "rejected": null,
+          "retry_scheduled": null,
+          "manual_review": null,
+          "already_terminal": null,
+          "claimed_elsewhere": null,
+          "claim_lost": null,
+          "failed": null
+        },
+        "QueueProcessingTimerCountByOutcome": {
+          "completed": 91.0,
+          "rejected": null,
+          "retry_scheduled": null,
+          "manual_review": null,
+          "already_terminal": null,
+          "claimed_elsewhere": null,
+          "claim_lost": null,
+          "failed": null
+        },
+        "QueueProcessingTimerSecondsByOutcome": {
+          "completed": 7.6424447,
+          "rejected": null,
+          "retry_scheduled": null,
+          "manual_review": null,
+          "already_terminal": null,
+          "claimed_elsewhere": null,
+          "claim_lost": null,
+          "failed": null
+        },
+        "DrawTransactionCountByOutcome": {
+          "committed": 91.0,
+          "rolled_back": null
+        },
+        "DrawTransactionTimerCountByOutcome": {
+          "committed": 91.0,
+          "rolled_back": null
+        },
+        "DrawTransactionTimerSecondsByOutcome": {
+          "committed": 2.8808685,
+          "rolled_back": null
+        },
+        "DrawDatabaseSegmentTimerCount": {
+          "config_lock_and_load.success": 91.0,
+          "config_lock_and_load.failure": null,
+          "idempotency_insert.success": 91.0,
+          "idempotency_insert.failure": null,
+          "quota_update.success": 91.0,
+          "quota_update.failure": null,
+          "inventory_decrement.success": 91.0,
+          "inventory_decrement.failure": null,
+          "result_insert.success": 91.0,
+          "result_insert.failure": null,
+          "outbox_insert.success": 10.0,
+          "outbox_insert.failure": null,
+          "request_complete.success": 91.0,
+          "request_complete.failure": null
+        },
+        "DrawDatabaseSegmentTimerSeconds": {
+          "config_lock_and_load.success": 0.3585841,
+          "config_lock_and_load.failure": null,
+          "idempotency_insert.success": 0.1945952,
+          "idempotency_insert.failure": null,
+          "quota_update.success": 0.3328485,
+          "quota_update.failure": null,
+          "inventory_decrement.success": 0.3021805,
+          "inventory_decrement.failure": null,
+          "result_insert.success": 0.1716803,
+          "result_insert.failure": null,
+          "outbox_insert.success": 0.0312383,
+          "outbox_insert.failure": null,
+          "request_complete.success": 0.1534703,
+          "request_complete.failure": null
+        },
+        "FailureType": null
+      },
+      {
+        "ElapsedSeconds": 25.5,
+        "SampleStatus": "OK",
+        "HikariActiveConnections": 1.0,
+        "HikariIdleConnections": 19.0,
+        "HikariPendingConnections": 0.0,
+        "HikariMaximumConnections": 20.0,
+        "MySqlLockWaitRelationships": 0.0,
+        "MySqlLockSampleLastSuccessEpochSeconds": 1790630411.0,
+        "MySqlLockSampleFailures": 0.0,
+        "QueueProcessingCountByOutcome": {
+          "completed": 119.0,
+          "rejected": null,
+          "retry_scheduled": null,
+          "manual_review": null,
+          "already_terminal": null,
+          "claimed_elsewhere": null,
+          "claim_lost": null,
+          "failed": null
+        },
+        "QueueProcessingTimerCountByOutcome": {
+          "completed": 119.0,
+          "rejected": null,
+          "retry_scheduled": null,
+          "manual_review": null,
+          "already_terminal": null,
+          "claimed_elsewhere": null,
+          "claim_lost": null,
+          "failed": null
+        },
+        "QueueProcessingTimerSecondsByOutcome": {
+          "completed": 9.8731759,
+          "rejected": null,
+          "retry_scheduled": null,
+          "manual_review": null,
+          "already_terminal": null,
+          "claimed_elsewhere": null,
+          "claim_lost": null,
+          "failed": null
+        },
+        "DrawTransactionCountByOutcome": {
+          "committed": 119.0,
+          "rolled_back": null
+        },
+        "DrawTransactionTimerCountByOutcome": {
+          "committed": 119.0,
+          "rolled_back": null
+        },
+        "DrawTransactionTimerSecondsByOutcome": {
+          "committed": 3.6557658,
+          "rolled_back": null
+        },
+        "DrawDatabaseSegmentTimerCount": {
+          "config_lock_and_load.success": 119.0,
+          "config_lock_and_load.failure": null,
+          "idempotency_insert.success": 119.0,
+          "idempotency_insert.failure": null,
+          "quota_update.success": 119.0,
+          "quota_update.failure": null,
+          "inventory_decrement.success": 119.0,
+          "inventory_decrement.failure": null,
+          "result_insert.success": 119.0,
+          "result_insert.failure": null,
+          "outbox_insert.success": 10.0,
+          "outbox_insert.failure": null,
+          "request_complete.success": 119.0,
+          "request_complete.failure": null
+        },
+        "DrawDatabaseSegmentTimerSeconds": {
+          "config_lock_and_load.success": 0.4523049,
+          "config_lock_and_load.failure": null,
+          "idempotency_insert.success": 0.2492012,
+          "idempotency_insert.failure": null,
+          "quota_update.success": 0.4118511,
+          "quota_update.failure": null,
+          "inventory_decrement.success": 0.3858419,
+          "inventory_decrement.failure": null,
+          "result_insert.success": 0.2130653,
+          "result_insert.failure": null,
+          "outbox_insert.success": 0.0312383,
+          "outbox_insert.failure": null,
+          "request_complete.success": 0.1950323,
+          "request_complete.failure": null
+        },
+        "FailureType": null
+      },
+      {
+        "ElapsedSeconds": 30.4,
+        "SampleStatus": "OK",
+        "HikariActiveConnections": 0.0,
+        "HikariIdleConnections": 20.0,
+        "HikariPendingConnections": 0.0,
+        "HikariMaximumConnections": 20.0,
+        "MySqlLockWaitRelationships": 0.0,
+        "MySqlLockSampleLastSuccessEpochSeconds": 1790630416.0,
+        "MySqlLockSampleFailures": 0.0,
+        "QueueProcessingCountByOutcome": {
+          "completed": 144.0,
+          "rejected": null,
+          "retry_scheduled": null,
+          "manual_review": null,
+          "already_terminal": null,
+          "claimed_elsewhere": null,
+          "claim_lost": null,
+          "failed": null
+        },
+        "QueueProcessingTimerCountByOutcome": {
+          "completed": 144.0,
+          "rejected": null,
+          "retry_scheduled": null,
+          "manual_review": null,
+          "already_terminal": null,
+          "claimed_elsewhere": null,
+          "claim_lost": null,
+          "failed": null
+        },
+        "QueueProcessingTimerSecondsByOutcome": {
+          "completed": 12.050815,
+          "rejected": null,
+          "retry_scheduled": null,
+          "manual_review": null,
+          "already_terminal": null,
+          "claimed_elsewhere": null,
+          "claim_lost": null,
+          "failed": null
+        },
+        "DrawTransactionCountByOutcome": {
+          "committed": 144.0,
+          "rolled_back": null
+        },
+        "DrawTransactionTimerCountByOutcome": {
+          "committed": 144.0,
+          "rolled_back": null
+        },
+        "DrawTransactionTimerSecondsByOutcome": {
+          "committed": 4.4044425,
+          "rolled_back": null
+        },
+        "DrawDatabaseSegmentTimerCount": {
+          "config_lock_and_load.success": 144.0,
+          "config_lock_and_load.failure": null,
+          "idempotency_insert.success": 144.0,
+          "idempotency_insert.failure": null,
+          "quota_update.success": 144.0,
+          "quota_update.failure": null,
+          "inventory_decrement.success": 144.0,
+          "inventory_decrement.failure": null,
+          "result_insert.success": 144.0,
+          "result_insert.failure": null,
+          "outbox_insert.success": 10.0,
+          "outbox_insert.failure": null,
+          "request_complete.success": 144.0,
+          "request_complete.failure": null
+        },
+        "DrawDatabaseSegmentTimerSeconds": {
+          "config_lock_and_load.success": 0.5391263,
+          "config_lock_and_load.failure": null,
+          "idempotency_insert.success": 0.2949502,
+          "idempotency_insert.failure": null,
+          "quota_update.success": 0.4947053,
+          "quota_update.failure": null,
+          "inventory_decrement.success": 0.4577983,
+          "inventory_decrement.failure": null,
+          "result_insert.success": 0.2532196,
+          "result_insert.failure": null,
+          "outbox_insert.success": 0.0312383,
+          "outbox_insert.failure": null,
+          "request_complete.success": 0.2343161,
+          "request_complete.failure": null
+        },
+        "FailureType": null
+      },
+      {
+        "ElapsedSeconds": 35.5,
+        "SampleStatus": "OK",
+        "HikariActiveConnections": 0.0,
+        "HikariIdleConnections": 20.0,
+        "HikariPendingConnections": 0.0,
+        "HikariMaximumConnections": 20.0,
+        "MySqlLockWaitRelationships": 0.0,
+        "MySqlLockSampleLastSuccessEpochSeconds": 1790630421.0,
+        "MySqlLockSampleFailures": 0.0,
+        "QueueProcessingCountByOutcome": {
+          "completed": 151.0,
+          "rejected": null,
+          "retry_scheduled": null,
+          "manual_review": null,
+          "already_terminal": null,
+          "claimed_elsewhere": null,
+          "claim_lost": null,
+          "failed": null
+        },
+        "QueueProcessingTimerCountByOutcome": {
+          "completed": 151.0,
+          "rejected": null,
+          "retry_scheduled": null,
+          "manual_review": null,
+          "already_terminal": null,
+          "claimed_elsewhere": null,
+          "claim_lost": null,
+          "failed": null
+        },
+        "QueueProcessingTimerSecondsByOutcome": {
+          "completed": 12.5627247,
+          "rejected": null,
+          "retry_scheduled": null,
+          "manual_review": null,
+          "already_terminal": null,
+          "claimed_elsewhere": null,
+          "claim_lost": null,
+          "failed": null
+        },
+        "DrawTransactionCountByOutcome": {
+          "committed": 151.0,
+          "rolled_back": null
+        },
+        "DrawTransactionTimerCountByOutcome": {
+          "committed": 151.0,
+          "rolled_back": null
+        },
+        "DrawTransactionTimerSecondsByOutcome": {
+          "committed": 4.5929419,
+          "rolled_back": null
+        },
+        "DrawDatabaseSegmentTimerCount": {
+          "config_lock_and_load.success": 151.0,
+          "config_lock_and_load.failure": null,
+          "idempotency_insert.success": 151.0,
+          "idempotency_insert.failure": null,
+          "quota_update.success": 151.0,
+          "quota_update.failure": null,
+          "inventory_decrement.success": 151.0,
+          "inventory_decrement.failure": null,
+          "result_insert.success": 151.0,
+          "result_insert.failure": null,
+          "outbox_insert.success": 10.0,
+          "outbox_insert.failure": null,
+          "request_complete.success": 151.0,
+          "request_complete.failure": null
+        },
+        "DrawDatabaseSegmentTimerSeconds": {
+          "config_lock_and_load.success": 0.5628614,
+          "config_lock_and_load.failure": null,
+          "idempotency_insert.success": 0.3063254,
+          "idempotency_insert.failure": null,
+          "quota_update.success": 0.5150399,
+          "quota_update.failure": null,
+          "inventory_decrement.success": 0.4776917,
+          "inventory_decrement.failure": null,
+          "result_insert.success": 0.2655447,
+          "result_insert.failure": null,
+          "outbox_insert.success": 0.0312383,
+          "outbox_insert.failure": null,
+          "request_complete.success": 0.2447579,
+          "request_complete.failure": null
+        },
+        "FailureType": null
+      },
+      {
+        "ElapsedSeconds": 40.7,
+        "SampleStatus": "OK",
+        "HikariActiveConnections": 8.0,
+        "HikariIdleConnections": 12.0,
+        "HikariPendingConnections": 0.0,
+        "HikariMaximumConnections": 20.0,
+        "MySqlLockWaitRelationships": 0.0,
+        "MySqlLockSampleLastSuccessEpochSeconds": 1790630426.0,
+        "MySqlLockSampleFailures": 0.0,
+        "QueueProcessingCountByOutcome": {
+          "completed": 251.0,
+          "rejected": null,
+          "retry_scheduled": null,
+          "manual_review": null,
+          "already_terminal": null,
+          "claimed_elsewhere": null,
+          "claim_lost": null,
+          "failed": null
+        },
+        "QueueProcessingTimerCountByOutcome": {
+          "completed": 251.0,
+          "rejected": null,
+          "retry_scheduled": null,
+          "manual_review": null,
+          "already_terminal": null,
+          "claimed_elsewhere": null,
+          "claim_lost": null,
+          "failed": null
+        },
+        "QueueProcessingTimerSecondsByOutcome": {
+          "completed": 22.2323043,
+          "rejected": null,
+          "retry_scheduled": null,
+          "manual_review": null,
+          "already_terminal": null,
+          "claimed_elsewhere": null,
+          "claim_lost": null,
+          "failed": null
+        },
+        "DrawTransactionCountByOutcome": {
+          "committed": 251.0,
+          "rolled_back": null
+        },
+        "DrawTransactionTimerCountByOutcome": {
+          "committed": 251.0,
+          "rolled_back": null
+        },
+        "DrawTransactionTimerSecondsByOutcome": {
+          "committed": 8.0967769,
+          "rolled_back": null
+        },
+        "DrawDatabaseSegmentTimerCount": {
+          "config_lock_and_load.success": 253.0,
+          "config_lock_and_load.failure": null,
+          "idempotency_insert.success": 253.0,
+          "idempotency_insert.failure": null,
+          "quota_update.success": 253.0,
+          "quota_update.failure": null,
+          "inventory_decrement.success": 253.0,
+          "inventory_decrement.failure": null,
+          "result_insert.success": 253.0,
+          "result_insert.failure": null,
+          "outbox_insert.success": 10.0,
+          "outbox_insert.failure": null,
+          "request_complete.success": 253.0,
+          "request_complete.failure": null
+        },
+        "DrawDatabaseSegmentTimerSeconds": {
+          "config_lock_and_load.success": 0.9610445,
+          "config_lock_and_load.failure": null,
+          "idempotency_insert.success": 0.5032362,
+          "idempotency_insert.failure": null,
+          "quota_update.success": 0.9208309,
+          "quota_update.failure": null,
+          "inventory_decrement.success": 0.8177878,
+          "inventory_decrement.failure": null,
+          "result_insert.success": 0.4615203,
+          "result_insert.failure": null,
+          "outbox_insert.success": 0.0312383,
+          "outbox_insert.failure": null,
+          "request_complete.success": 0.4345584,
+          "request_complete.failure": null
+        },
+        "FailureType": null
+      },
+      {
+        "ElapsedSeconds": 46.0,
+        "SampleStatus": "OK",
+        "HikariActiveConnections": 5.0,
+        "HikariIdleConnections": 15.0,
+        "HikariPendingConnections": 0.0,
+        "HikariMaximumConnections": 20.0,
+        "MySqlLockWaitRelationships": 0.0,
+        "MySqlLockSampleLastSuccessEpochSeconds": 1790630431.0,
+        "MySqlLockSampleFailures": 0.0,
+        "QueueProcessingCountByOutcome": {
+          "completed": 377.0,
+          "rejected": null,
+          "retry_scheduled": null,
+          "manual_review": null,
+          "already_terminal": null,
+          "claimed_elsewhere": null,
+          "claim_lost": null,
+          "failed": null
+        },
+        "QueueProcessingTimerCountByOutcome": {
+          "completed": 377.0,
+          "rejected": null,
+          "retry_scheduled": null,
+          "manual_review": null,
+          "already_terminal": null,
+          "claimed_elsewhere": null,
+          "claim_lost": null,
+          "failed": null
+        },
+        "QueueProcessingTimerSecondsByOutcome": {
+          "completed": 34.447631,
+          "rejected": null,
+          "retry_scheduled": null,
+          "manual_review": null,
+          "already_terminal": null,
+          "claimed_elsewhere": null,
+          "claim_lost": null,
+          "failed": null
+        },
+        "DrawTransactionCountByOutcome": {
+          "committed": 379.0,
+          "rolled_back": null
+        },
+        "DrawTransactionTimerCountByOutcome": {
+          "committed": 379.0,
+          "rolled_back": null
+        },
+        "DrawTransactionTimerSecondsByOutcome": {
+          "committed": 12.5197313,
+          "rolled_back": null
+        },
+        "DrawDatabaseSegmentTimerCount": {
+          "config_lock_and_load.success": 380.0,
+          "config_lock_and_load.failure": null,
+          "idempotency_insert.success": 380.0,
+          "idempotency_insert.failure": null,
+          "quota_update.success": 380.0,
+          "quota_update.failure": null,
+          "inventory_decrement.success": 380.0,
+          "inventory_decrement.failure": null,
+          "result_insert.success": 380.0,
+          "result_insert.failure": null,
+          "outbox_insert.success": 10.0,
+          "outbox_insert.failure": null,
+          "request_complete.success": 380.0,
+          "request_complete.failure": null
+        },
+        "DrawDatabaseSegmentTimerSeconds": {
+          "config_lock_and_load.success": 1.4185567,
+          "config_lock_and_load.failure": null,
+          "idempotency_insert.success": 0.752681,
+          "idempotency_insert.failure": null,
+          "quota_update.success": 1.3962754,
+          "quota_update.failure": null,
+          "inventory_decrement.success": 1.254855,
+          "inventory_decrement.failure": null,
+          "result_insert.success": 0.7059338,
+          "result_insert.failure": null,
+          "outbox_insert.success": 0.0312383,
+          "outbox_insert.failure": null,
+          "request_complete.success": 0.6318502,
+          "request_complete.failure": null
+        },
+        "FailureType": null
+      },
+      {
+        "ElapsedSeconds": 51.1,
+        "SampleStatus": "OK",
+        "HikariActiveConnections": 0.0,
+        "HikariIdleConnections": 20.0,
+        "HikariPendingConnections": 0.0,
+        "HikariMaximumConnections": 20.0,
+        "MySqlLockWaitRelationships": 0.0,
+        "MySqlLockSampleLastSuccessEpochSeconds": 1790630436.0,
+        "MySqlLockSampleFailures": 0.0,
+        "QueueProcessingCountByOutcome": {
+          "completed": 524.0,
+          "rejected": null,
+          "retry_scheduled": null,
+          "manual_review": null,
+          "already_terminal": null,
+          "claimed_elsewhere": null,
+          "claim_lost": null,
+          "failed": null
+        },
+        "QueueProcessingTimerCountByOutcome": {
+          "completed": 524.0,
+          "rejected": null,
+          "retry_scheduled": null,
+          "manual_review": null,
+          "already_terminal": null,
+          "claimed_elsewhere": null,
+          "claim_lost": null,
+          "failed": null
+        },
+        "QueueProcessingTimerSecondsByOutcome": {
+          "completed": 47.8268391,
+          "rejected": null,
+          "retry_scheduled": null,
+          "manual_review": null,
+          "already_terminal": null,
+          "claimed_elsewhere": null,
+          "claim_lost": null,
+          "failed": null
+        },
+        "DrawTransactionCountByOutcome": {
+          "committed": 524.0,
+          "rolled_back": null
+        },
+        "DrawTransactionTimerCountByOutcome": {
+          "committed": 524.0,
+          "rolled_back": null
+        },
+        "DrawTransactionTimerSecondsByOutcome": {
+          "committed": 17.0649178,
+          "rolled_back": null
+        },
+        "DrawDatabaseSegmentTimerCount": {
+          "config_lock_and_load.success": 524.0,
+          "config_lock_and_load.failure": null,
+          "idempotency_insert.success": 524.0,
+          "idempotency_insert.failure": null,
+          "quota_update.success": 524.0,
+          "quota_update.failure": null,
+          "inventory_decrement.success": 524.0,
+          "inventory_decrement.failure": null,
+          "result_insert.success": 524.0,
+          "result_insert.failure": null,
+          "outbox_insert.success": 10.0,
+          "outbox_insert.failure": null,
+          "request_complete.success": 524.0,
+          "request_complete.failure": null
+        },
+        "DrawDatabaseSegmentTimerSeconds": {
+          "config_lock_and_load.success": 1.8311765,
+          "config_lock_and_load.failure": null,
+          "idempotency_insert.success": 1.0128707,
+          "idempotency_insert.failure": null,
+          "quota_update.success": 1.84217,
+          "quota_update.failure": null,
+          "inventory_decrement.success": 1.7029031,
+          "inventory_decrement.failure": null,
+          "result_insert.success": 0.946195,
+          "result_insert.failure": null,
+          "outbox_insert.success": 0.0312383,
+          "outbox_insert.failure": null,
+          "request_complete.success": 0.8389914,
+          "request_complete.failure": null
+        },
+        "FailureType": null
+      },
+      {
+        "ElapsedSeconds": 56.1,
+        "SampleStatus": "OK",
+        "HikariActiveConnections": 7.0,
+        "HikariIdleConnections": 13.0,
+        "HikariPendingConnections": 0.0,
+        "HikariMaximumConnections": 20.0,
+        "MySqlLockWaitRelationships": 0.0,
+        "MySqlLockSampleLastSuccessEpochSeconds": 1790630441.0,
+        "MySqlLockSampleFailures": 0.0,
+        "QueueProcessingCountByOutcome": {
+          "completed": 645.0,
+          "rejected": null,
+          "retry_scheduled": null,
+          "manual_review": null,
+          "already_terminal": null,
+          "claimed_elsewhere": null,
+          "claim_lost": null,
+          "failed": null
+        },
+        "QueueProcessingTimerCountByOutcome": {
+          "completed": 645.0,
+          "rejected": null,
+          "retry_scheduled": null,
+          "manual_review": null,
+          "already_terminal": null,
+          "claimed_elsewhere": null,
+          "claim_lost": null,
+          "failed": null
+        },
+        "QueueProcessingTimerSecondsByOutcome": {
+          "completed": 58.2692093,
+          "rejected": null,
+          "retry_scheduled": null,
+          "manual_review": null,
+          "already_terminal": null,
+          "claimed_elsewhere": null,
+          "claim_lost": null,
+          "failed": null
+        },
+        "DrawTransactionCountByOutcome": {
+          "committed": 647.0,
+          "rolled_back": null
+        },
+        "DrawTransactionTimerCountByOutcome": {
+          "committed": 647.0,
+          "rolled_back": null
+        },
+        "DrawTransactionTimerSecondsByOutcome": {
+          "committed": 20.5894094,
+          "rolled_back": null
+        },
+        "DrawDatabaseSegmentTimerCount": {
+          "config_lock_and_load.success": 648.0,
+          "config_lock_and_load.failure": null,
+          "idempotency_insert.success": 648.0,
+          "idempotency_insert.failure": null,
+          "quota_update.success": 647.0,
+          "quota_update.failure": null,
+          "inventory_decrement.success": 647.0,
+          "inventory_decrement.failure": null,
+          "result_insert.success": 647.0,
+          "result_insert.failure": null,
+          "outbox_insert.success": 10.0,
+          "outbox_insert.failure": null,
+          "request_complete.success": 647.0,
+          "request_complete.failure": null
+        },
+        "DrawDatabaseSegmentTimerSeconds": {
+          "config_lock_and_load.success": 2.1423198,
+          "config_lock_and_load.failure": null,
+          "idempotency_insert.success": 1.2012656,
+          "idempotency_insert.failure": null,
+          "quota_update.success": 2.2059018,
+          "quota_update.failure": null,
+          "inventory_decrement.success": 2.0366287,
+          "inventory_decrement.failure": null,
+          "result_insert.success": 1.1282832,
+          "result_insert.failure": null,
+          "outbox_insert.success": 0.0312383,
+          "outbox_insert.failure": null,
+          "request_complete.success": 0.9990467,
+          "request_complete.failure": null
+        },
+        "FailureType": null
+      },
+      {
+        "ElapsedSeconds": 61.2,
+        "SampleStatus": "OK",
+        "HikariActiveConnections": 1.0,
+        "HikariIdleConnections": 19.0,
+        "HikariPendingConnections": 0.0,
+        "HikariMaximumConnections": 20.0,
+        "MySqlLockWaitRelationships": 1.0,
+        "MySqlLockSampleLastSuccessEpochSeconds": 1790630446.0,
+        "MySqlLockSampleFailures": 0.0,
+        "QueueProcessingCountByOutcome": {
+          "completed": 774.0,
+          "rejected": null,
+          "retry_scheduled": null,
+          "manual_review": null,
+          "already_terminal": null,
+          "claimed_elsewhere": null,
+          "claim_lost": null,
+          "failed": null
+        },
+        "QueueProcessingTimerCountByOutcome": {
+          "completed": 774.0,
+          "rejected": null,
+          "retry_scheduled": null,
+          "manual_review": null,
+          "already_terminal": null,
+          "claimed_elsewhere": null,
+          "claim_lost": null,
+          "failed": null
+        },
+        "QueueProcessingTimerSecondsByOutcome": {
+          "completed": 70.0584701,
+          "rejected": null,
+          "retry_scheduled": null,
+          "manual_review": null,
+          "already_terminal": null,
+          "claimed_elsewhere": null,
+          "claim_lost": null,
+          "failed": null
+        },
+        "DrawTransactionCountByOutcome": {
+          "committed": 774.0,
+          "rolled_back": null
+        },
+        "DrawTransactionTimerCountByOutcome": {
+          "committed": 774.0,
+          "rolled_back": null
+        },
+        "DrawTransactionTimerSecondsByOutcome": {
+          "committed": 24.3382156,
+          "rolled_back": null
+        },
+        "DrawDatabaseSegmentTimerCount": {
+          "config_lock_and_load.success": 774.0,
+          "config_lock_and_load.failure": null,
+          "idempotency_insert.success": 774.0,
+          "idempotency_insert.failure": null,
+          "quota_update.success": 774.0,
+          "quota_update.failure": null,
+          "inventory_decrement.success": 774.0,
+          "inventory_decrement.failure": null,
+          "result_insert.success": 774.0,
+          "result_insert.failure": null,
+          "outbox_insert.success": 10.0,
+          "outbox_insert.failure": null,
+          "request_complete.success": 774.0,
+          "request_complete.failure": null
+        },
+        "DrawDatabaseSegmentTimerSeconds": {
+          "config_lock_and_load.success": 2.4855786,
+          "config_lock_and_load.failure": null,
+          "idempotency_insert.success": 1.3846667,
+          "idempotency_insert.failure": null,
+          "quota_update.success": 2.5060835,
+          "quota_update.failure": null,
+          "inventory_decrement.success": 2.3750745,
+          "inventory_decrement.failure": null,
+          "result_insert.success": 1.3129372,
+          "result_insert.failure": null,
+          "outbox_insert.success": 0.0312383,
+          "outbox_insert.failure": null,
+          "request_complete.success": 1.1529109,
+          "request_complete.failure": null
+        },
+        "FailureType": null
+      },
+      {
+        "ElapsedSeconds": 66.2,
+        "SampleStatus": "OK",
+        "HikariActiveConnections": 4.0,
+        "HikariIdleConnections": 16.0,
+        "HikariPendingConnections": 0.0,
+        "HikariMaximumConnections": 20.0,
+        "MySqlLockWaitRelationships": 0.0,
+        "MySqlLockSampleLastSuccessEpochSeconds": 1790630451.0,
+        "MySqlLockSampleFailures": 0.0,
+        "QueueProcessingCountByOutcome": {
+          "completed": 916.0,
+          "rejected": null,
+          "retry_scheduled": null,
+          "manual_review": null,
+          "already_terminal": null,
+          "claimed_elsewhere": null,
+          "claim_lost": null,
+          "failed": null
+        },
+        "QueueProcessingTimerCountByOutcome": {
+          "completed": 916.0,
+          "rejected": null,
+          "retry_scheduled": null,
+          "manual_review": null,
+          "already_terminal": null,
+          "claimed_elsewhere": null,
+          "claim_lost": null,
+          "failed": null
+        },
+        "QueueProcessingTimerSecondsByOutcome": {
+          "completed": 82.6045299,
+          "rejected": null,
+          "retry_scheduled": null,
+          "manual_review": null,
+          "already_terminal": null,
+          "claimed_elsewhere": null,
+          "claim_lost": null,
+          "failed": null
+        },
+        "DrawTransactionCountByOutcome": {
+          "committed": 917.0,
+          "rolled_back": null
+        },
+        "DrawTransactionTimerCountByOutcome": {
+          "committed": 917.0,
+          "rolled_back": null
+        },
+        "DrawTransactionTimerSecondsByOutcome": {
+          "committed": 28.3972726,
+          "rolled_back": null
+        },
+        "DrawDatabaseSegmentTimerCount": {
+          "config_lock_and_load.success": 918.0,
+          "config_lock_and_load.failure": null,
+          "idempotency_insert.success": 918.0,
+          "idempotency_insert.failure": null,
+          "quota_update.success": 918.0,
+          "quota_update.failure": null,
+          "inventory_decrement.success": 918.0,
+          "inventory_decrement.failure": null,
+          "result_insert.success": 918.0,
+          "result_insert.failure": null,
+          "outbox_insert.success": 10.0,
+          "outbox_insert.failure": null,
+          "request_complete.success": 918.0,
+          "request_complete.failure": null
+        },
+        "DrawDatabaseSegmentTimerSeconds": {
+          "config_lock_and_load.success": 2.8583513,
+          "config_lock_and_load.failure": null,
+          "idempotency_insert.success": 1.5887228,
+          "idempotency_insert.failure": null,
+          "quota_update.success": 2.8802723,
+          "quota_update.failure": null,
+          "inventory_decrement.success": 2.7380666,
+          "inventory_decrement.failure": null,
+          "result_insert.success": 1.5283094,
+          "result_insert.failure": null,
+          "outbox_insert.success": 0.0312383,
+          "outbox_insert.failure": null,
+          "request_complete.success": 1.3319361,
+          "request_complete.failure": null
+        },
+        "FailureType": null
+      },
+      {
+        "ElapsedSeconds": 71.2,
+        "SampleStatus": "OK",
+        "HikariActiveConnections": 6.0,
+        "HikariIdleConnections": 14.0,
+        "HikariPendingConnections": 0.0,
+        "HikariMaximumConnections": 20.0,
+        "MySqlLockWaitRelationships": 0.0,
+        "MySqlLockSampleLastSuccessEpochSeconds": 1790630456.0,
+        "MySqlLockSampleFailures": 0.0,
+        "QueueProcessingCountByOutcome": {
+          "completed": 1039.0,
+          "rejected": null,
+          "retry_scheduled": null,
+          "manual_review": null,
+          "already_terminal": null,
+          "claimed_elsewhere": null,
+          "claim_lost": null,
+          "failed": null
+        },
+        "QueueProcessingTimerCountByOutcome": {
+          "completed": 1039.0,
+          "rejected": null,
+          "retry_scheduled": null,
+          "manual_review": null,
+          "already_terminal": null,
+          "claimed_elsewhere": null,
+          "claim_lost": null,
+          "failed": null
+        },
+        "QueueProcessingTimerSecondsByOutcome": {
+          "completed": 93.6007948,
+          "rejected": null,
+          "retry_scheduled": null,
+          "manual_review": null,
+          "already_terminal": null,
+          "claimed_elsewhere": null,
+          "claim_lost": null,
+          "failed": null
+        },
+        "DrawTransactionCountByOutcome": {
+          "committed": 1040.0,
+          "rolled_back": null
+        },
+        "DrawTransactionTimerCountByOutcome": {
+          "committed": 1040.0,
+          "rolled_back": null
+        },
+        "DrawTransactionTimerSecondsByOutcome": {
+          "committed": 31.9402155,
+          "rolled_back": null
+        },
+        "DrawDatabaseSegmentTimerCount": {
+          "config_lock_and_load.success": 1042.0,
+          "config_lock_and_load.failure": null,
+          "idempotency_insert.success": 1042.0,
+          "idempotency_insert.failure": null,
+          "quota_update.success": 1042.0,
+          "quota_update.failure": null,
+          "inventory_decrement.success": 1042.0,
+          "inventory_decrement.failure": null,
+          "result_insert.success": 1040.0,
+          "result_insert.failure": null,
+          "outbox_insert.success": 10.0,
+          "outbox_insert.failure": null,
+          "request_complete.success": 1040.0,
+          "request_complete.failure": null
+        },
+        "DrawDatabaseSegmentTimerSeconds": {
+          "config_lock_and_load.success": 3.1683843,
+          "config_lock_and_load.failure": null,
+          "idempotency_insert.success": 1.7650977,
+          "idempotency_insert.failure": null,
+          "quota_update.success": 3.1836712,
+          "quota_update.failure": null,
+          "inventory_decrement.success": 3.0523916,
+          "inventory_decrement.failure": null,
+          "result_insert.success": 1.7172948,
+          "result_insert.failure": null,
+          "outbox_insert.success": 0.0312383,
+          "outbox_insert.failure": null,
+          "request_complete.success": 1.4861514,
+          "request_complete.failure": null
+        },
+        "FailureType": null
+      },
+      {
+        "ElapsedSeconds": 76.2,
+        "SampleStatus": "OK",
+        "HikariActiveConnections": 1.0,
+        "HikariIdleConnections": 19.0,
+        "HikariPendingConnections": 0.0,
+        "HikariMaximumConnections": 20.0,
+        "MySqlLockWaitRelationships": 0.0,
+        "MySqlLockSampleLastSuccessEpochSeconds": 1790630461.0,
+        "MySqlLockSampleFailures": 0.0,
+        "QueueProcessingCountByOutcome": {
+          "completed": 1174.0,
+          "rejected": null,
+          "retry_scheduled": null,
+          "manual_review": null,
+          "already_terminal": null,
+          "claimed_elsewhere": null,
+          "claim_lost": null,
+          "failed": null
+        },
+        "QueueProcessingTimerCountByOutcome": {
+          "completed": 1174.0,
+          "rejected": null,
+          "retry_scheduled": null,
+          "manual_review": null,
+          "already_terminal": null,
+          "claimed_elsewhere": null,
+          "claim_lost": null,
+          "failed": null
+        },
+        "QueueProcessingTimerSecondsByOutcome": {
+          "completed": 105.6072174,
+          "rejected": null,
+          "retry_scheduled": null,
+          "manual_review": null,
+          "already_terminal": null,
+          "claimed_elsewhere": null,
+          "claim_lost": null,
+          "failed": null
+        },
+        "DrawTransactionCountByOutcome": {
+          "committed": 1174.0,
+          "rolled_back": null
+        },
+        "DrawTransactionTimerCountByOutcome": {
+          "committed": 1174.0,
+          "rolled_back": null
+        },
+        "DrawTransactionTimerSecondsByOutcome": {
+          "committed": 35.6593407,
+          "rolled_back": null
+        },
+        "DrawDatabaseSegmentTimerCount": {
+          "config_lock_and_load.success": 1174.0,
+          "config_lock_and_load.failure": null,
+          "idempotency_insert.success": 1174.0,
+          "idempotency_insert.failure": null,
+          "quota_update.success": 1174.0,
+          "quota_update.failure": null,
+          "inventory_decrement.success": 1174.0,
+          "inventory_decrement.failure": null,
+          "result_insert.success": 1174.0,
+          "result_insert.failure": null,
+          "outbox_insert.success": 10.0,
+          "outbox_insert.failure": null,
+          "request_complete.success": 1174.0,
+          "request_complete.failure": null
+        },
+        "DrawDatabaseSegmentTimerSeconds": {
+          "config_lock_and_load.success": 3.4818965,
+          "config_lock_and_load.failure": null,
+          "idempotency_insert.success": 1.9727451,
+          "idempotency_insert.failure": null,
+          "quota_update.success": 3.4863556,
+          "quota_update.failure": null,
+          "inventory_decrement.success": 3.3353715,
+          "inventory_decrement.failure": null,
+          "result_insert.success": 1.9196834,
+          "result_insert.failure": null,
+          "outbox_insert.success": 0.0312383,
+          "outbox_insert.failure": null,
+          "request_complete.success": 1.6345997,
+          "request_complete.failure": null
+        },
+        "FailureType": null
+      },
+      {
+        "ElapsedSeconds": 81.3,
+        "SampleStatus": "OK",
+        "HikariActiveConnections": 5.0,
+        "HikariIdleConnections": 15.0,
+        "HikariPendingConnections": 0.0,
+        "HikariMaximumConnections": 20.0,
+        "MySqlLockWaitRelationships": 0.0,
+        "MySqlLockSampleLastSuccessEpochSeconds": 1790630466.0,
+        "MySqlLockSampleFailures": 0.0,
+        "QueueProcessingCountByOutcome": {
+          "completed": 1305.0,
+          "rejected": null,
+          "retry_scheduled": null,
+          "manual_review": null,
+          "already_terminal": null,
+          "claimed_elsewhere": null,
+          "claim_lost": null,
+          "failed": null
+        },
+        "QueueProcessingTimerCountByOutcome": {
+          "completed": 1305.0,
+          "rejected": null,
+          "retry_scheduled": null,
+          "manual_review": null,
+          "already_terminal": null,
+          "claimed_elsewhere": null,
+          "claim_lost": null,
+          "failed": null
+        },
+        "QueueProcessingTimerSecondsByOutcome": {
+          "completed": 117.3427465,
+          "rejected": null,
+          "retry_scheduled": null,
+          "manual_review": null,
+          "already_terminal": null,
+          "claimed_elsewhere": null,
+          "claim_lost": null,
+          "failed": null
+        },
+        "DrawTransactionCountByOutcome": {
+          "committed": 1305.0,
+          "rolled_back": null
+        },
+        "DrawTransactionTimerCountByOutcome": {
+          "committed": 1305.0,
+          "rolled_back": null
+        },
+        "DrawTransactionTimerSecondsByOutcome": {
+          "committed": 39.4081701,
+          "rolled_back": null
+        },
+        "DrawDatabaseSegmentTimerCount": {
+          "config_lock_and_load.success": 1306.0,
+          "config_lock_and_load.failure": null,
+          "idempotency_insert.success": 1306.0,
+          "idempotency_insert.failure": null,
+          "quota_update.success": 1306.0,
+          "quota_update.failure": null,
+          "inventory_decrement.success": 1306.0,
+          "inventory_decrement.failure": null,
+          "result_insert.success": 1306.0,
+          "result_insert.failure": null,
+          "outbox_insert.success": 10.0,
+          "outbox_insert.failure": null,
+          "request_complete.success": 1306.0,
+          "request_complete.failure": null
+        },
+        "DrawDatabaseSegmentTimerSeconds": {
+          "config_lock_and_load.success": 3.8088814,
+          "config_lock_and_load.failure": null,
+          "idempotency_insert.success": 2.1798908,
+          "idempotency_insert.failure": null,
+          "quota_update.success": 3.8447016,
+          "quota_update.failure": null,
+          "inventory_decrement.success": 3.6795597,
+          "inventory_decrement.failure": null,
+          "result_insert.success": 2.0843449,
+          "result_insert.failure": null,
+          "outbox_insert.success": 0.0312383,
+          "outbox_insert.failure": null,
+          "request_complete.success": 1.7942198,
+          "request_complete.failure": null
+        },
+        "FailureType": null
+      },
+      {
+        "ElapsedSeconds": 86.2,
+        "SampleStatus": "OK",
+        "HikariActiveConnections": 7.0,
+        "HikariIdleConnections": 13.0,
+        "HikariPendingConnections": 0.0,
+        "HikariMaximumConnections": 20.0,
+        "MySqlLockWaitRelationships": 0.0,
+        "MySqlLockSampleLastSuccessEpochSeconds": 1790630471.0,
+        "MySqlLockSampleFailures": 0.0,
+        "QueueProcessingCountByOutcome": {
+          "completed": 1431.0,
+          "rejected": null,
+          "retry_scheduled": null,
+          "manual_review": null,
+          "already_terminal": null,
+          "claimed_elsewhere": null,
+          "claim_lost": null,
+          "failed": null
+        },
+        "QueueProcessingTimerCountByOutcome": {
+          "completed": 1431.0,
+          "rejected": null,
+          "retry_scheduled": null,
+          "manual_review": null,
+          "already_terminal": null,
+          "claimed_elsewhere": null,
+          "claim_lost": null,
+          "failed": null
+        },
+        "QueueProcessingTimerSecondsByOutcome": {
+          "completed": 128.0918678,
+          "rejected": null,
+          "retry_scheduled": null,
+          "manual_review": null,
+          "already_terminal": null,
+          "claimed_elsewhere": null,
+          "claim_lost": null,
+          "failed": null
+        },
+        "DrawTransactionCountByOutcome": {
+          "committed": 1431.0,
+          "rolled_back": null
+        },
+        "DrawTransactionTimerCountByOutcome": {
+          "committed": 1431.0,
+          "rolled_back": null
+        },
+        "DrawTransactionTimerSecondsByOutcome": {
+          "committed": 43.0025267,
+          "rolled_back": null
+        },
+        "DrawDatabaseSegmentTimerCount": {
+          "config_lock_and_load.success": 1432.0,
+          "config_lock_and_load.failure": null,
+          "idempotency_insert.success": 1432.0,
+          "idempotency_insert.failure": null,
+          "quota_update.success": 1432.0,
+          "quota_update.failure": null,
+          "inventory_decrement.success": 1432.0,
+          "inventory_decrement.failure": null,
+          "result_insert.success": 1432.0,
+          "result_insert.failure": null,
+          "outbox_insert.success": 10.0,
+          "outbox_insert.failure": null,
+          "request_complete.success": 1432.0,
+          "request_complete.failure": null
+        },
+        "DrawDatabaseSegmentTimerSeconds": {
+          "config_lock_and_load.success": 4.1641875,
+          "config_lock_and_load.failure": null,
+          "idempotency_insert.success": 2.362029,
+          "idempotency_insert.failure": null,
+          "quota_update.success": 4.2263124,
+          "quota_update.failure": null,
+          "inventory_decrement.success": 4.0009957,
+          "inventory_decrement.failure": null,
+          "result_insert.success": 2.2494992,
+          "result_insert.failure": null,
+          "outbox_insert.success": 0.0312383,
+          "outbox_insert.failure": null,
+          "request_complete.success": 1.9519158,
+          "request_complete.failure": null
+        },
+        "FailureType": null
+      },
+      {
+        "ElapsedSeconds": 91.3,
+        "SampleStatus": "OK",
+        "HikariActiveConnections": 1.0,
+        "HikariIdleConnections": 19.0,
+        "HikariPendingConnections": 0.0,
+        "HikariMaximumConnections": 20.0,
+        "MySqlLockWaitRelationships": 0.0,
+        "MySqlLockSampleLastSuccessEpochSeconds": 1790630476.0,
+        "MySqlLockSampleFailures": 0.0,
+        "QueueProcessingCountByOutcome": {
+          "completed": 1574.0,
+          "rejected": null,
+          "retry_scheduled": null,
+          "manual_review": null,
+          "already_terminal": null,
+          "claimed_elsewhere": null,
+          "claim_lost": null,
+          "failed": null
+        },
+        "QueueProcessingTimerCountByOutcome": {
+          "completed": 1574.0,
+          "rejected": null,
+          "retry_scheduled": null,
+          "manual_review": null,
+          "already_terminal": null,
+          "claimed_elsewhere": null,
+          "claim_lost": null,
+          "failed": null
+        },
+        "QueueProcessingTimerSecondsByOutcome": {
+          "completed": 141.0319847,
+          "rejected": null,
+          "retry_scheduled": null,
+          "manual_review": null,
+          "already_terminal": null,
+          "claimed_elsewhere": null,
+          "claim_lost": null,
+          "failed": null
+        },
+        "DrawTransactionCountByOutcome": {
+          "committed": 1574.0,
+          "rolled_back": null
+        },
+        "DrawTransactionTimerCountByOutcome": {
+          "committed": 1574.0,
+          "rolled_back": null
+        },
+        "DrawTransactionTimerSecondsByOutcome": {
+          "committed": 47.2760857,
+          "rolled_back": null
+        },
+        "DrawDatabaseSegmentTimerCount": {
+          "config_lock_and_load.success": 1574.0,
+          "config_lock_and_load.failure": null,
+          "idempotency_insert.success": 1574.0,
+          "idempotency_insert.failure": null,
+          "quota_update.success": 1574.0,
+          "quota_update.failure": null,
+          "inventory_decrement.success": 1574.0,
+          "inventory_decrement.failure": null,
+          "result_insert.success": 1574.0,
+          "result_insert.failure": null,
+          "outbox_insert.success": 10.0,
+          "outbox_insert.failure": null,
+          "request_complete.success": 1574.0,
+          "request_complete.failure": null
+        },
+        "DrawDatabaseSegmentTimerSeconds": {
+          "config_lock_and_load.success": 4.5632339,
+          "config_lock_and_load.failure": null,
+          "idempotency_insert.success": 2.6215804,
+          "idempotency_insert.failure": null,
+          "quota_update.success": 4.5994372,
+          "quota_update.failure": null,
+          "inventory_decrement.success": 4.376548,
+          "inventory_decrement.failure": null,
+          "result_insert.success": 2.5021794,
+          "result_insert.failure": null,
+          "outbox_insert.success": 0.0312383,
+          "outbox_insert.failure": null,
+          "request_complete.success": 2.1587204,
+          "request_complete.failure": null
+        },
+        "FailureType": null
+      },
+      {
+        "ElapsedSeconds": 96.3,
+        "SampleStatus": "OK",
+        "HikariActiveConnections": 4.0,
+        "HikariIdleConnections": 16.0,
+        "HikariPendingConnections": 0.0,
+        "HikariMaximumConnections": 20.0,
+        "MySqlLockWaitRelationships": 0.0,
+        "MySqlLockSampleLastSuccessEpochSeconds": 1790630481.0,
+        "MySqlLockSampleFailures": 0.0,
+        "QueueProcessingCountByOutcome": {
+          "completed": 1713.0,
+          "rejected": null,
+          "retry_scheduled": null,
+          "manual_review": null,
+          "already_terminal": null,
+          "claimed_elsewhere": null,
+          "claim_lost": null,
+          "failed": null
+        },
+        "QueueProcessingTimerCountByOutcome": {
+          "completed": 1713.0,
+          "rejected": null,
+          "retry_scheduled": null,
+          "manual_review": null,
+          "already_terminal": null,
+          "claimed_elsewhere": null,
+          "claim_lost": null,
+          "failed": null
+        },
+        "QueueProcessingTimerSecondsByOutcome": {
+          "completed": 153.2097422,
+          "rejected": null,
+          "retry_scheduled": null,
+          "manual_review": null,
+          "already_terminal": null,
+          "claimed_elsewhere": null,
+          "claim_lost": null,
+          "failed": null
+        },
+        "DrawTransactionCountByOutcome": {
+          "committed": 1713.0,
+          "rolled_back": null
+        },
+        "DrawTransactionTimerCountByOutcome": {
+          "committed": 1713.0,
+          "rolled_back": null
+        },
+        "DrawTransactionTimerSecondsByOutcome": {
+          "committed": 51.1542797,
+          "rolled_back": null
+        },
+        "DrawDatabaseSegmentTimerCount": {
+          "config_lock_and_load.success": 1713.0,
+          "config_lock_and_load.failure": null,
+          "idempotency_insert.success": 1713.0,
+          "idempotency_insert.failure": null,
+          "quota_update.success": 1713.0,
+          "quota_update.failure": null,
+          "inventory_decrement.success": 1713.0,
+          "inventory_decrement.failure": null,
+          "result_insert.success": 1713.0,
+          "result_insert.failure": null,
+          "outbox_insert.success": 10.0,
+          "outbox_insert.failure": null,
+          "request_complete.success": 1713.0,
+          "request_complete.failure": null
+        },
+        "DrawDatabaseSegmentTimerSeconds": {
+          "config_lock_and_load.success": 4.9147411,
+          "config_lock_and_load.failure": null,
+          "idempotency_insert.success": 2.8173534,
+          "idempotency_insert.failure": null,
+          "quota_update.success": 4.9669177,
+          "quota_update.failure": null,
+          "inventory_decrement.success": 4.7126288,
+          "inventory_decrement.failure": null,
+          "result_insert.success": 2.6886324,
+          "result_insert.failure": null,
+          "outbox_insert.success": 0.0312383,
+          "outbox_insert.failure": null,
+          "request_complete.success": 2.3249733,
+          "request_complete.failure": null
+        },
+        "FailureType": null
+      }
+    ],
+    "CampaignRuntimeMetricScrapeFailures": 0,
+    "MaxHikariActiveConnections": 8.0,
+    "MaxHikariPendingConnections": 0.0,
+    "MaxObservedMysqlLockWaitRelationships": 1.0,
+    "MaxObservedQueueAgeSeconds": 52,
+    "MaxObservedMemoryPercentOfReportedContainerLimit": 6.71,
+    "StopThresholdExceeded": false,
+    "ResourceSamplingNote": "docker stats samples only disposable Campaign/Worker MySQL, Kafka and Redis containers. Campaign/Worker JVM CPU is sampled from Windows process cumulative CPU time and reported as percent of one logical core. Queue active row count/oldest age, Campaign Hikari gauges, bounded draw-queue processing outcome counters/timer sums, draw transaction and low-cardinality repository segment timer counts/sums, and sampled MySQL InnoDB lock-wait relationships are sampled every 5s. Lock waits are point-in-time samples and transient waits may be missed. Memory percentage uses Docker-reported limits. Same-host generator and control-query overhead are present. An exceeded stop threshold fails this bounded stage and blocks using it to justify a higher stage."
+  },
+  "Correctness": {
+    "QueueRows": 3152,
+    "CompletedQueueRows": 3152,
+    "RejectedQueueRows": 0,
+    "PendingQueueRows": 0,
+    "DrawRows": 3152,
+    "WonResults": 10,
+    "InventoryRemaining": 0,
+    "SentDrawQueuedOutboxRows": 3152,
+    "SentFulfillmentOutboxRows": 10,
+    "WorkerLedgerRows": 10,
+    "WorkerSucceededRows": 10,
+    "WorkerAttemptCountTotal": 10,
+    "ManualReviewTasks": 0,
+    "DuplicateDrawFulfillments": 0
+  },
+  "Checks": {
+    "PerformanceThresholdsPassed": false,
+    "BusinessReconciliationPassed": true,
+    "DrainWithin120Seconds": true,
+    "OverallPassed": false
+  },
+  "K6SummaryPath": "docs\\baseline\\draw-queue-arrival-50rps-60s-relay-1s-consumer-4-20users-10campaigns-pool20-segments-2026-09-29.k6-summary.json",
+  "CredentialsOrTokensPrinted": false,
+  "Note": "Single Windows host with disposable containers, one Campaign queue consumer and one Worker; synthetic tokens are held only in a temporary local file and removed during cleanup. Not production capacity or HA evidence."
+}

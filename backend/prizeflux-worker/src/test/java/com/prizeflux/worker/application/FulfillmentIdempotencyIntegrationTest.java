@@ -48,6 +48,9 @@ class FulfillmentIdempotencyIntegrationTest {
         registry.add("spring.datasource.password", MYSQL::getPassword);
         registry.add("spring.datasource.driver-class-name", MYSQL::getDriverClassName);
         registry.add("spring.datasource.hikari.connection-init-sql", () -> "SET time_zone = '+00:00'");
+        registry.add("spring.flyway.url", MYSQL::getJdbcUrl);
+        registry.add("spring.flyway.user", MYSQL::getUsername);
+        registry.add("spring.flyway.password", MYSQL::getPassword);
     }
 
     @Autowired FulfillmentApplicationService service;

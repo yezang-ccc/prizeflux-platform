@@ -27,6 +27,10 @@ public interface DrawRepository {
 
     Optional<StoredDraw> findByKey(long userId, String requestKey);
 
+    default Optional<StoredDraw> findByKey(long userId, String requestKey, String operation) {
+        return findByKey(userId, requestKey);
+    }
+
     /** 按用户返回其抽奖结果，按 id 降序且 id < beforeId，最多 limit 条（稳定游标分页）。 */
     List<DrawHistoryEntry> findByUser(long userId, long beforeId, int limit);
 
@@ -37,6 +41,11 @@ public interface DrawRepository {
 
     long insertRequest(long userId, long campaignId, int configVersion,
                        String requestKey, byte[] fingerprint);
+
+    default long insertRequest(long userId, long campaignId, int configVersion,
+            String requestKey, byte[] fingerprint, String operation) {
+        return insertRequest(userId, campaignId, configVersion, requestKey, fingerprint);
+    }
 
     boolean tryConsumeQuota(long campaignId, long userId, LocalDate businessDay, int limit);
 

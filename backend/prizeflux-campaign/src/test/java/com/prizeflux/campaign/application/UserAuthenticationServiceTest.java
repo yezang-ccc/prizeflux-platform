@@ -32,6 +32,7 @@ class UserAuthenticationServiceTest {
                 repository(Optional.of(user(AppUser.State.DISABLED))), passwords);
 
         assertThat(active.authenticate("user.1", password).id()).isEqualTo(1);
+        assertThat(active.authenticate("  USER.1  ", password).id()).isEqualTo(1);
         for (Runnable failed : new Runnable[] {
                 () -> missing.authenticate("user.1", password),
                 () -> active.authenticate("user.1", "wrong-password"),
@@ -50,6 +51,9 @@ class UserAuthenticationServiceTest {
         return new AppUserRepository() {
             @Override public Optional<AppUser> findByUsername(String username) { return account; }
             @Override public long create(String username, String passwordHash, AppUser.Role role) {
+                throw new UnsupportedOperationException();
+            }
+            @Override public long registerUser(String username, String passwordHash) {
                 throw new UnsupportedOperationException();
             }
         };

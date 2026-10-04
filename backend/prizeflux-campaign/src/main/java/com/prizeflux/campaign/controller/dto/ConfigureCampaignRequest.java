@@ -3,6 +3,7 @@ package com.prizeflux.campaign.controller.dto;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.Size;
 
 import java.util.List;
 
@@ -14,5 +15,6 @@ public record ConfigureCampaignRequest(
         @Positive(message = "每日参与上限必须为正数")
         int dailyLimit,
         @NotEmpty(message = "至少配置一个奖品")
+        @Size(max = 50, message = "奖品数量不能超过50")
         List<@Valid PrizeItem> prizes
 ) {}

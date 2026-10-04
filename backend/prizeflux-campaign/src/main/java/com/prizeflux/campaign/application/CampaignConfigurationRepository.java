@@ -12,9 +12,14 @@ public interface CampaignConfigurationRepository {
 
     Optional<String> lockCampaignStatus(long campaignId);
 
+    Optional<String> lockOwnedCampaignStatus(long campaignId, long ownerUserId);
+
     void replaceDraft(long campaignId, int dailyLimit, List<Prize> prizes);
 
     Optional<DraftConfiguration> findDraft(long campaignId);
+
+    /** 读取当前版本的草稿或已发布配置；查询不得锁行、改状态或返回实时库存。 */
+    Optional<DraftConfiguration> findConfiguration(long campaignId);
 
     void publishVersion(long campaignId);
 }

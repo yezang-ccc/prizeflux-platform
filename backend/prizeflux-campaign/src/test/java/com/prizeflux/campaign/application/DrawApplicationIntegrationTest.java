@@ -4,6 +4,7 @@ import com.prizeflux.campaign.PrizeFluxCampaignApplication;
 import com.prizeflux.campaign.domain.random.RandomSource;
 import com.prizeflux.contract.error.BusinessException;
 import com.prizeflux.contract.error.ErrorCode;
+import io.micrometer.core.instrument.MeterRegistry;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -19,6 +20,7 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.math.BigDecimal;
+import java.time.Duration;
 import java.time.Clock;
 import java.time.Instant;
 import java.time.ZoneOffset;
@@ -41,6 +43,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
         "spring.main.web-application-type=none",
         "spring.flyway.enabled=true",
         "prizeflux.persistence.campaign.enabled=true",
+        "prizeflux.kafka.draw-queue-enabled=true",
         "PFX_JWT_SECRET=test-only-jwt-secret-0123456789abcdef0123456789"
 })
 class DrawApplicationIntegrationTest {
@@ -63,7 +66,16 @@ class DrawApplicationIntegrationTest {
     private DrawApplicationService service;
 
     @Autowired
+    private DrawQueueApplicationService drawQueue;
+
+    @Autowired
     private JdbcTemplate jdbc;
+
+    @Autowired
+    private MeterRegistry metrics;
+
+    @Autowired
+    private DrawQueueRepository queueRepository;
 
     @Autowired
     private MutableRandomSource random;
@@ -87,6 +99,54 @@ class DrawApplicationIntegrationTest {
                 .isOne();
         assertThat(count("SELECT COUNT(*) FROM outbox_event WHERE aggregate_id = " + first.id()))
                 .isOne();
+    }
+
+    @Test
+    void successfulDrawExportsTransactionAndDatabaseSegmentTimings() {
+        seed(9600, "1.000000", 1, 4);
+        random.value = BigDecimal.ZERO;
+
+        double committedBefore = metrics.counter("prizeflux.draw.transactions", "outcome", "committed").count();
+        double configLoadsBefore = metrics.counter("prizeflux.draw.database.operations",
+                "segment", "config_lock_and_load", "outcome", "success").count();
+        double inventoryWritesBefore = metrics.counter("prizeflux.draw.database.operations",
+                "segment", "inventory_decrement", "outcome", "success").count();
+
+        assertThat(service.draw(new DrawCommand(9600, "telemetry-draw-9600")).outcome())
+                .isEqualTo(DrawOutcome.WON);
+
+        assertThat(metrics.counter("prizeflux.draw.transactions", "outcome", "committed").count())
+                .isEqualTo(committedBefore + 1.0);
+        assertThat(metrics.timer("prizeflux.draw.transaction", "outcome", "committed").count())
+                .isGreaterThan(0L);
+        assertThat(metrics.counter("prizeflux.draw.database.operations",
+                "segment", "config_lock_and_load", "outcome", "success").count())
+                .isEqualTo(configLoadsBefore + 1.0);
+        assertThat(metrics.counter("prizeflux.draw.database.operations",
+                "segment", "inventory_decrement", "outcome", "success").count())
+                .isEqualTo(inventoryWritesBefore + 1.0);
+        assertThat(metrics.timer("prizeflux.draw.database.operation",
+                "segment", "quota_update", "outcome", "success").count())
+                .isGreaterThan(0L);
+    }
+
+    @Test
+    void failedDrawExportsRollbackAfterSuccessfulEmptyConfigLookup() {
+        double rolledBackBefore = metrics.counter("prizeflux.draw.transactions",
+                "outcome", "rolled_back").count();
+        double successfulConfigLoadsBefore = metrics.counter("prizeflux.draw.database.operations",
+                "segment", "config_lock_and_load", "outcome", "success").count();
+
+        assertThatThrownBy(() -> service.draw(new DrawCommand(9699, "missing-campaign-9699")))
+                .isInstanceOf(BusinessException.class);
+
+        assertThat(metrics.counter("prizeflux.draw.transactions", "outcome", "rolled_back").count())
+                .isEqualTo(rolledBackBefore + 1.0);
+        assertThat(metrics.timer("prizeflux.draw.transaction", "outcome", "rolled_back").count())
+                .isGreaterThan(0L);
+        assertThat(metrics.counter("prizeflux.draw.database.operations",
+                "segment", "config_lock_and_load", "outcome", "success").count())
+                .isEqualTo(successfulConfigLoadsBefore + 1.0);
     }
 
     @Test
@@ -171,6 +231,109 @@ class DrawApplicationIntegrationTest {
                 .isZero();
     }
 
+    @Test
+    void queuedDrawsArePersistedThenProcessedIdempotentlyAgainstMysqlStock() {
+        seed(9500, "1.000000", 1, 16);
+        jdbc.update("""
+                INSERT INTO app_user (id, username, password_hash, role, state)
+                VALUES (7, 'tester', ?, 'USER', 'ACTIVE')
+                ON DUPLICATE KEY UPDATE role = 'USER', state = 'ACTIVE'
+                """, "$2b$12$" + "a".repeat(53));
+
+        DrawQueueView accepted = drawQueue.enqueue(new DrawCommand(9500, "queued-request-9500"));
+        assertThat(accepted.status()).isEqualTo("QUEUED");
+        assertThat(count("SELECT COUNT(*) FROM outbox_event WHERE event_type = 'DrawQueued'"))
+                .isEqualTo(1);
+
+        drawQueue.process(Long.parseLong(accepted.queueRequestId()));
+        drawQueue.process(Long.parseLong(accepted.queueRequestId()));
+
+        DrawQueueView completed = drawQueue.status("queued-request-9500");
+        assertThat(completed.status()).isEqualTo("COMPLETED");
+        assertThat(completed.result().outcome()).isEqualTo(DrawOutcome.WON);
+        assertThat(count("SELECT remaining_stock FROM prize_inventory WHERE campaign_id = 9500")).isZero();
+        assertThat(count("SELECT used_count FROM user_campaign_quota WHERE campaign_id = 9500")).isOne();
+        assertThat(count("SELECT COUNT(*) FROM draw_request WHERE operation = 'QUEUED_DRAW' "
+                + "AND campaign_id = 9500")).isOne();
+        assertThat(count("SELECT COUNT(*) FROM draw_result WHERE campaign_id = 9500")).isOne();
+    }
+
+    @Test
+    void queuedAcceptanceRechecksCampaignStateBeforeDrawing() {
+        seed(9503, "1.000000", 1, 16);
+        ensureQueueUser();
+        DrawQueueView accepted = drawQueue.enqueue(new DrawCommand(9503, "closed-after-accept-9503"));
+        long id = Long.parseLong(accepted.queueRequestId());
+        jdbc.update("UPDATE campaign SET status = 'CLOSED' WHERE id = ?", 9503);
+
+        drawQueue.process(id);
+
+        DrawQueueRepository.Entry rejected = queueRepository.findById(id).orElseThrow();
+        assertThat(accepted.status()).isEqualTo("QUEUED");
+        assertThat(rejected.status()).isEqualTo(DrawQueueRepository.Status.REJECTED);
+        assertThat(rejected.errorCode()).isEqualTo(ErrorCode.BUSINESS_RULE_VIOLATION.code());
+        assertThat(count("SELECT COUNT(*) FROM draw_request WHERE campaign_id = 9503")).isZero();
+        assertThat(count("SELECT COUNT(*) FROM user_campaign_quota WHERE campaign_id = 9503")).isZero();
+        assertThat(count("SELECT remaining_stock FROM prize_inventory WHERE campaign_id = 9503")).isOne();
+    }
+
+    @Test
+    void expiredLeaseFencesOldWorkerAndAllowsBoundedRetry() {
+        seed(9501, "0.000000", 1, 16);
+        long userId = ensureQueueUser();
+        DrawQueueView accepted = drawQueue.enqueue(new DrawCommand(9501, "lease-recovery-9501"));
+        long id = Long.parseLong(accepted.queueRequestId());
+        String oldToken = "10000000-0000-0000-0000-000000000001";
+        String newToken = "20000000-0000-0000-0000-000000000001";
+
+        assertThat(queueRepository.claim(id, oldToken, Duration.ofSeconds(3))).isTrue();
+        assertThat(queueRepository.recordAttempt(id, oldToken, 5)).isTrue();
+        jdbc.update("UPDATE draw_queue_request SET lease_expires_at = UTC_TIMESTAMP(6) - INTERVAL 1 SECOND WHERE id = ?", id);
+        assertThat(queueRepository.claim(id, newToken, Duration.ofSeconds(20))).isTrue();
+
+        assertThat(queueRepository.reject(id, oldToken, ErrorCode.BUSINESS_RULE_VIOLATION.code())).isFalse();
+        assertThat(queueRepository.retry(id, newToken, ErrorCode.SERVICE_UNAVAILABLE.code(),
+                Duration.ofSeconds(8))).isTrue();
+        DrawQueueRepository.Entry recovered = queueRepository.findById(id).orElseThrow();
+        assertThat(recovered.userId()).isEqualTo(userId);
+        assertThat(recovered.status()).isEqualTo(DrawQueueRepository.Status.RETRY_WAIT);
+        assertThat(recovered.attempts()).isOne();
+        assertThat(recovered.lastErrorCode()).isEqualTo(ErrorCode.SERVICE_UNAVAILABLE.code());
+    }
+
+    @Test
+    void scannerCompletesCommittedDrawInsteadOfDrawingAgain() {
+        seed(9502, "1.000000", 1, 16);
+        ensureQueueUser();
+        DrawQueueView accepted = drawQueue.enqueue(new DrawCommand(9502, "commit-window-9502"));
+        long id = Long.parseLong(accepted.queueRequestId());
+        random.value = BigDecimal.ZERO;
+        DrawResult committed = service.drawQueued(new DrawCommand(9502, "commit-window-9502"), 7);
+        assertThat(queueRepository.findById(id).orElseThrow().status())
+                .isEqualTo(DrawQueueRepository.Status.QUEUED);
+        assertThat(count("SELECT COUNT(*) FROM draw_result WHERE campaign_id = 9502")).isOne();
+        assertThat(count("SELECT remaining_stock FROM prize_inventory WHERE campaign_id = 9502")).isZero();
+        jdbc.update("UPDATE draw_queue_request SET next_attempt_at = UTC_TIMESTAMP(6) - INTERVAL 1 SECOND WHERE id = ?", id);
+
+        drawQueue.processDue();
+
+        DrawQueueRepository.Entry completed = queueRepository.findById(id).orElseThrow();
+        assertThat(completed.status()).isEqualTo(DrawQueueRepository.Status.COMPLETED);
+        assertThat(completed.result()).isEqualTo(committed);
+        assertThat(count("SELECT COUNT(*) FROM draw_result WHERE campaign_id = 9502")).isOne();
+        assertThat(count("SELECT used_count FROM user_campaign_quota WHERE campaign_id = 9502")).isOne();
+        assertThat(count("SELECT remaining_stock FROM prize_inventory WHERE campaign_id = 9502")).isZero();
+    }
+
+    private long ensureQueueUser() {
+        jdbc.update("""
+                INSERT INTO app_user (id, username, password_hash, role, state)
+                VALUES (7, 'tester', ?, 'USER', 'ACTIVE')
+                ON DUPLICATE KEY UPDATE role = 'USER', state = 'ACTIVE'
+                """, "$2b$12$" + "a".repeat(53));
+        return 7;
+    }
+
     private List<DrawResult> runTogether(List<DrawCommand> commands) throws Exception {
         ExecutorService workers = Executors.newFixedThreadPool(commands.size());
         CountDownLatch ready = new CountDownLatch(commands.size());
@@ -204,6 +367,11 @@ class DrawApplicationIntegrationTest {
     }
 
     private void seed(long campaignId, String probability, int stock, int dailyLimit) {
+        jdbc.update("""
+                INSERT INTO app_user (id, username, password_hash, role, state)
+                VALUES (7, 'tester', ?, 'USER', 'ACTIVE')
+                ON DUPLICATE KEY UPDATE role = 'USER', state = 'ACTIVE'
+                """, "$2b$12$" + "a".repeat(53));
         jdbc.update("""
                 INSERT INTO campaign (id, name, starts_at, ends_at, status)
                 VALUES (?, '抽奖事务测试', '2026-09-23 00:00:00', '2026-09-24 00:00:00', 'PUBLISHED')

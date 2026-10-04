@@ -13,6 +13,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.http.MediaType;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.data.redis.connection.RedisConnection;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
@@ -44,6 +46,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
                 "prizeflux.traffic.draw-rate-limit.enabled=true",
                 "prizeflux.traffic.draw-rate-limit.max-requests=1",
                 "prizeflux.traffic.draw-rate-limit.window-seconds=60",
+                "prizeflux.traffic.registration-rate-limit.enabled=true",
+                "prizeflux.traffic.registration-rate-limit.max-requests=5",
+                "prizeflux.traffic.registration-rate-limit.window-seconds=60",
                 "PFX_JWT_SECRET=test-only-jwt-secret-0123456789abcdef0123456789"
         })
 @AutoConfigureMockMvc
@@ -77,10 +82,14 @@ class AuthenticationIntegrationTest {
     @Autowired AppUserRepository users;
     @Autowired PasswordHasher passwords;
     @Autowired JdbcTemplate jdbc;
+    @Autowired StringRedisTemplate redis;
 
     @BeforeEach
     void resetAccounts() {
         jdbc.update("DELETE FROM app_user");
+        try (RedisConnection connection = redis.getConnectionFactory().getConnection()) {
+            connection.serverCommands().flushDb();
+        }
         users.create("operator.1", passwords.hash(PASSWORD), AppUser.Role.OPERATOR);
         users.create("user.1", passwords.hash(PASSWORD), AppUser.Role.USER);
     }
@@ -108,6 +117,73 @@ class AuthenticationIntegrationTest {
                     .andExpect(jsonPath("$.code").value("PFX-1002"))
                     .andExpect(jsonPath("$.message").value("未认证"));
         }
+    }
+
+    @Test
+    void anonymousRegistrationCreatesOnlyUserAndDoesNotIssueToken() throws Exception {
+        String body = "{\"username\":\"  New.User  \",\"password\":\"test-only-password-123\","
+                + "\"role\":\"OPERATOR\",\"userId\":999}";
+        mockMvc.perform(post("/api/auth/register")
+                        .contentType(MediaType.APPLICATION_JSON).content(body))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.data.userId").isNumber())
+                .andExpect(jsonPath("$.data.username").value("new.user"))
+                .andExpect(jsonPath("$.data.role").value("USER"))
+                .andExpect(jsonPath("$.data.token").doesNotExist())
+                .andExpect(jsonPath("$.data.passwordHash").doesNotExist());
+
+        AppUser created = users.findByUsername("new.user").orElseThrow();
+        org.assertj.core.api.Assertions.assertThat(created.role()).isEqualTo(AppUser.Role.USER);
+        org.assertj.core.api.Assertions.assertThat(passwords.matches("test-only-password-123", created.passwordHash()))
+                .isTrue();
+        mockMvc.perform(get("/api/auth/me"))
+                .andExpect(status().isUnauthorized());
+        String token = login("NEW.USER");
+        mockMvc.perform(get("/api/auth/me").header("Authorization", "Bearer " + token))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data.role").value("USER"));
+    }
+
+    @Test
+    void registrationValidatesInputAndReturnsConflictForTakenUsername() throws Exception {
+        for (String body : List.of(
+                "{\"username\":\"bad name\",\"password\":\"test-only-password-123\"}",
+                "{\"username\":\"new.user\",\"password\":\"short\"}")) {
+            mockMvc.perform(post("/api/auth/register")
+                            .contentType(MediaType.APPLICATION_JSON).content(body))
+                    .andExpect(status().isBadRequest())
+                    .andExpect(jsonPath("$.code").value("PFX-1001"));
+        }
+
+        mockMvc.perform(post("/api/auth/register")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"username\":\"user.1\",\"password\":\"test-only-password-123\"}"))
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.code").value("PFX-2003"));
+    }
+
+    @Test
+    void registrationLimitCountsInvalidAttemptsAndIgnoresForwardedAddressHeaders() throws Exception {
+        String invalid = "{\"username\":\"bad name\",\"password\":\"test-only-password-123\"}";
+        for (int attempt = 0; attempt < 5; attempt++) {
+            mockMvc.perform(post("/api/auth/register")
+                            .header("X-Forwarded-For", "198.51.100." + (attempt + 1))
+                            .contentType(MediaType.APPLICATION_JSON).content(invalid))
+                    .andExpect(status().isBadRequest());
+        }
+        mockMvc.perform(post("/api/auth/register")
+                        .header("X-Forwarded-For", "203.0.113.77")
+                        .contentType(MediaType.APPLICATION_JSON).content(invalid))
+                .andExpect(status().isTooManyRequests())
+                .andExpect(jsonPath("$.code").value("PFX-3001"))
+                .andExpect(header().string("X-RateLimit-Limit", "5"))
+                .andExpect(header().string("X-RateLimit-Remaining", "0"))
+                .andExpect(header().exists("Retry-After"));
+
+        mockMvc.perform(post("/api/auth/register")
+                        .with(request -> { request.setRemoteAddr("192.0.2.88"); return request; })
+                        .contentType(MediaType.APPLICATION_JSON).content(invalid))
+                .andExpect(status().isBadRequest());
     }
 
     @Test

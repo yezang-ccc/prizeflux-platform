@@ -120,6 +120,8 @@ class CampaignSummaryToolTest {
                 () -> new HttpCampaignReadClient(URI.create("http://localhost/internal")));
         assertThrows(IllegalArgumentException.class,
                 () -> new HttpCampaignReadClient(URI.create("http://campaign.internal")));
+        // This exact hostname is the trusted service alias on the isolated Compose network.
+        new HttpCampaignReadClient(URI.create("http://campaign:8081"));
         assertThrows(IllegalArgumentException.class,
                 () -> CampaignSummaryTool.forSession(new Actor(8, Role.OPERATOR), " ", client()));
     }

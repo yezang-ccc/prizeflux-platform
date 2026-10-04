@@ -74,9 +74,41 @@ public final class Campaign {
         return new Campaign(id, name, startsAt, endsAt, CampaignStatus.PUBLISHED);
     }
 
-    /** 草稿和已发布可关闭；关闭为终止状态，不允许重复关闭。 */
+    /** 创建者提审；审核中的活动不可再配置。 */
+    public Campaign submitForReview() {
+        if (status != CampaignStatus.DRAFT) {
+            throw new BusinessException(ErrorCode.BUSINESS_RULE_VIOLATION);
+        }
+        return new Campaign(id, name, startsAt, endsAt, CampaignStatus.PENDING_REVIEW);
+    }
+
+    /** 仅审核中的活动可驳回。 */
+    public Campaign rejectReview() {
+        if (status != CampaignStatus.PENDING_REVIEW) {
+            throw new BusinessException(ErrorCode.BUSINESS_RULE_VIOLATION);
+        }
+        return new Campaign(id, name, startsAt, endsAt, CampaignStatus.REJECTED);
+    }
+
+    /** 运营审核通过并发布；配置冻结与该迁移由应用层同事务完成。 */
+    public Campaign approveReview() {
+        if (status != CampaignStatus.PENDING_REVIEW) {
+            throw new BusinessException(ErrorCode.BUSINESS_RULE_VIOLATION);
+        }
+        return new Campaign(id, name, startsAt, endsAt, CampaignStatus.PUBLISHED);
+    }
+
+    /** 草稿或驳回活动可编辑；修改驳回活动后重新变成 DRAFT。 */
+    public Campaign edit(String replacementName, Instant replacementStartsAt, Instant replacementEndsAt) {
+        if (status != CampaignStatus.DRAFT && status != CampaignStatus.REJECTED) {
+            throw new BusinessException(ErrorCode.BUSINESS_RULE_VIOLATION);
+        }
+        return new Campaign(id, replacementName, replacementStartsAt, replacementEndsAt, CampaignStatus.DRAFT);
+    }
+
+    /** 仅草稿或已发布活动可由运营关闭；审核中的活动必须经过审核决定。 */
     public Campaign close() {
-        if (status == CampaignStatus.CLOSED) {
+        if (status != CampaignStatus.DRAFT && status != CampaignStatus.PUBLISHED) {
             throw new BusinessException(ErrorCode.BUSINESS_RULE_VIOLATION);
         }
         return new Campaign(id, name, startsAt, endsAt, CampaignStatus.CLOSED);

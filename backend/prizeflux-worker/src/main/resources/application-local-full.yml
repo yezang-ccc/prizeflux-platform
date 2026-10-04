@@ -1,3 +1,30 @@
+spring:
+  config:
+    # Optional Compose secret files become properties by filename; absent for normal local runs.
+    import: optional:configtree:/run/secrets/
+  main:
+    # No business HTTP listener. Only the separate management server below is enabled.
+    web-application-type: servlet
+
+server:
+  port: -1
+
+management:
+  server:
+    port: ${PFX_WORKER_MANAGEMENT_PORT:8084}
+    address: 0.0.0.0
+  prometheus:
+    metrics:
+      export:
+        enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: prometheus
+  endpoint:
+    prometheus:
+      access: read-only
+
 prizeflux:
   worker:
     retry:

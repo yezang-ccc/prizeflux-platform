@@ -1,0 +1,745 @@
+{
+  "Result": "FAIL",
+  "Scenario": "Open-model constant arrival rate for the asynchronous draw queue",
+  "Environment": {
+    "OS": "Microsoft Windows NT 10.0.26200.0",
+    "PowerShell": "7.6.5",
+    "JavaHome": "D:\\java\\jdk-17",
+    "JavaVersion": "java version \"17.0.12\" 2024-07-16 LTS\r\nJava(TM) SE Runtime Environment (build 17.0.12+8-LTS-286)\r\nJava HotSpot(TM) 64-Bit Server VM (build 17.0.12+8-LTS-286, mixed mode, sharing)",
+    "K6Version": "k6.exe v2.3.0 (commit/e088784614, go1.26.8, windows/amd64)",
+    "ProcessorCount": 12,
+    "DockerEngine": "29.8.0",
+    "MySqlImage": "mysql:8.4",
+    "RedisImage": "redis:7.4-alpine",
+    "Broker": "Disposable single-node Kafka 3.9.1",
+    "FulfillmentMode": "SIMULATED",
+    "LoadGeneratorAndServicesOnSameHost": true
+  },
+  "Configuration": {
+    "MeasuredRatePerSecond": 25,
+    "MeasuredDurationSeconds": 60,
+    "PlannedMeasuredRequests": 1500,
+    "WarmupRatePerSecond": 5,
+    "WarmupDurationSeconds": 30,
+    "PlannedWarmupRequests": 150,
+    "AllowedK6BoundaryIterationPerPhase": 1,
+    "AdditionalTestQuotaForBoundaryIterations": 2,
+    "Users": 1,
+    "Campaigns": 1,
+    "PrizeStock": 500,
+    "QueueConsumerInstances": 1,
+    "QueueConsumerGeneration": 2,
+    "QueueTopicPartitions": 12,
+    "QueueConsumerStayedOnlineDuringLoad": true,
+    "OutboxRelayBatchSize": 50,
+    "OutboxRelayFixedDelaySeconds": 1,
+    "PeriodicRecoveryScanDelayed": true,
+    "PersistentVolumes": false
+  },
+  "Metrics": {
+    "K6ExitCode": 0,
+    "MeasuredRequestsAttempted": 1500,
+    "MeasuredRequestsAccepted": 1500,
+    "WarmupRequestsAttempted": 150,
+    "WarmupRequestsAccepted": 150,
+    "ProtectedCapacityRejections": 0,
+    "UnexpectedResponses": 0,
+    "ClientErrors": 0,
+    "ServerErrors": 0,
+    "TransportErrors": 0,
+    "GeneratorDroppedIterations": 0,
+    "ActualAttemptRatePerSecond": 25.0,
+    "AcceptedRate": 1.0,
+    "UnexpectedErrorRate": 0.0,
+    "AdmissionP95Ms": 35.83956,
+    "AdmissionP99Ms": 49.118167,
+    "TerminalLatencySampleCount": 1650,
+    "AcceptedToTerminalP50Ms": 21050.66,
+    "AcceptedToTerminalP95Ms": 36507.38,
+    "DrainAfterK6ExitMs": 34700.22,
+    "OldestActiveQueueAgeSamples": [
+      {
+        "ElapsedSeconds": 5.2,
+        "OldestActiveItemSeconds": 0
+      },
+      {
+        "ElapsedSeconds": 10.4,
+        "OldestActiveItemSeconds": 1
+      },
+      {
+        "ElapsedSeconds": 15.4,
+        "OldestActiveItemSeconds": 1
+      },
+      {
+        "ElapsedSeconds": 20.3,
+        "OldestActiveItemSeconds": 1
+      },
+      {
+        "ElapsedSeconds": 25.2,
+        "OldestActiveItemSeconds": 1
+      },
+      {
+        "ElapsedSeconds": 30.4,
+        "OldestActiveItemSeconds": 0
+      },
+      {
+        "ElapsedSeconds": 35.3,
+        "OldestActiveItemSeconds": 0
+      },
+      {
+        "ElapsedSeconds": 40.4,
+        "OldestActiveItemSeconds": 2
+      },
+      {
+        "ElapsedSeconds": 45.3,
+        "OldestActiveItemSeconds": 5
+      },
+      {
+        "ElapsedSeconds": 50.2,
+        "OldestActiveItemSeconds": 7
+      },
+      {
+        "ElapsedSeconds": 55.4,
+        "OldestActiveItemSeconds": 10
+      },
+      {
+        "ElapsedSeconds": 60.3,
+        "OldestActiveItemSeconds": 13
+      },
+      {
+        "ElapsedSeconds": 65.2,
+        "OldestActiveItemSeconds": 15
+      },
+      {
+        "ElapsedSeconds": 70.4,
+        "OldestActiveItemSeconds": 17
+      },
+      {
+        "ElapsedSeconds": 75.3,
+        "OldestActiveItemSeconds": 20
+      },
+      {
+        "ElapsedSeconds": 80.5,
+        "OldestActiveItemSeconds": 21
+      },
+      {
+        "ElapsedSeconds": 85.4,
+        "OldestActiveItemSeconds": 24
+      },
+      {
+        "ElapsedSeconds": 90.2,
+        "OldestActiveItemSeconds": 24
+      },
+      {
+        "ElapsedSeconds": 95.4,
+        "OldestActiveItemSeconds": 29
+      },
+      {
+        "ElapsedSeconds": 97.8,
+        "OldestActiveItemSeconds": 32
+      },
+      {
+        "ElapsedSeconds": 97.8,
+        "OldestActiveItemSeconds": 38
+      },
+      {
+        "ElapsedSeconds": 97.8,
+        "OldestActiveItemSeconds": 33
+      },
+      {
+        "ElapsedSeconds": 97.8,
+        "OldestActiveItemSeconds": 38
+      },
+      {
+        "ElapsedSeconds": 97.8,
+        "OldestActiveItemSeconds": 33
+      },
+      {
+        "ElapsedSeconds": 97.8,
+        "OldestActiveItemSeconds": 37
+      }
+    ],
+    "ContainerResourceSamples": [
+      {
+        "ElapsedSeconds": 7.4,
+        "Containers": [
+          {
+            "Container": "pfx-campaign-96774037cc",
+            "CpuPercent": "11.14%",
+            "MemoryUsage": "457.9MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 5.86
+          },
+          {
+            "Container": "pfx-worker-96774037cc",
+            "CpuPercent": "3.73%",
+            "MemoryUsage": "449.2MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 5.75
+          },
+          {
+            "Container": "pfx-kafka-96774037cc",
+            "CpuPercent": "12.49%",
+            "MemoryUsage": "396.5MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 5.08
+          },
+          {
+            "Container": "pfx-redis-96774037cc",
+            "CpuPercent": "0.40%",
+            "MemoryUsage": "4.746MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 0.06
+          }
+        ]
+      },
+      {
+        "ElapsedSeconds": 12.7,
+        "Containers": [
+          {
+            "Container": "pfx-campaign-96774037cc",
+            "CpuPercent": "8.58%",
+            "MemoryUsage": "458.4MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 5.87
+          },
+          {
+            "Container": "pfx-worker-96774037cc",
+            "CpuPercent": "3.40%",
+            "MemoryUsage": "449.3MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 5.75
+          },
+          {
+            "Container": "pfx-kafka-96774037cc",
+            "CpuPercent": "10.18%",
+            "MemoryUsage": "401.6MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 5.14
+          },
+          {
+            "Container": "pfx-redis-96774037cc",
+            "CpuPercent": "0.38%",
+            "MemoryUsage": "4.953MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 0.06
+          }
+        ]
+      },
+      {
+        "ElapsedSeconds": 17.6,
+        "Containers": [
+          {
+            "Container": "pfx-campaign-96774037cc",
+            "CpuPercent": "6.02%",
+            "MemoryUsage": "458.6MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 5.87
+          },
+          {
+            "Container": "pfx-worker-96774037cc",
+            "CpuPercent": "3.59%",
+            "MemoryUsage": "449.8MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 5.76
+          },
+          {
+            "Container": "pfx-kafka-96774037cc",
+            "CpuPercent": "6.97%",
+            "MemoryUsage": "405.6MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 5.19
+          },
+          {
+            "Container": "pfx-redis-96774037cc",
+            "CpuPercent": "0.43%",
+            "MemoryUsage": "5.164MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 0.07
+          }
+        ]
+      },
+      {
+        "ElapsedSeconds": 22.5,
+        "Containers": [
+          {
+            "Container": "pfx-campaign-96774037cc",
+            "CpuPercent": "7.74%",
+            "MemoryUsage": "459MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 5.88
+          },
+          {
+            "Container": "pfx-worker-96774037cc",
+            "CpuPercent": "1.93%",
+            "MemoryUsage": "449.7MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 5.76
+          },
+          {
+            "Container": "pfx-kafka-96774037cc",
+            "CpuPercent": "6.45%",
+            "MemoryUsage": "409.9MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 5.25
+          },
+          {
+            "Container": "pfx-redis-96774037cc",
+            "CpuPercent": "0.42%",
+            "MemoryUsage": "5.402MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 0.07
+          }
+        ]
+      },
+      {
+        "ElapsedSeconds": 27.4,
+        "Containers": [
+          {
+            "Container": "pfx-campaign-96774037cc",
+            "CpuPercent": "7.75%",
+            "MemoryUsage": "459.3MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 5.88
+          },
+          {
+            "Container": "pfx-worker-96774037cc",
+            "CpuPercent": "2.45%",
+            "MemoryUsage": "450.2MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 5.76
+          },
+          {
+            "Container": "pfx-kafka-96774037cc",
+            "CpuPercent": "4.41%",
+            "MemoryUsage": "414.1MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 5.3
+          },
+          {
+            "Container": "pfx-redis-96774037cc",
+            "CpuPercent": "0.39%",
+            "MemoryUsage": "5.355MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 0.07
+          }
+        ]
+      },
+      {
+        "ElapsedSeconds": 32.6,
+        "Containers": [
+          {
+            "Container": "pfx-campaign-96774037cc",
+            "CpuPercent": "13.60%",
+            "MemoryUsage": "459.5MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 5.88
+          },
+          {
+            "Container": "pfx-worker-96774037cc",
+            "CpuPercent": "3.54%",
+            "MemoryUsage": "450.4MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 5.77
+          },
+          {
+            "Container": "pfx-kafka-96774037cc",
+            "CpuPercent": "9.37%",
+            "MemoryUsage": "419.3MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 5.37
+          },
+          {
+            "Container": "pfx-redis-96774037cc",
+            "CpuPercent": "0.40%",
+            "MemoryUsage": "5.074MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 0.06
+          }
+        ]
+      },
+      {
+        "ElapsedSeconds": 37.5,
+        "Containers": [
+          {
+            "Container": "pfx-campaign-96774037cc",
+            "CpuPercent": "5.87%",
+            "MemoryUsage": "459.2MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 5.88
+          },
+          {
+            "Container": "pfx-worker-96774037cc",
+            "CpuPercent": "1.03%",
+            "MemoryUsage": "450.3MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 5.76
+          },
+          {
+            "Container": "pfx-kafka-96774037cc",
+            "CpuPercent": "4.03%",
+            "MemoryUsage": "420.8MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 5.39
+          },
+          {
+            "Container": "pfx-redis-96774037cc",
+            "CpuPercent": "0.40%",
+            "MemoryUsage": "5.305MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 0.07
+          }
+        ]
+      },
+      {
+        "ElapsedSeconds": 41.6,
+        "Containers": [
+          {
+            "Container": "pfx-campaign-96774037cc",
+            "CpuPercent": "28.14%",
+            "MemoryUsage": "460MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 5.89
+          },
+          {
+            "Container": "pfx-worker-96774037cc",
+            "CpuPercent": "6.27%",
+            "MemoryUsage": "450.4MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 5.77
+          },
+          {
+            "Container": "pfx-kafka-96774037cc",
+            "CpuPercent": "18.03%",
+            "MemoryUsage": "436.8MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 5.59
+          },
+          {
+            "Container": "pfx-redis-96774037cc",
+            "CpuPercent": "0.66%",
+            "MemoryUsage": "5.238MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 0.07
+          }
+        ]
+      },
+      {
+        "ElapsedSeconds": 47.5,
+        "Containers": [
+          {
+            "Container": "pfx-campaign-96774037cc",
+            "CpuPercent": "31.11%",
+            "MemoryUsage": "460.3MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 5.89
+          },
+          {
+            "Container": "pfx-worker-96774037cc",
+            "CpuPercent": "3.98%",
+            "MemoryUsage": "450.7MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 5.77
+          },
+          {
+            "Container": "pfx-kafka-96774037cc",
+            "CpuPercent": "15.87%",
+            "MemoryUsage": "434.7MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 5.57
+          },
+          {
+            "Container": "pfx-redis-96774037cc",
+            "CpuPercent": "0.79%",
+            "MemoryUsage": "5.172MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 0.07
+          }
+        ]
+      },
+      {
+        "ElapsedSeconds": 52.4,
+        "Containers": [
+          {
+            "Container": "pfx-campaign-96774037cc",
+            "CpuPercent": "24.00%",
+            "MemoryUsage": "460.4MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 5.89
+          },
+          {
+            "Container": "pfx-worker-96774037cc",
+            "CpuPercent": "5.37%",
+            "MemoryUsage": "451MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 5.77
+          },
+          {
+            "Container": "pfx-kafka-96774037cc",
+            "CpuPercent": "10.33%",
+            "MemoryUsage": "441.1MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 5.65
+          },
+          {
+            "Container": "pfx-redis-96774037cc",
+            "CpuPercent": "0.68%",
+            "MemoryUsage": "5.387MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 0.07
+          }
+        ]
+      },
+      {
+        "ElapsedSeconds": 57.6,
+        "Containers": [
+          {
+            "Container": "pfx-campaign-96774037cc",
+            "CpuPercent": "25.33%",
+            "MemoryUsage": "461MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 5.9
+          },
+          {
+            "Container": "pfx-worker-96774037cc",
+            "CpuPercent": "8.58%",
+            "MemoryUsage": "451MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 5.77
+          },
+          {
+            "Container": "pfx-kafka-96774037cc",
+            "CpuPercent": "7.83%",
+            "MemoryUsage": "446.9MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 5.72
+          },
+          {
+            "Container": "pfx-redis-96774037cc",
+            "CpuPercent": "0.68%",
+            "MemoryUsage": "5.594MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 0.07
+          }
+        ]
+      },
+      {
+        "ElapsedSeconds": 62.5,
+        "Containers": [
+          {
+            "Container": "pfx-campaign-96774037cc",
+            "CpuPercent": "30.48%",
+            "MemoryUsage": "462.1MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 5.92
+          },
+          {
+            "Container": "pfx-worker-96774037cc",
+            "CpuPercent": "7.61%",
+            "MemoryUsage": "451.7MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 5.78
+          },
+          {
+            "Container": "pfx-kafka-96774037cc",
+            "CpuPercent": "9.56%",
+            "MemoryUsage": "454MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 5.81
+          },
+          {
+            "Container": "pfx-redis-96774037cc",
+            "CpuPercent": "0.65%",
+            "MemoryUsage": "5.543MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 0.07
+          }
+        ]
+      },
+      {
+        "ElapsedSeconds": 67.4,
+        "Containers": [
+          {
+            "Container": "pfx-campaign-96774037cc",
+            "CpuPercent": "27.64%",
+            "MemoryUsage": "462.1MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 5.92
+          },
+          {
+            "Container": "pfx-worker-96774037cc",
+            "CpuPercent": "5.32%",
+            "MemoryUsage": "452MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 5.79
+          },
+          {
+            "Container": "pfx-kafka-96774037cc",
+            "CpuPercent": "16.61%",
+            "MemoryUsage": "461MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 5.9
+          },
+          {
+            "Container": "pfx-redis-96774037cc",
+            "CpuPercent": "0.68%",
+            "MemoryUsage": "5.52MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 0.07
+          }
+        ]
+      },
+      {
+        "ElapsedSeconds": 72.6,
+        "Containers": [
+          {
+            "Container": "pfx-campaign-96774037cc",
+            "CpuPercent": "25.18%",
+            "MemoryUsage": "462.6MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 5.92
+          },
+          {
+            "Container": "pfx-worker-96774037cc",
+            "CpuPercent": "4.89%",
+            "MemoryUsage": "451.6MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 5.78
+          },
+          {
+            "Container": "pfx-kafka-96774037cc",
+            "CpuPercent": "15.27%",
+            "MemoryUsage": "466MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 5.97
+          },
+          {
+            "Container": "pfx-redis-96774037cc",
+            "CpuPercent": "0.66%",
+            "MemoryUsage": "5.238MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 0.07
+          }
+        ]
+      },
+      {
+        "ElapsedSeconds": 77.5,
+        "Containers": [
+          {
+            "Container": "pfx-campaign-96774037cc",
+            "CpuPercent": "24.73%",
+            "MemoryUsage": "463.4MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 5.93
+          },
+          {
+            "Container": "pfx-worker-96774037cc",
+            "CpuPercent": "0.92%",
+            "MemoryUsage": "451.9MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 5.79
+          },
+          {
+            "Container": "pfx-kafka-96774037cc",
+            "CpuPercent": "4.18%",
+            "MemoryUsage": "471.9MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 6.04
+          },
+          {
+            "Container": "pfx-redis-96774037cc",
+            "CpuPercent": "0.65%",
+            "MemoryUsage": "5.418MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 0.07
+          }
+        ]
+      },
+      {
+        "ElapsedSeconds": 82.6,
+        "Containers": [
+          {
+            "Container": "pfx-campaign-96774037cc",
+            "CpuPercent": "31.46%",
+            "MemoryUsage": "463.8MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 5.94
+          },
+          {
+            "Container": "pfx-worker-96774037cc",
+            "CpuPercent": "1.07%",
+            "MemoryUsage": "451.9MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 5.79
+          },
+          {
+            "Container": "pfx-kafka-96774037cc",
+            "CpuPercent": "11.91%",
+            "MemoryUsage": "476.6MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 6.1
+          },
+          {
+            "Container": "pfx-redis-96774037cc",
+            "CpuPercent": "0.73%",
+            "MemoryUsage": "5.395MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 0.07
+          }
+        ]
+      },
+      {
+        "ElapsedSeconds": 87.5,
+        "Containers": [
+          {
+            "Container": "pfx-campaign-96774037cc",
+            "CpuPercent": "26.78%",
+            "MemoryUsage": "463.9MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 5.94
+          },
+          {
+            "Container": "pfx-worker-96774037cc",
+            "CpuPercent": "0.87%",
+            "MemoryUsage": "451.9MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 5.79
+          },
+          {
+            "Container": "pfx-kafka-96774037cc",
+            "CpuPercent": "3.89%",
+            "MemoryUsage": "480.9MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 6.16
+          },
+          {
+            "Container": "pfx-redis-96774037cc",
+            "CpuPercent": "0.64%",
+            "MemoryUsage": "5.359MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 0.07
+          }
+        ]
+      },
+      {
+        "ElapsedSeconds": 92.4,
+        "Containers": [
+          {
+            "Container": "pfx-campaign-96774037cc",
+            "CpuPercent": "26.00%",
+            "MemoryUsage": "465MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 5.95
+          },
+          {
+            "Container": "pfx-worker-96774037cc",
+            "CpuPercent": "0.88%",
+            "MemoryUsage": "452.2MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 5.79
+          },
+          {
+            "Container": "pfx-kafka-96774037cc",
+            "CpuPercent": "21.93%",
+            "MemoryUsage": "489.7MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 6.27
+          },
+          {
+            "Container": "pfx-redis-96774037cc",
+            "CpuPercent": "0.64%",
+            "MemoryUsage": "5.07MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 0.06
+          }
+        ]
+      },
+      {
+        "ElapsedSeconds": 97.6,
+        "Containers": [
+          {
+            "Container": "pfx-campaign-96774037cc",
+            "CpuPercent": "23.19%",
+            "MemoryUsage": "466.2MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 5.97
+          },
+          {
+            "Container": "pfx-worker-96774037cc",
+            "CpuPercent": "1.22%",
+            "MemoryUsage": "452.1MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 5.79
+          },
+          {
+            "Container": "pfx-kafka-96774037cc",
+            "CpuPercent": "9.62%",
+            "MemoryUsage": "490.7MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 6.28
+          },
+          {
+            "Container": "pfx-redis-96774037cc",
+            "CpuPercent": "0.39%",
+            "MemoryUsage": "5.262MiB / 7.628GiB",
+            "MemoryPercentOfReportedLimit": 0.07
+          }
+        ]
+      }
+    ],
+    "MaxObservedQueueAgeSeconds": 38,
+    "MaxObservedMemoryPercentOfReportedContainerLimit": 6.28,
+    "StopThresholdExceeded": false,
+    "ResourceSamplingNote": "docker stats and the oldest active queue age were sampled every 5s; memory percentage uses Docker-reported limits. Same-host generator and control-query overhead are present. An exceeded stop threshold fails this bounded stage and blocks using it to justify a higher stage."
+  },
+  "Correctness": {
+    "QueueRows": 1650,
+    "CompletedQueueRows": 1650,
+    "RejectedQueueRows": 0,
+    "PendingQueueRows": 0,
+    "DrawRows": 1650,
+    "WonResults": 500,
+    "InventoryRemaining": 0,
+    "SentDrawQueuedOutboxRows": 1650,
+    "SentFulfillmentOutboxRows": 500,
+    "WorkerLedgerRows": 500,
+    "WorkerSucceededRows": 500,
+    "WorkerAttemptCountTotal": 500,
+    "ManualReviewTasks": 0,
+    "DuplicateDrawFulfillments": 0
+  },
+  "Checks": {
+    "PerformanceThresholdsPassed": false,
+    "BusinessReconciliationPassed": true,
+    "DrainWithin120Seconds": true,
+    "OverallPassed": false
+  },
+  "K6SummaryPath": "docs\\baseline\\draw-queue-arrival-25rps-60s-relay-1s-2026-09-29.k6-summary.json",
+  "CredentialsOrTokensPrinted": false,
+  "Note": "Single Windows host with disposable containers, one Campaign queue consumer and one Worker; synthetic tokens are held only in a temporary local file and removed during cleanup. Not production capacity or HA evidence."
+}

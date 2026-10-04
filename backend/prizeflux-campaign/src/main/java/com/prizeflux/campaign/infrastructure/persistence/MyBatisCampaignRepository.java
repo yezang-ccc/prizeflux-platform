@@ -38,6 +38,7 @@ public class MyBatisCampaignRepository implements CampaignRepository {
                 campaign.status().name());
         int insertedRows;
         try {
+            campaignMapper.reserveManualId(campaign.id());
             insertedRows = campaignMapper.insert(record);
         } catch (DuplicateKeyException ex) {
             throw new BusinessException(ErrorCode.CONFLICT);
@@ -45,6 +46,54 @@ public class MyBatisCampaignRepository implements CampaignRepository {
         if (insertedRows != 1) {
             throw new IllegalStateException("Expected one inserted campaign row, but got " + insertedRows);
         }
+    }
+
+    @Override
+    public Campaign createOwned(String name, java.time.Instant startsAt, java.time.Instant endsAt,
+            long ownerUserId) {
+        if (ownerUserId <= 0) {
+            throw new IllegalArgumentException("owner user id must be positive");
+        }
+        CampaignIdRecord idRecord = new CampaignIdRecord();
+        try {
+            if (campaignMapper.reserveGeneratedId(idRecord) != 1 || idRecord.getId() == null) {
+                throw new IllegalStateException("Campaign ID reservation did not return one ID");
+            }
+            CampaignPersistenceRecord record = new CampaignPersistenceRecord(
+                    idRecord.getId(), name, startsAt, endsAt, CampaignStatus.DRAFT.name());
+            if (campaignMapper.insertOwned(record, ownerUserId) != 1) {
+                throw new IllegalStateException("Expected one inserted owned campaign row");
+            }
+            return new Campaign(idRecord.getId(), name, startsAt, endsAt);
+        } catch (DuplicateKeyException ex) {
+            throw new BusinessException(ErrorCode.CONFLICT);
+        }
+    }
+
+    @Override
+    public Optional<Campaign> findOwnedById(long id, long ownerUserId) {
+        if (id <= 0 || ownerUserId <= 0) {
+            return Optional.empty();
+        }
+        return Optional.ofNullable(campaignMapper.findOwnedById(id, ownerUserId))
+                .map(MyBatisCampaignRepository::restoreDomainCampaign);
+    }
+
+    @Override
+    public boolean updateOwnedDetails(long id, long ownerUserId, String name,
+            java.time.Instant startsAt, java.time.Instant endsAt) {
+        if (id <= 0 || ownerUserId <= 0) {
+            return false;
+        }
+        return campaignMapper.updateOwnedDetails(id, ownerUserId, name, startsAt, endsAt) == 1;
+    }
+
+    @Override
+    public boolean submitOwnedForReview(long id, long ownerUserId) {
+        if (id <= 0 || ownerUserId <= 0) {
+            return false;
+        }
+        return campaignMapper.submitOwnedForReview(id, ownerUserId) == 1;
     }
 
     @Override
@@ -74,14 +123,16 @@ public class MyBatisCampaignRepository implements CampaignRepository {
         };
     }
 
-    private static Campaign restoreDomainCampaign(CampaignPersistenceRecord record) {
+    static Campaign restoreDomainCampaign(CampaignPersistenceRecord record) {
         Campaign draft = new Campaign(record.id(), record.name(), record.startsAt(), record.endsAt());
         if (record.status() == null) {
             throw new IllegalStateException("Persisted campaign status must not be null");
         }
         return switch (record.status()) {
             case "DRAFT" -> draft;
+            case "PENDING_REVIEW" -> draft.submitForReview();
             case "PUBLISHED" -> draft.publish();
+            case "REJECTED" -> draft.submitForReview().rejectReview();
             case "CLOSED" -> draft.close();
             default -> throw new IllegalStateException("Unknown persisted campaign status: " + record.status());
         };

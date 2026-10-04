@@ -3,7 +3,9 @@ package com.prizeflux.ai.infrastructure;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.prizeflux.ai.harness.campaign.CampaignReadClient;
 import com.prizeflux.ai.harness.campaign.HttpCampaignReadClient;
+import com.prizeflux.ai.infrastructure.campaign.CampaignDraftValidationClient;
 import com.prizeflux.ai.infrastructure.campaign.CampaignIdentityClient;
+import com.prizeflux.ai.infrastructure.campaign.HttpCampaignDraftValidationClient;
 import com.prizeflux.ai.infrastructure.campaign.HttpCampaignIdentityClient;
 import java.net.URI;
 import java.time.Clock;
@@ -22,6 +24,12 @@ public class AiRuntimeConfiguration {
     CampaignIdentityClient campaignIdentityClient(@Value("${prizeflux.campaign.base-url}") URI baseUrl,
                                                    ObjectMapper objectMapper) {
         return new HttpCampaignIdentityClient(baseUrl, objectMapper);
+    }
+
+    @Bean
+    CampaignDraftValidationClient campaignDraftValidationClient(
+            @Value("${prizeflux.campaign.base-url}") URI baseUrl, ObjectMapper objectMapper) {
+        return new HttpCampaignDraftValidationClient(baseUrl, objectMapper);
     }
 
     @Bean

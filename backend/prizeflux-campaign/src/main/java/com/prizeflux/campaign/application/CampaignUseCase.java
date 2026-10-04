@@ -9,6 +9,8 @@ public interface CampaignUseCase {
 
     Campaign create(long id, String name, Instant startsAt, Instant endsAt);
 
+    Campaign createOwned(String name, Instant startsAt, Instant endsAt, long ownerUserId);
+
     Campaign get(long id);
 
     Campaign publish(long id);

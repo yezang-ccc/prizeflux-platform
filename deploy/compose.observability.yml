@@ -1,0 +1,114 @@
+# Optional local monitoring overlay. The base product Compose remains unchanged
+# unless this file is explicitly included.
+services:
+  campaign:
+    environment:
+      PFX_OBSERVABILITY_METRICS_SCRAPE_AUTH_ENABLED: "true"
+      PFX_OBSERVABILITY_METRICS_SCRAPE_USERNAME: prizeflux-scraper
+      PFX_MYSQL_LOCK_METRICS_ENABLED: "true"
+      PFX_MYSQL_LOCK_METRICS_USERNAME: pfx_observability
+      PFX_MYSQL_LOCK_METRICS_JDBC_URL: "jdbc:mysql://mysql:3306/"
+    depends_on:
+      observability-mysql-account-bootstrap:
+        condition: service_completed_successfully
+    secrets:
+      - source: campaign_metrics_password
+        target: pfx.observability.metrics.scrape-password
+        mode: 0444
+      - source: mysql_lock_metrics_password
+        target: pfx.observability.mysql-lock-waits.password
+        mode: 0444
+
+  worker:
+    environment:
+      PFX_OBSERVABILITY_METRICS_SCRAPE_AUTH_ENABLED: "true"
+      PFX_OBSERVABILITY_METRICS_SCRAPE_USERNAME: prizeflux-scraper
+    secrets:
+      - source: worker_metrics_password
+        target: pfx.observability.metrics.scrape-password
+        mode: 0444
+
+  prometheus:
+    image: prom/prometheus:v3.5.0
+    profiles: [observability]
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+      - --storage.tsdb.path=/prometheus
+      - --storage.tsdb.retention.time=7d
+      - --storage.tsdb.retention.size=1GB
+    volumes:
+      - ./observability/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./observability/alert-rules.yml:/etc/prometheus/alert-rules.yml:ro
+      - prizeflux_product_prometheus_data:/prometheus
+    secrets:
+      - source: campaign_metrics_password
+        target: campaign_metrics_password
+        mode: 0444
+      - source: worker_metrics_password
+        target: worker_metrics_password
+        mode: 0444
+    networks: [product, observability]
+    restart: unless-stopped
+
+  observability-mysql-account-bootstrap:
+    image: mysql:8.4
+    profiles: [observability]
+    entrypoint: ["/bin/sh", "/bootstrap/provision-observability-user.sh"]
+    environment:
+      MYSQL_ROOT_PASSWORD: ${PFX_CONTAINER_MYSQL_ROOT_PASSWORD:?Generate deploy/.env.product first}
+    volumes:
+      - ./mysql-init/provision-observability-user.sh:/bootstrap/provision-observability-user.sh:ro
+    secrets:
+      - source: mysql_lock_metrics_password
+        target: mysql_lock_metrics_password
+        mode: 0400
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks: [product]
+    restart: "no"
+
+  grafana:
+    image: grafana/grafana:12.1.0
+    profiles: [observability]
+    environment:
+      GF_SECURITY_ADMIN_USER: ${PFX_GRAFANA_ADMIN_USERNAME:-admin}
+      GF_SECURITY_ADMIN_PASSWORD__FILE: /run/secrets/grafana_admin_password
+      GF_USERS_ALLOW_SIGN_UP: "false"
+      GF_AUTH_ANONYMOUS_ENABLED: "false"
+      GF_PLUGINS_PREINSTALL_DISABLED: "true"
+    ports:
+      - "127.0.0.1:${PFX_GRAFANA_PORT:-3000}:3000"
+    volumes:
+      - prizeflux_product_grafana_data:/var/lib/grafana
+      - ./observability/grafana-datasources.yml:/etc/grafana/provisioning/datasources/prizeflux.yml:ro
+      - ./observability/grafana-dashboards.yml:/etc/grafana/provisioning/dashboards/prizeflux.yml:ro
+      - ./observability/dashboards:/var/lib/grafana/dashboards:ro
+    secrets:
+      - source: grafana_admin_password
+        target: grafana_admin_password
+        mode: 0444
+    networks: [observability]
+    restart: unless-stopped
+
+networks:
+  # Prometheus can scrape the private application network; Grafana can reach
+  # Prometheus but cannot directly reach Campaign/Worker or the public internet.
+  observability:
+    internal: true
+
+secrets:
+  campaign_metrics_password:
+    file: ./.observability-secrets/campaign-metrics-password
+  worker_metrics_password:
+    file: ./.observability-secrets/worker-metrics-password
+  grafana_admin_password:
+    file: ./.observability-secrets/grafana-admin-password
+  mysql_lock_metrics_password:
+    file: ./.observability-secrets/mysql-lock-metrics-password
+
+volumes:
+  prizeflux_product_prometheus_data:
+    name: ${PFX_PROMETHEUS_VOLUME_NAME:-prizeflux_product_prometheus_data}
+  prizeflux_product_grafana_data:
+    name: ${PFX_GRAFANA_VOLUME_NAME:-prizeflux_product_grafana_data}

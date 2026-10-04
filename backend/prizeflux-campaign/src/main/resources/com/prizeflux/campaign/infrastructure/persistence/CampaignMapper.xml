@@ -20,11 +20,77 @@
         VALUES (#{record.id}, #{record.name}, #{record.startsAt}, #{record.endsAt}, #{record.status})
     </insert>
 
+    <insert id="reserveManualId">
+        INSERT IGNORE INTO campaign_id_registry (id) VALUES (#{id})
+    </insert>
+
+    <insert id="reserveGeneratedId" useGeneratedKeys="true" keyProperty="record.id" keyColumn="id">
+        INSERT INTO campaign_id_registry (reserved_at) VALUES (CURRENT_TIMESTAMP(6))
+    </insert>
+
+    <insert id="insertOwned">
+        INSERT INTO campaign (id, name, starts_at, ends_at, status, owner_user_id)
+        VALUES (#{record.id}, #{record.name}, #{record.startsAt}, #{record.endsAt},
+                #{record.status}, #{ownerUserId})
+    </insert>
+
     <select id="findById" resultMap="campaignRecordResultMap">
         SELECT id, name, starts_at, ends_at, status
         FROM campaign
         WHERE id = #{id}
     </select>
+
+    <select id="findAvailable" resultMap="campaignRecordResultMap">
+        SELECT id, name, starts_at, ends_at, status
+        FROM campaign
+        WHERE status = 'PUBLISHED'
+          AND ends_at &gt; #{now}
+        <if test="beforeId != null">
+            AND id &lt; #{beforeId}
+        </if>
+        ORDER BY id DESC
+        LIMIT #{limit}
+    </select>
+
+    <select id="findAll" resultMap="campaignRecordResultMap">
+        SELECT id, name, starts_at, ends_at, status
+        FROM campaign
+        <if test="beforeId != null">
+            WHERE id &lt; #{beforeId}
+        </if>
+        ORDER BY id DESC
+        LIMIT #{limit}
+    </select>
+
+    <select id="findOwned" resultMap="campaignRecordResultMap">
+        SELECT id, name, starts_at, ends_at, status
+        FROM campaign
+        WHERE owner_user_id = #{ownerUserId}
+        <if test="beforeId != null">
+            AND id &lt; #{beforeId}
+        </if>
+        ORDER BY id DESC
+        LIMIT #{limit}
+    </select>
+
+    <select id="findOwnedById" resultMap="campaignRecordResultMap">
+        SELECT id, name, starts_at, ends_at, status
+        FROM campaign
+        WHERE id = #{id} AND owner_user_id = #{ownerUserId}
+    </select>
+
+    <update id="updateOwnedDetails">
+        UPDATE campaign
+        SET name = #{name}, starts_at = #{startsAt}, ends_at = #{endsAt}, status = 'DRAFT'
+        WHERE id = #{id} AND owner_user_id = #{ownerUserId}
+          AND status IN ('DRAFT', 'REJECTED')
+    </update>
+
+    <update id="submitOwnedForReview">
+        UPDATE campaign
+        SET status = 'PENDING_REVIEW', submitted_at = UTC_TIMESTAMP(6)
+        WHERE id = #{id} AND owner_user_id = #{ownerUserId} AND status = 'DRAFT'
+    </update>
 
     <update id="updateStatus">
         UPDATE campaign

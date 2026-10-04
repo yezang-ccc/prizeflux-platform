@@ -42,10 +42,14 @@ $rules = @(
         Pattern = '\b(?:AKIA|ASIA)[0-9A-Z]{16}\b'
     },
     [pscustomobject]@{
-        # 只匹配看起来像“真实赋值”的长值；安全占位符与代码表达式引用不会命中。
+        Name = 'provider-api-key'
+        Pattern = '\bsk-[A-Za-z0-9_-]{20,}\b'
+    },
+    [pscustomobject]@{
+        # 只匹配高熵形状的长字面量；Python 变量/类型声明和模板占位符不应触发。
         Name = 'likely-assigned-secret'
-        # 只能在同一行内跳过空格；若使用 \s*，它会跨过换行，把下一项配置误认为当前密码的值。
-        Pattern = '(?im)^[ \t]*[A-Z0-9_]*(?:TOKEN|SECRET|PASSWORD|API_KEY)[A-Z0-9_]*[ \t]*[:=][ \t]*["'']?(?![ \t]*(?:["'']?[ \t]*$|<[^>]+>|(?:[A-Za-z0-9]+[-_])*(?:changeme|change[-_]?me|replace[-_]?with|example|fake|dummy|test)(?:[-_][A-Za-z0-9]+)*|your[_-]?(?:token|key|secret|password))\b)(?![A-Za-z_$][A-Za-z0-9_$]*(?:\.[A-Za-z_$][A-Za-z0-9_$]*)+\s*\()[A-Za-z0-9_./+=:-]{8,}'
+        # 只用水平空格，避免跨行；至少 20 字符且含数字，排除 __GENERATE...__ 等模板。
+        Pattern = '(?im)^[ \t]*[A-Z0-9_]*(?:TOKEN|SECRET|PASSWORD|API_KEY)[A-Z0-9_]*[ \t]*[:=][ \t]*["'']?(?!__|<|\$\{|(?:.*(?:changeme|replace|example|fake|dummy|test|your[_-]?key)))(?=[A-Za-z0-9+/=_-]{20,})(?=[A-Za-z0-9+/=_-]*[0-9])[A-Za-z0-9+/=_-]{20,}'
     }
 )
 

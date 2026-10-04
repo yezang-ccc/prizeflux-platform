@@ -38,13 +38,18 @@ public class JdbcDrawRepository implements DrawRepository {
 
     @Override
     public Optional<StoredDraw> findByKey(long userId, String requestKey) {
+        return findByKey(userId, requestKey, "DRAW");
+    }
+
+    @Override
+    public Optional<StoredDraw> findByKey(long userId, String requestKey, String operation) {
         List<StoredDraw> found = jdbc.query("""
                 SELECT r.request_fingerprint, r.status,
                        d.id AS result_id, d.campaign_id, d.user_id,
                        d.outcome, d.prize_id, d.fulfillment_status
                 FROM draw_request r
                 LEFT JOIN draw_result d ON d.request_id = r.id
-                WHERE r.operation = 'DRAW' AND r.user_id = ? AND r.request_key = ?
+                WHERE r.operation = ? AND r.user_id = ? AND r.request_key = ?
                 """, (rs, row) -> {
             long resultId = rs.getLong("result_id");
             DrawResult result = rs.wasNull() ? null : new DrawResult(
@@ -56,7 +61,7 @@ public class JdbcDrawRepository implements DrawRepository {
                     rs.getString("fulfillment_status"));
             return new StoredDraw(rs.getBytes("request_fingerprint"),
                     "COMPLETED".equals(rs.getString("status")), result);
-        }, userId, requestKey);
+        }, operation, userId, requestKey);
         return found.stream().findFirst();
     }
 
@@ -133,19 +138,26 @@ public class JdbcDrawRepository implements DrawRepository {
     @Override
     public long insertRequest(long userId, long campaignId, int configVersion,
             String requestKey, byte[] fingerprint) {
+        return insertRequest(userId, campaignId, configVersion, requestKey, fingerprint, "DRAW");
+    }
+
+    @Override
+    public long insertRequest(long userId, long campaignId, int configVersion,
+            String requestKey, byte[] fingerprint, String operation) {
         KeyHolder key = new GeneratedKeyHolder();
         try {
             jdbc.update(connection -> {
                 PreparedStatement statement = connection.prepareStatement("""
                         INSERT INTO draw_request (operation, user_id, campaign_id, config_version,
                                                   request_key, request_fingerprint, status)
-                        VALUES ('DRAW', ?, ?, ?, ?, ?, 'PENDING')
+                        VALUES (?, ?, ?, ?, ?, ?, 'PENDING')
                         """, Statement.RETURN_GENERATED_KEYS);
-                statement.setLong(1, userId);
-                statement.setLong(2, campaignId);
-                statement.setInt(3, configVersion);
-                statement.setString(4, requestKey);
-                statement.setBytes(5, fingerprint);
+                statement.setString(1, operation);
+                statement.setLong(2, userId);
+                statement.setLong(3, campaignId);
+                statement.setInt(4, configVersion);
+                statement.setString(5, requestKey);
+                statement.setBytes(6, fingerprint);
                 return statement;
             }, key);
         } catch (DuplicateKeyException duplicate) {

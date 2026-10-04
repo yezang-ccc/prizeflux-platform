@@ -28,7 +28,7 @@ public final class HttpCampaignIdentityClient implements CampaignIdentityClient 
         if (!("http".equalsIgnoreCase(baseUri.getScheme()) || "https".equalsIgnoreCase(baseUri.getScheme()))
                 || baseUri.getHost() == null
                 || "http".equalsIgnoreCase(baseUri.getScheme())
-                    && !java.util.Set.of("localhost", "127.0.0.1", "::1").contains(host)
+                    && !java.util.Set.of("localhost", "127.0.0.1", "::1", "campaign").contains(host)
                 || baseUri.getUserInfo() != null
                 || baseUri.getQuery() != null || baseUri.getFragment() != null
                 || !(baseUri.getPath().isEmpty() || "/".equals(baseUri.getPath()))) {

@@ -8,6 +8,8 @@ import org.springframework.stereotype.Repository;
 
 import java.sql.Timestamp;
 import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.List;
 
 /** 用同一 MySQL 连接实现 Outbox 领取/标记；所有回写都以领取标识为条件，避免过期 Relay 覆盖新租约。 */
@@ -31,7 +33,7 @@ public class JdbcOutboxRepository implements OutboxRepository {
                 LIMIT ?
                 """, leaseToken, Timestamp.from(leaseUntil), Timestamp.from(now), limit);
         return jdbc.query("""
-                SELECT event_id, event_type, aggregate_id, schema_version, payload, attempts
+                SELECT event_id, event_type, aggregate_id, schema_version, payload, attempts, created_at
                 FROM outbox_event
                 WHERE status = 'LEASED' AND lease_token = ?
                 ORDER BY event_id
@@ -41,7 +43,27 @@ public class JdbcOutboxRepository implements OutboxRepository {
                 rs.getLong("aggregate_id"),
                 rs.getInt("schema_version"),
                 rs.getString("payload"),
-                rs.getInt("attempts")), leaseToken);
+                rs.getInt("attempts"),
+                rs.getObject("created_at", LocalDateTime.class).toInstant(ZoneOffset.UTC)), leaseToken);
+    }
+
+    @Override
+    public PressureSnapshot pressureSnapshot() {
+        return jdbc.queryForObject("""
+                SELECT (SELECT COUNT(*) FROM outbox_event FORCE INDEX (idx_outbox_ready)
+                        WHERE status = 'PENDING') AS pending_count,
+                       (SELECT COUNT(*) FROM outbox_event FORCE INDEX (idx_outbox_ready)
+                        WHERE status = 'LEASED') AS leased_count,
+                       (SELECT COUNT(*) FROM outbox_event FORCE INDEX (idx_outbox_ready)
+                        WHERE status = 'DEAD') AS dead_count,
+                       (SELECT COALESCE(GREATEST(
+                                   TIMESTAMPDIFF(MICROSECOND, MIN(created_at), UTC_TIMESTAMP(6)) DIV 1000,
+                                   0), 0)
+                        FROM outbox_event FORCE INDEX (idx_outbox_ready)
+                        WHERE status IN ('PENDING', 'LEASED')) AS oldest_age_ms
+                """, (rs, row) -> new PressureSnapshot(
+                rs.getLong("pending_count"), rs.getLong("leased_count"),
+                rs.getLong("dead_count"), rs.getLong("oldest_age_ms")));
     }
 
     @Override
@@ -54,29 +76,29 @@ public class JdbcOutboxRepository implements OutboxRepository {
     }
 
     @Override
-    public void markSent(String eventId, String leaseToken) {
-        jdbc.update("""
+    public boolean markSent(String eventId, String leaseToken) {
+        return jdbc.update("""
                 UPDATE outbox_event
                 SET status = 'SENT', sent_at = UTC_TIMESTAMP(6), lease_token = NULL, lease_until = NULL
                 WHERE event_id = ? AND lease_token = ? AND status = 'LEASED'
-                """, eventId, leaseToken);
+                """, eventId, leaseToken) == 1;
     }
 
     @Override
-    public void release(String eventId, String leaseToken) {
-        jdbc.update("""
+    public boolean release(String eventId, String leaseToken, Instant availableAt) {
+        return jdbc.update("""
                 UPDATE outbox_event
-                SET status = 'PENDING', lease_token = NULL, lease_until = NULL
+                SET status = 'PENDING', available_at = ?, lease_token = NULL, lease_until = NULL
                 WHERE event_id = ? AND lease_token = ? AND status = 'LEASED'
-                """, eventId, leaseToken);
+                """, Timestamp.from(availableAt), eventId, leaseToken) == 1;
     }
 
     @Override
-    public void markDead(String eventId, String leaseToken) {
-        jdbc.update("""
+    public boolean markDead(String eventId, String leaseToken) {
+        return jdbc.update("""
                 UPDATE outbox_event
                 SET status = 'DEAD', lease_token = NULL, lease_until = NULL
                 WHERE event_id = ? AND lease_token = ? AND status = 'LEASED'
-                """, eventId, leaseToken);
+                """, eventId, leaseToken) == 1;
     }
 }

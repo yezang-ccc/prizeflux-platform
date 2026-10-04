@@ -2,6 +2,8 @@
 
 日期：2026-09-23。范围：Campaign、Worker 与 AI 运行单元的跨模块约定；具体实现范围按[聚焦版能力地图](../../CAPABILITY-MAP-FOCUSED.md)选择，实际完成状态仍以源码、运行和证据为准。
 
+2026-09-26 更新：用户授权制定 Java + Python 双项目产品方案。AI 新实现、身份接入、运行存储、RAG、排队增强与迁移顺序以 [product-agent-blueprint.md](product-agent-blueprint.md) 和 [product-delivery-plan.md](product-delivery-plan.md) 为最新目标设计；本文件的 MySQL 权威事实、随机抽奖事务、授权与只读 AI 约束继续有效。下文 cloud-demo 合并 Java AI JAR 的装配方式仅保留为旧设计，Python 迁移后使用独立进程/容器。设计已写入，不表示对应代码已交付。
+
 ## 1. 运行单元与依赖方向
 
 | 单元 | 职责 | 可依赖 | 不可依赖 |
@@ -39,19 +41,21 @@ Campaign 的展示读可以缓存，抽奖资格、关闭状态、业务次数�
 
 Redis 奖品池预占携带 `requestId`、`poolGeneration`、`reservationToken`。Lua 对同一代次原子预占；MySQL 条件更新仍为最终防超卖线。MySQL 成功则标记预占完成；明确失败时，补偿先查数据库请求终态再幂等释放；提交结果未知时延后核验。旧代次预占不得释放到新代次。池重建从数据库余量和未决预占推导可用量，并协调在途请求；不直接用初始总库存覆盖线上数值。Redis 不可用时缓存可回源，抗滥用限流按容量选择受限降级或拒绝，不能无界放量。
 
-Outbox 在中奖事务内写入。Relay 用租约及领取标识取得待发事件，事务外发布，broker 确认后用领取标识更新；超时可重新领取。事件可能重复，契约采用 `eventId`、`drawId`、`schemaVersion` 和最小必要载荷。Worker 对 `eventId` 持久去重，同时以 `drawId` 保护相同中奖结果不重复发奖；处理记录和内部虚拟权益账本在一个 Worker 事务内提交，提交后才确认消费。真实外部供应商需使用稳定 `fulfillmentId` 的幂等接口或结果查询，不能只靠本地去重表保证一次性效果。
+Outbox 在中奖事务内写入。Relay 用租约及领取标识取得待发事件，事务外发布，broker 确认后用领取标识更新；失败时按 `available_at` 做持久化指数退避（默认2秒起、30秒封顶），并由最大尝试次数限制后进入 `DEAD` 处理。超时租约可重新领取。事件可能重复，契约采用 `eventId`、`drawId`、`schemaVersion` 和最小必要载荷。Worker 对 `eventId` 持久去重，同时以 `drawId` 保护相同中奖结果不重复发奖；处理记录和内部虚拟权益账本在一个 Worker 事务内提交，提交后才确认消费。真实外部供应商需使用稳定 `fulfillmentId` 的幂等接口或结果查询，不能只靠本地去重表保证一次性效果。
+
+排队抽奖的 `DrawQueued` Kafka 事件只作为唤醒提示；排队请求、租约、幂等和开奖结果以 Campaign MySQL 为事实来源，丢失通知由有界扫描器恢复。队列消费者的初次 offset 策略必须显式使用 `earliest`，避免新消费组在已有积压消息时从 `latest` 跳过；重复投递仍由 MySQL claim token/fencing 和抽奖事务幂等处理。Kafka 失败恢复的单消费者演练不代表多消费者 rebalance 或容量验收。
 
 Worker 的结果事件回流 Campaign，幂等更新发奖状态投影，前端按权限查询。状态至少区分 `PENDING`、`PROCESSING`、`SUCCEEDED`、`RETRYING`、`MANUAL_REVIEW`；转换规则由 D7-01 落码。`local-full` 走 Kafka，`cloud-demo` 走租约轮询，但两者调用同一消费用例且一次只启用一种传输。慢下游的超时、重试、熔断、隔离放在 Worker，Campaign 抽奖事务不调用外部发奖。
 
 ## 4. 身份、HTTP 与页面契约
 
-第一版单租户，角色为 `USER` 和 `OPERATOR`。D4 即定义 `Actor` 端口，D8 接入真实账号与认证；测试可以固定身份。外部请求不能通过 `userId` 参数冒充身份。Gateway 校验不替代 Campaign 和 AI 的授权；个人记录、运营写操作和 AI 工具都检查资源归属或角色。若后来增加多租户，账号、唯一键、查询、缓存、事件、文档 ACL 全链路增加 tenant 维度。
+第一版单租户，登录角色为 `USER` 和 `OPERATOR`。普通 USER 可同时参与抽奖、拥有自己的活动草稿；不另加可自选的 CREATOR 角色。USER 活动通过 owner_user_id 限制读写，提审后由 OPERATOR 审核，通过才公开；运营员拥有跨用户审核/管理权限。D4 定义 `Actor` 端口，D8 接入真实账号与认证；外部请求不能通过 `userId` 参数冒充身份。Gateway 校验不替代 Campaign 和 AI 的授权；个人记录、活动归属、运营写操作和 Agent 工具都检查资源归属或角色。若后来增加多租户，账号、唯一键、查询、缓存、事件、文档 ACL 全链路增加 tenant 维度。
 
 当前四个活动接口保持：`POST /api/campaigns`、`GET /api/campaigns/{id}`、`POST /api/campaigns/{id}/publish`、`POST /api/campaigns/{id}/close`。后续最小页面接口清单及归属如下，路径是实现目标，具体请求/响应 DTO 在对应任务锁定：
 
 | 功能 | 目标路径 | 归属与先决条件 |
 |---|---|---|
-| 登录/当前用户 | `POST /api/auth/login`、`GET /api/auth/me` | D8 认证 |
+| 注册/登录/当前用户 | `POST /api/auth/register`（仅 USER，IP Redis 限流）、`POST /api/auth/login`、`GET /api/auth/me` | D8 认证；运营账号仅受控初始化 |
 | 运营活动列表、草稿详情 | `GET /api/campaigns`、`GET /api/campaigns/{id}` | D12 页面前补 Campaign 查询 |
 | 草稿奖品配置/列表 | `PUT /api/campaigns/{id}/prizes`、`GET /api/campaigns/{id}/prizes` | D4 发布冻结前完成 |
 | 用户可参与活动 | `GET /api/available-campaigns` | D12 页面前补受控查询 |
@@ -63,6 +67,8 @@ Worker 的结果事件回流 Campaign，幂等更新发奖状态投影，前端�
 
 现有创建活动使用客户端传入 long ID；改为服务端分配 ID 时应保留兼容策略，统一处理 JavaScript 超过安全整数范围的标识，公开 DTO 可采用十进制字符串。统一错误目前 `data=null`；字段级校验消息若要进入页面，增加明确的安全错误字段，不让前端猜测内部异常格式。
 
+USER 创建者与审核切片的实际接口已在对应规格中落定：`POST/GET /api/me/campaigns`、`GET/PUT /api/me/campaigns/{id}`、`GET/PUT /api/me/campaigns/{id}/configuration`、`POST /api/me/campaigns/{id}/submit`、只读 `POST /api/me/campaigns/validate`；运营审核使用 `/api/ops/reviews/campaigns` 与 `/api/ops/reviews/campaigns/{id}/approve|reject`。owner 从服务端 Actor 取值，review 与配置读取按 OPERATOR 授权。具体状态及验收以 `SPEC-campaign-ownership.md`、`SPEC-campaign-review.md` 为准。
+
 短链只允许批准的目标协议和域名/路径，不允许任意内网目标。浏览器 AI 流采用可带认证头的流式请求方式，支持取消、超时、心跳、并发上限和最大事件体积；断线不自动重复付费调用。模型文本与检索片段按不可信内容渲染。
 
 ## 5. AI 数据与安全边界
@@ -73,7 +79,7 @@ AI 的 Fake Model 用于离线流程测试，真实模型与真实 Embedding 分
 
 ## 6. 交付顺序与集中验证
 
-保持原 D 编号及 64 项范围，按可交付批次推进：
+以下 D 编号安排仅作为早期设计历史参考；旧版 64 项清单已按用户要求退休，不再构成交付范围。当前范围与顺序以 [`CAPABILITY-MAP-FOCUSED.md`](../../CAPABILITY-MAP-FOCUSED.md)、`tasks/plan.md` 顶部及 [产品交付计划](product-delivery-plan.md) 为准。保留本节安全、事务、验证与学习者验收等契约，不据此恢复旧任务清单。
 
 1. **架构与本地可运行底座**：本基线、真实数据库配置和最小 Compose、Linux 容器 CI、打包结构；D3 算法与 D4 数据模型可并行设计。
 2. **确定性业务闭环**：D3 策略、D4 奖品配置/抽奖事务/幂等、D9 历史查询。完成后一次性运行纯 Java、MySQL 集成、真实 HTTP 冒烟与并发不变量。
@@ -85,4 +91,4 @@ AI 的 Fake Model 用于离线流程测试，真实模型与真实 Embedding 分
 
 ## 7. 当前状态
 
-D2 活动 API 与 MySQL 持久化已存在。D3 概率值对象、随机端口及两种抽奖策略，D4 V2 表、条件库存扣减、事务用例和奖品配置发布冻结已实现；当前全后端 14 套件、166 项测试全绿，其中包含 10 轮并发不超卖实验。已补 Linux Docker CI 配置、D3/D4 开发用 MySQL Compose 和 `local-full` 数据源配置；远端 CI 运行与独立进程 HTTP 冒烟尚未执行。运营配置与用户抽奖 HTTP、真实鉴权、Redis、Worker、AI、Web 和部署仍依各 D 任务实现。本基线是设计交付，不能将待写接口、表或运行模块计作已实现。
+本节契约持续有效；代码完成度与最近一次验证以仓库根目录 [`PROJECT_STATUS.md`](../../PROJECT_STATUS.md) 为准，避免在架构基线里复制易过期的测试数字。除核心抽奖、身份/限流、Outbox 与 Worker 外，当前演示产品还包括 Vue 3 参与/运营界面、USER 自有活动草稿、owner 隔离、运营审核后发布，以及使用 Fake Model 的只读 Creator Harness 校验。公网部署、真实模型与真实供应商履约仍不在已交付范围。

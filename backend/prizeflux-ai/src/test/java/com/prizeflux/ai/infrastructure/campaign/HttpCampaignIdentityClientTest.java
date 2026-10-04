@@ -60,6 +60,18 @@ class HttpCampaignIdentityClientTest {
     }
 
     @Test
+    void acceptsOnlyTheComposeCampaignServiceAliasForContainerHttp() {
+        new HttpCampaignIdentityClient(URI.create("http://campaign:8081"), new ObjectMapper());
+        new HttpCampaignDraftValidationClient(URI.create("http://campaign:8081"), new ObjectMapper());
+        assertThrows(IllegalArgumentException.class,
+                () -> new HttpCampaignIdentityClient(URI.create("http://campaign.internal:8081"),
+                        new ObjectMapper()));
+        assertThrows(IllegalArgumentException.class,
+                () -> new HttpCampaignDraftValidationClient(URI.create("http://campaign.internal:8081"),
+                        new ObjectMapper()));
+    }
+
+    @Test
     void invalidTokenOrMalformedIdentityFailsClosed() {
         assertThrows(AiRequestException.class, () -> client().verify("bad token"));
         response.set(new Response(200,

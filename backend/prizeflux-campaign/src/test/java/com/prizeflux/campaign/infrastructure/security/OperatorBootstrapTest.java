@@ -50,5 +50,10 @@ class OperatorBootstrapTest {
             this.role = role;
             return 1;
         }
+
+        @Override
+        public long registerUser(String username, String passwordHash) {
+            throw new UnsupportedOperationException();
+        }
     }
 }

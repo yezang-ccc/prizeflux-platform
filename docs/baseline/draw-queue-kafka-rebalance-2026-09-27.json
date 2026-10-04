@@ -1,0 +1,53 @@
+{
+  "Result": "PASS",
+  "Scenario": "Draw-queue Kafka consumer group rebalance across two Campaign processes",
+  "Environment": {
+    "OS": "Microsoft Windows NT 10.0.26200.0",
+    "PowerShell": "7.6.5",
+    "JavaHome": "D:\\java\\jdk-17",
+    "JavaVersion": "java version \"17.0.12\" 2024-07-16 LTS\r\nJava(TM) SE Runtime Environment (build 17.0.12+8-LTS-286)\r\nJava HotSpot(TM) 64-Bit Server VM (build 17.0.12+8-LTS-286, mixed mode, sharing)",
+    "DockerEngine": "29.8.0",
+    "MySqlImage": "mysql:8.4",
+    "Broker": "Disposable single-node Kafka 3.9.1"
+  },
+  "Configuration": {
+    "ConsumerInstances": 2,
+    "ConsumerGroup": "prizeflux-campaign-draw-queue",
+    "TopicPartitions": 12,
+    "QueueRequests": 24,
+    "DistinctRequestKeys": 24,
+    "PeriodicRecoveryScanDelayed": true,
+    "PersistentVolumes": false
+  },
+  "Rebalance": {
+    "InitialGeneration": 2,
+    "FinalGenerationFirstConsumer": 3,
+    "FinalGenerationSecondConsumer": 3,
+    "FirstConsumerPartitions": [
+      "prizeflux.draw.queued-0",
+      "prizeflux.draw.queued-1",
+      "prizeflux.draw.queued-2",
+      "prizeflux.draw.queued-3",
+      "prizeflux.draw.queued-4",
+      "prizeflux.draw.queued-5"
+    ],
+    "SecondConsumerPartitions": [
+      "prizeflux.draw.queued-6",
+      "prizeflux.draw.queued-7",
+      "prizeflux.draw.queued-8",
+      "prizeflux.draw.queued-9",
+      "prizeflux.draw.queued-10",
+      "prizeflux.draw.queued-11"
+    ],
+    "TotalAssignedPartitions": 12
+  },
+  "Correctness": {
+    "QueueRows": 24,
+    "CompletedQueueRows": 24,
+    "DrawRows": 24,
+    "SentDrawQueuedOutboxRows": 24,
+    "InventoryRemaining": 0
+  },
+  "CredentialsOrTokensPrinted": false,
+  "Note": "Two local consumers rebalanced a single-node 12-partition topic; 24 distinct queue-request keys completed with delayed DB recovery scan. This is not multi-broker HA or capacity evidence."
+}

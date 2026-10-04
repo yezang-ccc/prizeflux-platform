@@ -1,0 +1,12 @@
+# Opt-in overlay for a real external model provider.
+# The default product network remains internal and isolated.
+services:
+  agent:
+    networks:
+      - product
+      - model-egress
+
+networks:
+  model-egress:
+    name: prizeflux_agent_model_egress
+    driver: bridge

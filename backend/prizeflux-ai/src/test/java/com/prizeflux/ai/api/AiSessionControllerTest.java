@@ -1,5 +1,7 @@
 package com.prizeflux.ai.api;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.never;
@@ -17,6 +19,12 @@ import com.prizeflux.ai.harness.safety.Actor;
 import com.prizeflux.ai.harness.safety.Role;
 import com.prizeflux.ai.infrastructure.campaign.CampaignIdentityClient;
 import java.time.Duration;
+import java.util.List;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -117,6 +125,43 @@ class AiSessionControllerTest {
     }
 
     @Test
+    void concurrentMessagesWithSameVersionOnlyAppendOneHttpTurn() throws Exception {
+        operator("operator-token", 7);
+        CountDownLatch bothReadsStarted = new CountDownLatch(2);
+        CountDownLatch releaseReads = new CountDownLatch(1);
+        when(campaigns.read(eq(1005L), eq("operator-token"), any(Duration.class))).thenAnswer(invocation -> {
+            bothReadsStarted.countDown();
+            if (!releaseReads.await(5, TimeUnit.SECONDS)) {
+                throw new IllegalStateException("concurrent read barrier timed out");
+            }
+            return new CampaignSummary(1005, "Autumn", "PUBLISHED");
+        });
+        String id = createSession();
+        ExecutorService pool = Executors.newFixedThreadPool(2);
+        try {
+            Future<Integer> first = pool.submit(() -> postMessageStatus(id, "first request", 0));
+            Future<Integer> second = pool.submit(() -> postMessageStatus(id, "second request", 0));
+
+            assertTrue(bothReadsStarted.await(5, TimeUnit.SECONDS),
+                    "both requests should pass the initial version check before either append");
+            releaseReads.countDown();
+            List<Integer> statuses = List.of(first.get(5, TimeUnit.SECONDS), second.get(5, TimeUnit.SECONDS))
+                    .stream().sorted().toList();
+            assertEquals(List.of(200, 409), statuses);
+        } finally {
+            releaseReads.countDown();
+            pool.shutdownNow();
+        }
+
+        mvc.perform(get("/api/ai/sessions/{id}", id).header("Authorization", "Bearer operator-token"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data.version").value(1))
+                .andExpect(jsonPath("$.data.events.length()").value(4));
+        verify(campaigns, org.mockito.Mockito.times(2))
+                .read(eq(1005L), eq("operator-token"), any(Duration.class));
+    }
+
+    @Test
     void malformedSessionIdAndMessageBudgetHaveStableClientErrors() throws Exception {
         operator("operator-token", 7);
         mvc.perform(get("/api/ai/sessions/not-a-uuid").header("Authorization", "Bearer operator-token"))
@@ -143,6 +188,15 @@ class AiSessionControllerTest {
                 .andReturn();
         return com.fasterxml.jackson.databind.json.JsonMapper.builder().build()
                 .readTree(result.getResponse().getContentAsString()).path("data").path("sessionId").asText();
+    }
+
+    private int postMessageStatus(String id, String question, long expectedVersion) throws Exception {
+        return mvc.perform(post("/api/ai/sessions/{id}/messages", id)
+                        .header("Authorization", "Bearer operator-token")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"campaignId\":1005,\"question\":\"" + question
+                                + "\",\"expectedVersion\":" + expectedVersion + "}"))
+                .andReturn().getResponse().getStatus();
     }
 
     private void operator(String token, long userId) {

@@ -176,7 +176,9 @@ class CampaignRepositoryIntegrationTest {
                 Instant.parse("2026-09-23T08:00:00.654321Z"));
         Campaign expected = switch (status) {
             case DRAFT -> draft;
+            case PENDING_REVIEW -> draft.submitForReview();
             case PUBLISHED -> draft.publish();
+            case REJECTED -> draft.submitForReview().rejectReview();
             case CLOSED -> draft.close();
         };
 

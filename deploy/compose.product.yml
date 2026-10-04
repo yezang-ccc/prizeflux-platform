@@ -1,0 +1,285 @@
+# Local containerized product profile. Host access is limited to the loopback web proxy.
+services:
+  mysql:
+    image: mysql:8.4
+    profiles: [local-full]
+    environment:
+      MYSQL_ROOT_PASSWORD: ${PFX_CONTAINER_MYSQL_ROOT_PASSWORD:?Generate deploy/.env.product first}
+      PFX_CAMPAIGN_RUNTIME_PASSWORD: ${PFX_CAMPAIGN_RUNTIME_PASSWORD:?Required}
+      PFX_CAMPAIGN_MIGRATION_PASSWORD: ${PFX_CAMPAIGN_MIGRATION_PASSWORD:?Required}
+      PFX_WORKER_RUNTIME_PASSWORD: ${PFX_WORKER_RUNTIME_PASSWORD:?Required}
+      PFX_WORKER_MIGRATION_PASSWORD: ${PFX_WORKER_MIGRATION_PASSWORD:?Required}
+      PFX_AGENT_RUNTIME_PASSWORD: ${PFX_AGENT_RUNTIME_PASSWORD:?Required}
+      PFX_AGENT_MIGRATION_PASSWORD: ${PFX_AGENT_MIGRATION_PASSWORD:?Required}
+    volumes:
+      - prizeflux_product_mysql_data:/var/lib/mysql
+      - ./mysql-init/10-create-schemas.sh:/docker-entrypoint-initdb.d/10-create-schemas.sh:ro
+    networks: [product]
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "MYSQL_PWD=\"$$MYSQL_ROOT_PASSWORD\" mysqladmin ping -h 127.0.0.1 -uroot --silent",
+        ]
+      interval: 5s
+      timeout: 3s
+      retries: 30
+      start_period: 20s
+
+  redis:
+    image: redis:7.4-alpine
+    profiles: [local-full]
+    command: ["redis-server", "--save", "", "--appendonly", "no"]
+    networks: [product]
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  kafka:
+    image: apache/kafka:3.9.1
+    profiles: [local-full]
+    environment:
+      CLUSTER_ID: MkU3OEVBNTcwNTJENDM2Qk
+      KAFKA_NODE_ID: 1
+      KAFKA_PROCESS_ROLES: broker,controller
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092,CONTROLLER://0.0.0.0:9093
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@localhost:9093
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
+    networks: [product]
+    healthcheck:
+      test: ["CMD-SHELL", "bash -c '</dev/tcp/127.0.0.1/9092'"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+      start_period: 30s
+
+  campaign:
+    build:
+      context: ../backend
+      dockerfile: Dockerfile
+      args:
+        MODULE: prizeflux-campaign
+    profiles: [local-full]
+    environment:
+      SPRING_PROFILES_ACTIVE: local-full
+      PFX_DB_URL: jdbc:mysql://mysql:3306/prizeflux
+      PFX_DB_USER: pfx_campaign_runtime
+      PFX_DB_PASSWORD: ${PFX_CAMPAIGN_RUNTIME_PASSWORD:?Required}
+      PFX_CAMPAIGN_MIGRATION_DB_URL: jdbc:mysql://mysql:3306/prizeflux
+      PFX_CAMPAIGN_MIGRATION_DB_USER: pfx_campaign_migrator
+      PFX_CAMPAIGN_MIGRATION_DB_PASSWORD: ${PFX_CAMPAIGN_MIGRATION_PASSWORD:?Required}
+      PFX_REDIS_HOST: redis
+      KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      PFX_JWT_SECRET: ${PFX_PRODUCT_JWT_SECRET:?Required}
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+    networks: [product]
+
+    healthcheck:
+      # The Temurin runtime image includes bash. Tomcat binds only after the
+      # datasource and Campaign Flyway startup sequence has succeeded.
+      test: ["CMD-SHELL", "bash -c '</dev/tcp/127.0.0.1/8081'"]
+      interval: 5s
+      timeout: 3s
+      retries: 30
+      start_period: 30s
+
+  campaign-bootstrap:
+    build:
+      context: ../backend
+      dockerfile: Dockerfile
+      args:
+        MODULE: prizeflux-campaign
+    profiles: [operator-bootstrap]
+    command:
+      [
+        "--spring.main.web-application-type=none",
+        "--spring.flyway.enabled=false",
+        "--prizeflux.kafka.enabled=false",
+        "--prizeflux.outbox.relay.enabled=false",
+        "--prizeflux.bootstrap.operator.enabled=true",
+      ]
+    environment:
+      SPRING_PROFILES_ACTIVE: local-full
+      PFX_DB_URL: jdbc:mysql://mysql:3306/prizeflux
+      PFX_DB_USER: pfx_campaign_runtime
+      PFX_DB_PASSWORD: ${PFX_CAMPAIGN_RUNTIME_PASSWORD:?Required}
+      PFX_CAMPAIGN_MIGRATION_DB_URL: jdbc:mysql://mysql:3306/prizeflux
+      PFX_CAMPAIGN_MIGRATION_DB_USER: pfx_campaign_migrator
+      PFX_CAMPAIGN_MIGRATION_DB_PASSWORD: ${PFX_CAMPAIGN_MIGRATION_PASSWORD:?Required}
+      PFX_REDIS_HOST: redis
+      KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      PFX_JWT_SECRET: ${PFX_PRODUCT_JWT_SECRET:?Required}
+      PFX_BOOTSTRAP_OPERATOR_USERNAME: ${PFX_BOOTSTRAP_OPERATOR_USERNAME:-}
+      PFX_BOOTSTRAP_OPERATOR_PASSWORD: ${PFX_BOOTSTRAP_OPERATOR_PASSWORD:-}
+    depends_on:
+      campaign:
+        condition: service_healthy
+    networks: [product]
+    restart: "no"
+
+  draw-executor:
+    build:
+      context: ../backend
+      dockerfile: Dockerfile
+      args:
+        MODULE: prizeflux-campaign
+    profiles: [local-full]
+    environment:
+      SPRING_PROFILES_ACTIVE: local-full,draw-executor
+      PFX_DB_URL: jdbc:mysql://mysql:3306/prizeflux
+      PFX_DB_USER: pfx_campaign_runtime
+      PFX_DB_PASSWORD: ${PFX_CAMPAIGN_RUNTIME_PASSWORD:?Required}
+      PFX_CAMPAIGN_MIGRATION_DB_URL: jdbc:mysql://mysql:3306/prizeflux
+      PFX_CAMPAIGN_MIGRATION_DB_USER: pfx_campaign_migrator
+      PFX_CAMPAIGN_MIGRATION_DB_PASSWORD: ${PFX_CAMPAIGN_MIGRATION_PASSWORD:?Required}
+      PFX_REDIS_HOST: redis
+      KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      PFX_JWT_SECRET: ${PFX_PRODUCT_JWT_SECRET:?Required}
+    depends_on:
+      campaign:
+        condition: service_healthy
+      mysql:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+    networks: [product]
+
+  worker:
+    build:
+      context: ../backend
+      dockerfile: Dockerfile
+      args:
+        MODULE: prizeflux-worker
+    profiles: [local-full]
+    # The worker's sole HTTP listener is a Prometheus management port on the
+    # internal product network; no application API or host port is published.
+    command: ["--prizeflux.worker.fulfillment.mode=simulated"]
+    environment:
+      SPRING_PROFILES_ACTIVE: local-full
+      PFX_WORKER_MANAGEMENT_PORT: 8084
+      PFX_WORKER_DB_URL: jdbc:mysql://mysql:3306/prizeflux_worker
+      PFX_WORKER_DB_USER: pfx_worker_runtime
+      PFX_WORKER_DB_PASSWORD: ${PFX_WORKER_RUNTIME_PASSWORD:?Required}
+      PFX_WORKER_MIGRATION_DB_URL: jdbc:mysql://mysql:3306/prizeflux_worker
+      PFX_WORKER_MIGRATION_DB_USER: pfx_worker_migrator
+      PFX_WORKER_MIGRATION_DB_PASSWORD: ${PFX_WORKER_MIGRATION_PASSWORD:?Required}
+      KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+    depends_on:
+      mysql:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+    networks: [product]
+
+  legacy-ai:
+    build:
+      context: ../backend
+      dockerfile: Dockerfile
+      args:
+        MODULE: prizeflux-ai
+    profiles: [local-full]
+    environment:
+      PFX_AI_PORT: 8082
+      PFX_CAMPAIGN_BASE_URL: http://campaign:8081
+    depends_on:
+      campaign:
+        condition: service_healthy
+    networks: [product]
+    healthcheck:
+      test: ["CMD-SHELL", "bash -c '</dev/tcp/127.0.0.1/8082'"]
+      interval: 5s
+      timeout: 3s
+      retries: 30
+      start_period: 30s
+
+  agent-migrate:
+    build:
+      context: ../agent-service
+      dockerfile: Dockerfile
+    profiles: [local-full]
+    command: ["alembic", "upgrade", "head"]
+    environment:
+      PFX_AGENT_MIGRATION_DATABASE_URL: mysql+asyncmy://pfx_agent_migrator:${PFX_AGENT_MIGRATION_PASSWORD:?Required}@mysql:3306/prizeflux_agent
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks: [product]
+    restart: "no"
+
+  agent:
+    build:
+      context: ../agent-service
+      dockerfile: Dockerfile
+    profiles: [local-full]
+    environment:
+      PFX_AGENT_ENVIRONMENT: local
+      PFX_AGENT_HOST: 0.0.0.0
+      PFX_AGENT_PORT: 8083
+      PFX_AGENT_DATABASE_URL: mysql+asyncmy://pfx_agent_runtime:${PFX_AGENT_RUNTIME_PASSWORD:?Required}@mysql:3306/prizeflux_agent
+      PFX_AGENT_CAMPAIGN_BASE_URL: http://campaign:8081
+      PFX_AGENT_CAMPAIGN_INTERNAL_HTTP_ORIGIN: http://campaign:8081
+      PFX_AGENT_MODEL_PROVIDER: ${PFX_AGENT_MODEL_PROVIDER:-fake}
+      PFX_AGENT_MODEL_BASE_URL: "${PFX_AGENT_MODEL_BASE_URL:-}"
+      PFX_AGENT_MODEL_NAME: "${PFX_AGENT_MODEL_NAME:-}"
+      PFX_AGENT_MODEL_API_KEY: "${PFX_AGENT_MODEL_API_KEY:-}"
+      PFX_AGENT_KNOWLEDGE_RETRIEVAL_ENABLED: "false"
+    depends_on:
+      agent-migrate:
+        condition: service_completed_successfully
+      campaign:
+        condition: service_healthy
+    networks: [product]
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "python",
+          "-c",
+          "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8083/health/ready', timeout=2)",
+        ]
+      interval: 10s
+      timeout: 3s
+      retries: 12
+      start_period: 20s
+
+  proxy:
+    build:
+      context: ..
+      dockerfile: deploy/Dockerfile.proxy
+    profiles: [local-full]
+    ports:
+      - "127.0.0.1:${PFX_PRODUCT_WEB_PORT:-8080}:8080"
+    depends_on:
+      campaign:
+        condition: service_healthy
+      legacy-ai:
+        condition: service_healthy
+      agent:
+        condition: service_healthy
+    networks: [edge, product]
+
+networks:
+  # The reverse proxy alone joins this network so its loopback-published port
+  # is reachable from the Docker host; all application traffic stays on product.
+  edge: {}
+  product:
+    internal: true
+
+volumes:
+  prizeflux_product_mysql_data:
+    name: ${PFX_PRODUCT_MYSQL_VOLUME_NAME:-prizeflux_product_mysql_data}

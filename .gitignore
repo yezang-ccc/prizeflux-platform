@@ -4,6 +4,14 @@ target/
 *.jar
 *.war
 
+# Python / uv 项目环境与测试缓存（uv.lock 保持纳入版本控制）
+**/.venv/
+**/__pycache__/
+**/.pytest_cache/
+**/.mypy_cache/
+**/.ruff_cache/
+*.py[cod]
+
 # Node / Vue 构建产物
 node_modules/
 dist/
@@ -27,6 +35,7 @@ tmp/
 .env
 .env.*
 !.env.example
+/deploy/.observability-secrets/
 application-local.yml
 application-secret.yml
 *.pem
@@ -38,6 +47,7 @@ application-secret.yml
 *.jfr
 heapdump*.hprof
 data/
+.data/
 .study-console.pid
 
 # 本地学习驾驶舱与个人学习材料不属于公开的 PrizeFlux 产品发布包；文件保留在本机。

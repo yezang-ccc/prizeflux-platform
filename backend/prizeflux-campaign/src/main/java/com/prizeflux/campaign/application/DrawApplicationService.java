@@ -11,6 +11,8 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.support.TransactionTemplate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
@@ -23,11 +25,14 @@ import java.util.List;
 import java.util.Optional;
 import java.util.OptionalLong;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Supplier;
 
 /** 外层处理重放和唯一键竞争；新请求的所有业务写入在一个本地事务中。 */
 @Service
 @ConditionalOnProperty(name = "prizeflux.persistence.campaign.enabled", havingValue = "true", matchIfMissing = true)
 public final class DrawApplicationService {
+    private static final Logger log = LoggerFactory.getLogger(DrawApplicationService.class);
     private static final ZoneId BUSINESS_ZONE = ZoneId.of("Asia/Shanghai");
 
     private final DrawRepository repository;
@@ -36,34 +41,72 @@ public final class DrawApplicationService {
     private final RandomSource randomSource;
     private final Clock clock;
     private final TransactionTemplate transactions;
+    private final DrawTelemetry telemetry;
+    private final AtomicBoolean telemetryFailureLogged = new AtomicBoolean();
 
     public DrawApplicationService(DrawRepository repository,
             PrizeInventoryRepository inventoryRepository, ActorProvider actorProvider,
-            RandomSource randomSource, Clock clock, PlatformTransactionManager transactionManager) {
+            RandomSource randomSource, Clock clock, PlatformTransactionManager transactionManager,
+            DrawTelemetry telemetry) {
         this.repository = repository;
         this.inventoryRepository = inventoryRepository;
         this.actorProvider = actorProvider;
         this.randomSource = randomSource;
         this.clock = clock;
         this.transactions = new TransactionTemplate(transactionManager);
+        this.telemetry = telemetry;
     }
 
     public DrawResult draw(DrawCommand command) {
+        return drawForUser(command, requireUserId(), "DRAW");
+    }
+
+    /** 仅供从 MySQL 队列记录加载的后台任务调用；userId 不是 HTTP 参数。 */
+    public DrawResult drawQueued(DrawCommand command, long persistedUserId) {
+        if (persistedUserId <= 0) {
+            throw new IllegalArgumentException("Persisted queue user ID must be positive");
+        }
+        return drawForUser(command, persistedUserId, "QUEUED_DRAW");
+    }
+
+    /** 先检查开奖事务是否已经提交，用于队列完成状态丢失后的安全对账。 */
+    public Optional<DrawResult> findQueuedResult(DrawCommand command, long persistedUserId) {
+        if (command == null || persistedUserId <= 0) {
+            throw new IllegalArgumentException("A persisted queue request is required");
+        }
+        byte[] fingerprint = fingerprint(command.campaignId());
+        return repository.findByKey(persistedUserId, command.requestKey(), "QUEUED_DRAW")
+                .map(stored -> replay(stored, fingerprint));
+    }
+
+    private DrawResult drawForUser(DrawCommand command, long userId, String operation) {
         if (command == null) {
             throw new BusinessException(ErrorCode.INVALID_ARGUMENT);
         }
-        long userId = requireUserId();
         byte[] fingerprint = fingerprint(command.campaignId());
-        Optional<DrawRepository.StoredDraw> existing = repository.findByKey(userId, command.requestKey());
+        Optional<DrawRepository.StoredDraw> existing = repository.findByKey(userId, command.requestKey(), operation);
         if (existing.isPresent()) {
             return replay(existing.get(), fingerprint);
         }
         try {
-            return transactions.execute(status -> drawNew(command, userId, fingerprint));
+            return executeDrawTransaction(command, userId, fingerprint, operation);
         } catch (DuplicateDrawRequestException duplicate) {
-            return repository.findByKey(userId, command.requestKey())
+            return repository.findByKey(userId, command.requestKey(), operation)
                     .map(stored -> replay(stored, fingerprint))
                     .orElseThrow(() -> new BusinessException(ErrorCode.CONFLICT));
+        }
+    }
+
+    private DrawResult executeDrawTransaction(DrawCommand command, long userId,
+            byte[] fingerprint, String operation) {
+        long startedAt = System.nanoTime();
+        DrawTelemetry.TransactionOutcome outcome = DrawTelemetry.TransactionOutcome.ROLLED_BACK;
+        try {
+            DrawResult result = transactions.execute(status -> drawNew(command, userId, fingerprint, operation));
+            outcome = DrawTelemetry.TransactionOutcome.COMMITTED;
+            return result;
+        } finally {
+            recordTransaction(outcome, System.nanoTime() - startedAt);
         }
     }
 
@@ -87,8 +130,11 @@ public final class DrawApplicationService {
                 .orElseThrow(() -> new BusinessException(ErrorCode.RESOURCE_NOT_FOUND));
     }
 
-    private DrawResult drawNew(DrawCommand command, long userId, byte[] fingerprint) {
-        DrawRepository.ConfigSnapshot config = repository.lockPublishedConfig(command.campaignId())
+    private DrawResult drawNew(DrawCommand command, long userId, byte[] fingerprint, String operation) {
+        Optional<DrawRepository.ConfigSnapshot> foundConfig = measureDatabase(
+                DrawTelemetry.DatabaseSegment.CONFIG_LOCK_AND_LOAD,
+                () -> repository.lockPublishedConfig(command.campaignId()));
+        DrawRepository.ConfigSnapshot config = foundConfig
                 .orElseThrow(() -> new BusinessException(ErrorCode.BUSINESS_RULE_VIOLATION));
         var now = clock.instant();
         if (!"PUBLISHED".equals(config.campaignStatus())
@@ -96,10 +142,13 @@ public final class DrawApplicationService {
             throw new BusinessException(ErrorCode.BUSINESS_RULE_VIOLATION);
         }
 
-        long requestId = repository.insertRequest(userId, command.campaignId(), config.version(),
-                command.requestKey(), fingerprint);
+        long requestId = measureDatabase(DrawTelemetry.DatabaseSegment.IDEMPOTENCY_INSERT,
+                () -> repository.insertRequest(userId, command.campaignId(), config.version(),
+                        command.requestKey(), fingerprint, operation));
         LocalDate businessDay = LocalDate.ofInstant(now, BUSINESS_ZONE);
-        if (!repository.tryConsumeQuota(command.campaignId(), userId, businessDay, config.dailyLimit())) {
+        boolean quotaConsumed = measureDatabase(DrawTelemetry.DatabaseSegment.QUOTA_UPDATE,
+                () -> repository.tryConsumeQuota(command.campaignId(), userId, businessDay, config.dailyLimit()));
+        if (!quotaConsumed) {
             throw new BusinessException(ErrorCode.BUSINESS_RULE_VIOLATION);
         }
 
@@ -110,19 +159,68 @@ public final class DrawApplicationService {
         if (selected.isEmpty()) {
             outcome = DrawOutcome.NO_PRIZE;
         } else {
-            prizeId = selected.getAsLong();
-            outcome = inventoryRepository.tryDecrement(command.campaignId(), config.version(), prizeId)
+            long candidatePrizeId = selected.getAsLong();
+            prizeId = candidatePrizeId;
+            boolean decremented = measureDatabase(DrawTelemetry.DatabaseSegment.INVENTORY_DECREMENT,
+                    () -> inventoryRepository.tryDecrement(command.campaignId(), config.version(),
+                            candidatePrizeId));
+            outcome = decremented
                     ? DrawOutcome.WON : DrawOutcome.SOLD_OUT;
         }
 
-        DrawResult result = repository.insertResult(requestId, command.campaignId(), config.version(),
-                userId, outcome, prizeId);
-        if (outcome == DrawOutcome.WON) {
-            repository.insertOutbox(new PrizeFulfillmentEvent(1, UUID.randomUUID().toString(),
-                    result.id(), command.campaignId(), config.version(), userId, prizeId, now));
+        Long selectedPrizeId = prizeId;
+        DrawOutcome selectedOutcome = outcome;
+        DrawResult result = measureDatabase(DrawTelemetry.DatabaseSegment.RESULT_INSERT,
+                () -> repository.insertResult(requestId, command.campaignId(), config.version(),
+                        userId, selectedOutcome, selectedPrizeId));
+        if (selectedOutcome == DrawOutcome.WON) {
+            PrizeFulfillmentEvent event = new PrizeFulfillmentEvent(1, UUID.randomUUID().toString(),
+                    result.id(), command.campaignId(), config.version(), userId, prizeId, now);
+            measureDatabase(DrawTelemetry.DatabaseSegment.OUTBOX_INSERT, () -> {
+                repository.insertOutbox(event);
+                return null;
+            });
         }
-        repository.completeRequest(requestId);
+        measureDatabase(DrawTelemetry.DatabaseSegment.REQUEST_COMPLETE, () -> {
+            repository.completeRequest(requestId);
+            return null;
+        });
         return result;
+    }
+
+    private <T> T measureDatabase(DrawTelemetry.DatabaseSegment segment, Supplier<T> action) {
+        long startedAt = System.nanoTime();
+        DrawTelemetry.SegmentOutcome outcome = DrawTelemetry.SegmentOutcome.FAILURE;
+        try {
+            T value = action.get();
+            outcome = DrawTelemetry.SegmentOutcome.SUCCESS;
+            return value;
+        } finally {
+            recordDatabaseSegment(segment, outcome, System.nanoTime() - startedAt);
+        }
+    }
+
+    private void recordTransaction(DrawTelemetry.TransactionOutcome outcome, long elapsedNanos) {
+        try {
+            telemetry.recordTransaction(outcome, Math.max(0L, elapsedNanos));
+        } catch (RuntimeException failure) {
+            logTelemetryFailure(failure);
+        }
+    }
+
+    private void recordDatabaseSegment(DrawTelemetry.DatabaseSegment segment,
+            DrawTelemetry.SegmentOutcome outcome, long elapsedNanos) {
+        try {
+            telemetry.recordDatabaseSegment(segment, outcome, Math.max(0L, elapsedNanos));
+        } catch (RuntimeException failure) {
+            logTelemetryFailure(failure);
+        }
+    }
+
+    private void logTelemetryFailure(RuntimeException failure) {
+        if (telemetryFailureLogged.compareAndSet(false, true)) {
+            log.warn("draw_telemetry_failed failureType={}", failure.getClass().getSimpleName());
+        }
     }
 
     private long requireUserId() {

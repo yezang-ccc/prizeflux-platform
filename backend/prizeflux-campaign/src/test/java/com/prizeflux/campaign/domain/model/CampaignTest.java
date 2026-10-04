@@ -157,7 +157,9 @@ class CampaignTest {
         Campaign campaign = draft();
         return switch (status) {
             case DRAFT -> campaign;
+            case PENDING_REVIEW -> campaign.submitForReview();
             case PUBLISHED -> campaign.publish();
+            case REJECTED -> campaign.submitForReview().rejectReview();
             case CLOSED -> campaign.close();
         };
     }

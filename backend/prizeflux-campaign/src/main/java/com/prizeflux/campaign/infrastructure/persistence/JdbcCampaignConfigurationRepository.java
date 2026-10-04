@@ -26,6 +26,12 @@ public class JdbcCampaignConfigurationRepository implements CampaignConfiguratio
     }
 
     @Override
+    public Optional<String> lockOwnedCampaignStatus(long campaignId, long ownerUserId) {
+        return jdbc.query("SELECT status FROM campaign WHERE id = ? AND owner_user_id = ? FOR UPDATE",
+                (rs, row) -> rs.getString("status"), campaignId, ownerUserId).stream().findFirst();
+    }
+
+    @Override
     public void replaceDraft(long campaignId, int dailyLimit, List<Prize> prizes) {
         jdbc.update("""
                 INSERT INTO campaign_config_version (campaign_id, config_version, daily_limit, state)
@@ -45,10 +51,26 @@ public class JdbcCampaignConfigurationRepository implements CampaignConfiguratio
 
     @Override
     public Optional<DraftConfiguration> findDraft(long campaignId) {
+        return findConfiguration(campaignId, "DRAFT");
+    }
+
+    @Override
+    public Optional<DraftConfiguration> findConfiguration(long campaignId) {
+        List<String> states = jdbc.query("""
+                SELECT state FROM campaign_config_version
+                WHERE campaign_id = ? AND config_version = 1
+                """, (rs, row) -> rs.getString("state"), campaignId);
+        if (states.isEmpty()) {
+            return Optional.empty();
+        }
+        return findConfiguration(campaignId, states.get(0));
+    }
+
+    private Optional<DraftConfiguration> findConfiguration(long campaignId, String state) {
         List<Integer> limits = jdbc.query("""
                 SELECT daily_limit FROM campaign_config_version
-                WHERE campaign_id = ? AND config_version = 1 AND state = 'DRAFT'
-                """, (rs, row) -> rs.getInt("daily_limit"), campaignId);
+                WHERE campaign_id = ? AND config_version = 1 AND state = ?
+                """, (rs, row) -> rs.getInt("daily_limit"), campaignId, state);
         if (limits.isEmpty()) {
             return Optional.empty();
         }

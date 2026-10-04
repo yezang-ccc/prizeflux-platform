@@ -3,6 +3,8 @@ package com.prizeflux.campaign.application;
 import org.springframework.stereotype.Service;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 
+import java.util.Locale;
+
 /** 验证账号状态与口令；签发令牌属于后续 I3。 */
 @Service
 @ConditionalOnProperty(name = "prizeflux.persistence.campaign.enabled", havingValue = "true", matchIfMissing = true)
@@ -16,10 +18,12 @@ public class UserAuthenticationService {
     }
 
     public AppUser authenticate(String username, String rawPassword) {
-        if (username == null || !username.matches("[a-z0-9._-]{3,64}") || rawPassword == null) {
+        String canonicalUsername = username == null ? null : username.trim().toLowerCase(Locale.ROOT);
+        if (canonicalUsername == null || !canonicalUsername.matches("[a-z0-9._-]{3,64}")
+                || rawPassword == null) {
             throw new InvalidCredentialsException();
         }
-        AppUser user = users.findByUsername(username).orElseThrow(InvalidCredentialsException::new);
+        AppUser user = users.findByUsername(canonicalUsername).orElseThrow(InvalidCredentialsException::new);
         if (user.state() != AppUser.State.ACTIVE
                 || !passwords.matches(rawPassword, user.passwordHash())) {
             throw new InvalidCredentialsException();

@@ -51,6 +51,16 @@
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
 
+        <!-- Opt-in local-full operational metrics; no external Prometheus process is required. -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.micrometer</groupId>
+            <artifactId>micrometer-registry-prometheus</artifactId>
+        </dependency>
+
         <!-- 只使用 Spring Security 的 BCrypt 密码编码；完整过滤链在 I4/I5 接入。 -->
         <dependency>
             <groupId>org.springframework.security</groupId>

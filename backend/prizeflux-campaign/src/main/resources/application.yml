@@ -4,6 +4,11 @@ spring:
   application:
     # 日志、部署和未来的链路追踪用这个名字识别当前服务。
     name: prizeflux-campaign
+  kafka:
+    consumer:
+      # The queue topic is a durable wake-up log; a new consumer group must not skip
+      # notifications already published before the first successful group assignment.
+      auto-offset-reset: earliest
 
 server:
   # 当前服务独立运行在 8081；未来 Gateway 会保留常见的 8080 作为统一入口。
@@ -14,3 +19,9 @@ prizeflux:
     draw-rate-limit:
       # 流量治理在 local-full 或显式部署配置中启用；轻量开发/单测不依赖 Redis。
       enabled: false
+    registration-rate-limit:
+      # 注册入口限流在本机完整环境和部署环境显式启用；轻量单测默认禁用。
+      enabled: false
+      max-requests: 5
+      window-seconds: 600
+      key-prefix: 'pfx:auth:register:ip:v1:'

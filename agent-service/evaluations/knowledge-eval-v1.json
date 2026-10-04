@@ -1,0 +1,53 @@
+{
+  "schemaVersion": 1,
+  "datasetId": "prizeflux-knowledge-offline-v1",
+  "revision": "1",
+  "cases": [
+    {
+      "caseId": "public-probability-remainder",
+      "query": "概率之和不足 1 时，这次会怎样？",
+      "actorRole": "USER",
+      "relevantEvidence": [
+        { "documentId": "campaign-help-v1", "sectionContains": "奖项概率与未中奖" }
+      ],
+      "expectNoEvidence": false,
+      "forbiddenDocumentIds": []
+    },
+    {
+      "caseId": "public-queued-status",
+      "query": "排队请求显示已受理，是不是已经中奖或预留奖品？",
+      "actorRole": "USER",
+      "relevantEvidence": [
+        { "documentId": "campaign-help-v1", "sectionContains": "即时抽奖与排队抽奖" }
+      ],
+      "expectNoEvidence": false,
+      "forbiddenDocumentIds": []
+    },
+    {
+      "caseId": "operator-review-workflow",
+      "query": "个人创建的活动如何审核通过并发布？",
+      "actorRole": "OPERATOR",
+      "relevantEvidence": [
+        { "documentId": "operator-guide-v1", "sectionContains": "审核个人活动" }
+      ],
+      "expectNoEvidence": false,
+      "forbiddenDocumentIds": []
+    },
+    {
+      "caseId": "user-cannot-read-operator-guide",
+      "query": "MySQL Redis Kafka",
+      "actorRole": "USER",
+      "relevantEvidence": [],
+      "expectNoEvidence": true,
+      "forbiddenDocumentIds": ["operator-guide-v1"]
+    },
+    {
+      "caseId": "out-of-corpus-question",
+      "query": "东京地铁末班车时刻表是什么？",
+      "actorRole": "USER",
+      "relevantEvidence": [],
+      "expectNoEvidence": true,
+      "forbiddenDocumentIds": []
+    }
+  ]
+}

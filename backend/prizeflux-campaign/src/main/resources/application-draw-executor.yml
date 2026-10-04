@@ -1,0 +1,18 @@
+# Start with profiles "local-full,draw-executor". The same Campaign transaction code runs
+# in a separate process without opening an HTTP listener; MySQL remains the work authority.
+server:
+  port: -1
+
+spring:
+  # Campaign owns Flyway migrations. The executor must never race it on startup.
+  flyway:
+    enabled: false
+
+prizeflux:
+  kafka:
+    enabled: true
+    draw-queue-enabled: true
+    draw-queue-consumer-enabled: true
+  outbox:
+    relay:
+      enabled: false
