@@ -36,6 +36,9 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import java.util.LinkedHashMap;
 import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
+import java.time.Clock;
+import java.time.Instant;
+import java.time.ZoneOffset;
 import java.util.Base64;
 import java.util.List;
 import java.util.Map;
@@ -350,6 +353,14 @@ class CampaignApiIntegrationTest {
                 .andExpect(status().isNotFound());
         assertThat(jdbcTemplate.queryForObject(
                 "SELECT COUNT(*) FROM prize_config WHERE campaign_id = ?", Integer.class, id)).isOne();
+
+        // The legacy operator endpoint must not publish a creator's unsubmitted draft.
+        perform(post("/api/campaigns/{id}/publish", id))
+                .andExpect(status().isNotFound());
+        assertThat(databaseStatus(id)).isEqualTo("DRAFT");
+        assertThat(jdbcTemplate.queryForObject(
+                "SELECT COUNT(*) FROM campaign_review_decision WHERE campaign_id = ?", Integer.class, id))
+                .isZero();
 
         performAs(userToken, post("/api/me/campaigns/{id}/submit", id))
                 .andExpect(status().isOk())
@@ -783,6 +794,13 @@ class CampaignApiIntegrationTest {
     }
 
     static class RepositoryControlConfiguration {
+
+        @Bean
+        @Primary
+        Clock testClock() {
+            // Keep the published-campaign fixtures available regardless of test execution date.
+            return Clock.fixed(Instant.parse("2026-10-04T00:00:00Z"), ZoneOffset.UTC);
+        }
 
         @Bean
         @Primary

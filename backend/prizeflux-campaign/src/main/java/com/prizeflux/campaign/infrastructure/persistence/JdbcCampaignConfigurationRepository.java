@@ -26,6 +26,12 @@ public class JdbcCampaignConfigurationRepository implements CampaignConfiguratio
     }
 
     @Override
+    public Optional<String> lockLegacyCampaignStatus(long campaignId) {
+        return jdbc.query("SELECT status FROM campaign WHERE id = ? AND owner_user_id IS NULL FOR UPDATE",
+                (rs, row) -> rs.getString("status"), campaignId).stream().findFirst();
+    }
+
+    @Override
     public Optional<String> lockOwnedCampaignStatus(long campaignId, long ownerUserId) {
         return jdbc.query("SELECT status FROM campaign WHERE id = ? AND owner_user_id = ? FOR UPDATE",
                 (rs, row) -> rs.getString("status"), campaignId, ownerUserId).stream().findFirst();

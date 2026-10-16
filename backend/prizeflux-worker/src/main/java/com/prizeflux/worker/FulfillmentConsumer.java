@@ -42,8 +42,8 @@ public class FulfillmentConsumer {
         try {
             event = objectMapper.readValue(payload, PrizeFulfillmentEvent.class);
         } catch (JsonProcessingException e) {
-            // 载荷非法：不可重试错误；D7-05 将路由到死信，这里先记日志并抛出触发重投。
-            // 毒消息会重试；这里不记录原始消息键/载荷或反复打印堆栈，避免日志放大与泄漏。
+            // 载荷非法会阻塞该分区并持续重试，直至人工修复或显式重放处置；不能直接跳过未落账事件。
+            // 这里不记录原始消息键/载荷或反复打印堆栈，避免日志放大与泄漏。
             log.warn("malformed fulfillment payload type={}", e.getClass().getSimpleName());
             recordTelemetry(FulfillmentTelemetry.ConsumeOutcome.MALFORMED_PAYLOAD, startedAt);
             throw new IllegalStateException("Malformed fulfillment event payload", e);

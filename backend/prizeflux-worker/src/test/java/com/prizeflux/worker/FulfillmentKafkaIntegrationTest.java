@@ -2,6 +2,7 @@ package com.prizeflux.worker;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.prizeflux.contract.event.PrizeFulfillmentEvent;
+import com.prizeflux.worker.application.FulfillmentRepository;
 import com.prizeflux.worker.infrastructure.observability.WorkerKafkaLagMetrics;
 import org.apache.kafka.clients.admin.AdminClient;
 import org.apache.kafka.clients.admin.AdminClientConfig;
@@ -24,6 +25,7 @@ import org.springframework.kafka.test.context.EmbeddedKafka;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
+import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 import org.testcontainers.containers.MySQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
@@ -36,7 +38,11 @@ import java.net.http.HttpResponse;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doAnswer;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -87,10 +93,21 @@ class FulfillmentKafkaIntegrationTest {
     @Autowired JdbcTemplate jdbc;
     @Autowired WorkerKafkaLagMetrics lagMetrics;
     @Autowired KafkaListenerEndpointRegistry listenerRegistry;
+    @MockitoSpyBean(name = "jdbcFulfillmentRepository") FulfillmentRepository fulfillments;
     @LocalManagementPort int managementPort;
 
     @Test
-    void duplicateBrokerDeliveriesCreateOneLedgerAndOneMarker() throws Exception {
+    void persistenceFailuresRecoverAndDuplicateBrokerDeliveriesCreateOneLedger() throws Exception {
+        AtomicBoolean persistenceUnavailable = new AtomicBoolean(true);
+        AtomicInteger failedAttempts = new AtomicInteger();
+        doAnswer(invocation -> {
+            if (persistenceUnavailable.get()) {
+                failedAttempts.incrementAndGet();
+                throw new IllegalStateException("injected persistence outage");
+            }
+            return invocation.callRealMethod();
+        }).when(fulfillments).create(any(), any(), any(), any());
+
         PrizeFulfillmentEvent event = new PrizeFulfillmentEvent(1,
                 "00000000-0000-0000-0000-000000000101", 101, 10, 1, 20, 30,
                 Instant.parse("2026-09-24T00:00:00Z"));
@@ -108,6 +125,15 @@ class FulfillmentKafkaIntegrationTest {
 
         try (AdminClient admin = AdminClient.create(Map.of(
                 AdminClientConfig.BOOTSTRAP_SERVERS_CONFIG, broker.getBrokersAsString()))) {
+            Instant failureDeadline = Instant.now().plusSeconds(45);
+            while (failedAttempts.get() < 12 && Instant.now().isBefore(failureDeadline)) {
+                Thread.sleep(100);
+            }
+            assertTrue(failedAttempts.get() >= 12, "Worker did not retry beyond the default limit");
+            assertTrue(groupOffset(admin) < 1, "Failed event offset must remain uncommitted");
+            assertEquals(0, jdbc.queryForObject("SELECT COUNT(*) FROM fulfillment", Integer.class));
+            persistenceUnavailable.set(false);
+
             Instant deadline = Instant.now().plusSeconds(20);
             long committedOffset = -1;
             while (Instant.now().isBefore(deadline)) {

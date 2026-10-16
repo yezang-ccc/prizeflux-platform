@@ -85,7 +85,7 @@ public class CampaignConfigurationService {
             throw new BusinessException(ErrorCode.INVALID_ARGUMENT);
         }
         transactions.executeWithoutResult(status -> {
-            requireDraft(campaignId);
+            requireLegacyDraft(campaignId);
             CampaignConfigurationRepository.DraftConfiguration configured = configurationRepository
                     .findDraft(campaignId)
                     .orElseThrow(() -> new BusinessException(ErrorCode.BUSINESS_RULE_VIOLATION));
@@ -102,6 +102,14 @@ public class CampaignConfigurationService {
 
     private void requireDraft(long campaignId) {
         String current = configurationRepository.lockCampaignStatus(campaignId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.RESOURCE_NOT_FOUND));
+        if (!"DRAFT".equals(current)) {
+            throw new BusinessException(ErrorCode.BUSINESS_RULE_VIOLATION);
+        }
+    }
+
+    private void requireLegacyDraft(long campaignId) {
+        String current = configurationRepository.lockLegacyCampaignStatus(campaignId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.RESOURCE_NOT_FOUND));
         if (!"DRAFT".equals(current)) {
             throw new BusinessException(ErrorCode.BUSINESS_RULE_VIOLATION);

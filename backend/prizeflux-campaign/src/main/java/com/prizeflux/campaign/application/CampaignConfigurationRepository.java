@@ -12,6 +12,9 @@ public interface CampaignConfigurationRepository {
 
     Optional<String> lockCampaignStatus(long campaignId);
 
+    /** 旧运营活动没有 owner；直接发布路径只能锁定并读取这种活动。 */
+    Optional<String> lockLegacyCampaignStatus(long campaignId);
+
     Optional<String> lockOwnedCampaignStatus(long campaignId, long ownerUserId);
 
     void replaceDraft(long campaignId, int dailyLimit, List<Prize> prizes);

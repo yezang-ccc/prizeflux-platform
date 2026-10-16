@@ -94,6 +94,17 @@ public final class DrawApplicationService {
             return repository.findByKey(userId, command.requestKey(), operation)
                     .map(stored -> replay(stored, fingerprint))
                     .orElseThrow(() -> new BusinessException(ErrorCode.CONFLICT));
+        } catch (BusinessException failure) {
+            // A peer can commit this key after our first lookup but before the campaign closes
+            // or expires. Recheck outside the rolled-back transaction before rejecting it.
+            if (failure.getErrorCode() == ErrorCode.BUSINESS_RULE_VIOLATION) {
+                Optional<DrawRepository.StoredDraw> committed =
+                        repository.findByKey(userId, command.requestKey(), operation);
+                if (committed.isPresent()) {
+                    return replay(committed.get(), fingerprint);
+                }
+            }
+            throw failure;
         }
     }
 
